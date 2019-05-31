@@ -10,6 +10,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Financial.Extensions</RootNamespace>
+    <Version>0.3.0</Version>
+    <Authors>Fiats Inc.</Authors>
+    <Company>Fiats Inc.</Company>
+    <Product>Financial.Extensions</Product>
+    <Description>Financial.Extensions defines essential classes and symbols for financial applications.</Description>
+    <Copyright>Copyright (c) 2017-2019 Fiats Inc. All rights reserved.</Copyright>
+    <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/fiatsasia/Financial.Extensions</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryUrl>https://github.com/fiatsasia/Financial.Extensions</RepositoryUrl>
+    <PackageTags>financial finance</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
