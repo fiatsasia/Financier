@@ -1,6 +1,10 @@
-﻿using System;
+﻿//==============================================================================
+// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// https://www.fiats.asia/feedex/
+//
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Financial.Extensions
 {

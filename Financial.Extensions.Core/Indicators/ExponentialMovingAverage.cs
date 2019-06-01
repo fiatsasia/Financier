@@ -14,7 +14,7 @@ namespace Financial.Extensions
         // Original formula is below.
         // (last, value) => value * 2.0 / (period + 1) + last * (1.0 - 2.0 / (period + 1))
         // i.e. https://en.wikipedia.org/wiki/Moving_average
-        // And optimied formula is derived by below steps
+        // And optimized formula is derived by below steps
         // alpha = 2.0m / (period + 1)
         // ema = alpha * value + (1.0 - alpha) * last
         // ema = alpha * value + last - alpha * last

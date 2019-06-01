@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
+﻿//==============================================================================
+// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// https://www.fiats.asia/feedex/
+//
 
 namespace Financial.Extensions
 {
