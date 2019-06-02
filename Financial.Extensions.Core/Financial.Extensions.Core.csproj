@@ -10,7 +10,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Financial.Extensions</RootNamespace>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <Authors>Fiats Inc.</Authors>
     <Company>Fiats Inc.</Company>
     <Product>Financial.Extensions</Product>
@@ -30,11 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="License\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="License\License.txt">
+    <None Include="..\License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
