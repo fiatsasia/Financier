@@ -1,5 +1,5 @@
 # Financial Extensions
-[“ú–{Œê](README.ja-JP.md)  
+[æ—¥æœ¬èªž](README.ja-JP.md)  
 
 ```
 PM> Install-Package Financial.Extensions.Core
