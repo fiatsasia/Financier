@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 namespace Financial.Extensions
 {
-    public class FxTradingParentOrderModel : IFxTradingParentOrder
+    public class FxTradingConditionalOrderModel : IFxTradingConditionalOrder
     {
         public Guid OrderId { get; }
-        public FxTradeParentOrderType OrderType { get; }
+        public FxTradeConditionalOrderType OrderType { get; }
 
         public DateTime OpenTime { get; }
         public DateTime CloseTime { get; }
@@ -24,7 +24,7 @@ namespace Financial.Extensions
 
         public event Action<IFxTradingSimpleOrder> OrderChanged;
 
-        public FxTradingParentOrderModel(FxTradeParentOrderType orderType, params IFxTradingOrder[] orders)
+        public FxTradingConditionalOrderModel(FxTradeConditionalOrderType orderType, params IFxTradingOrder[] orders)
         {
             OrderType = orderType;
             _childOrders = new List<IFxTradingOrder>(orders);

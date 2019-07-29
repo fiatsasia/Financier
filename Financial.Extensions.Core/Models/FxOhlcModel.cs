@@ -12,7 +12,9 @@ namespace Financial.Extensions
 {
     public class FxOhlcModel : IFxOhlcvv
     {
-        public DateTime Start { get; private set; } = DateTime.MaxValue;
+        public TimeSpan Period { get; private set; }
+        DateTime _start = DateTime.MaxValue;
+        public DateTime Start => _start.Round(Period);
         public decimal Open { get; private set; }
         public decimal High { get; private set; } = decimal.MinValue;
         public decimal Low { get; private set; } = decimal.MaxValue;
@@ -25,39 +27,41 @@ namespace Financial.Extensions
 
         decimal _amount;
 
-        public FxOhlcModel()
+        public FxOhlcModel(TimeSpan period)
         {
+            Period = period;
         }
 
-        public FxOhlcModel(IFxTradeStream trade)
+        public FxOhlcModel(IFxTradeStream trade, TimeSpan period)
         {
+            Period = period;
             Update(trade);
         }
 
-        public FxOhlcModel(IEnumerable<IFxTradeStream> trades)
+        public FxOhlcModel(IEnumerable<IFxTradeStream> trades, TimeSpan period)
         {
+            Period = period;
             trades.ForEach(trade => Update(trade));
         }
 
-        public virtual void Update(IFxTradeStream trade)
+        public virtual void Update(DateTime time, decimal price, decimal size)
         {
-            Debug.Assert(trade != null);
-            if (trade.Time < Start)
+            if (time < _start)
             {
-                Start = trade.Time;
-                Open = trade.Price;
+                _start = time;
+                Open = price;
             }
-            if (trade.Time > End)
+            if (time > End)
             {
-                End = trade.Time;
-                Close = trade.Price;
+                End = time;
+                Close = price;
             }
 
-            High = Math.Max(High, trade.Price);
-            Low = Math.Min(Low, trade.Price);
-            Volume += unchecked((double)Math.Abs(trade.Size));
+            High = Math.Max(High, price);
+            Low = Math.Min(Low, price);
+            Volume += unchecked((double)Math.Abs(size));
 
-            _amount += Convert.ToDecimal(trade.Price * Math.Abs(trade.Size));
+            _amount += Convert.ToDecimal(price * Math.Abs(size));
             try
             {
                 VWAP = Convert.ToDouble(_amount / Convert.ToDecimal(Volume));
@@ -66,6 +70,12 @@ namespace Financial.Extensions
             {
                 VWAP = 0;
             }
+        }
+
+        public virtual void Update(IFxTradeStream trade)
+        {
+            Debug.Assert(trade != null);
+            Update(trade.Time, trade.Price, trade.Size);
         }
     }
 }

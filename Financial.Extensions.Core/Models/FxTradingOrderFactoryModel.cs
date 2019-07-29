@@ -17,15 +17,15 @@ namespace Financial.Extensions
             return new FxTradingOrderModel(FxTradingOrderType.Limit, side, price, size);
         }
 
-        public override IFxTradingParentOrder CreateIFD(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second)
+        public override IFxTradingConditionalOrder CreateIFD(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second)
         {
-            return new FxTradingParentOrderModel(FxTradeParentOrderType.IFD, first, second);
+            return new FxTradingConditionalOrderModel(FxTradeConditionalOrderType.IFD, first, second);
         }
 
-        public override IFxTradingParentOrder CreateIFDOCO(IFxTradingSimpleOrder ifdone, IFxTradingSimpleOrder ocoFirst, IFxTradingSimpleOrder ocoSecond)
+        public override IFxTradingConditionalOrder CreateIFDOCO(IFxTradingSimpleOrder ifdone, IFxTradingSimpleOrder ocoFirst, IFxTradingSimpleOrder ocoSecond)
         {
-            var oco = new FxTradingParentOrderModel(FxTradeParentOrderType.OCO, ocoFirst, ocoSecond);
-            return new FxTradingParentOrderModel(FxTradeParentOrderType.IFD, oco);
+            var oco = new FxTradingConditionalOrderModel(FxTradeConditionalOrderType.OCO, ocoFirst, ocoSecond);
+            return new FxTradingConditionalOrderModel(FxTradeConditionalOrderType.IFD, oco);
         }
     }
 }

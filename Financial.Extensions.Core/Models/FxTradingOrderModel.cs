@@ -11,6 +11,7 @@ namespace Financial.Extensions
     {
         public Guid OrderId { get; }
         public FxTradingOrderType OrderType { get; }
+
         public decimal OrderPrice { get; }
         public decimal OrderSize { get; }
         public decimal StopTriggerPrice { get; }

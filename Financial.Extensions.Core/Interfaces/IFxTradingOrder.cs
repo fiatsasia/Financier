@@ -21,36 +21,44 @@ namespace Financial.Extensions
         Streming,
     }
 
-    public enum FxTradeParentOrderType
+    public enum FxTradeConditionalOrderType
     {
         IFD,
         OCO,
+        IFO,
+        IFDOCO = IFO,
+        OSO,
     }
 
     public interface IFxTradingAccount
     {
+        string ProviderName { get; }
+
         void Login(string key, string secret);
         IFxTradingMarket GetMarket(string marketSymbol);
     }
 
     public interface IFxTradingMarket
     {
-        string MarketSymbol { get; }
-
         FxTradingOrderFactoryBase GetTradeOrderFactory();
 
         Task PlaceOrder(IFxTradingOrder order);
 
+        event Action<IFxTradingOrder> OrderChanged;
+        event Action<IFxTradingPosition> PositionChanged;
+
+#if false
+        string MarketSymbol { get; }
+
         IEnumerable<IFxTradingOrder> ListOrders();
         IEnumerable<IFxTradingPosition> ListPositions();
 
-        event Action<IFxTradingOrder> OrderChanged;
-        event Action<IFxTradingPosition> PositionChanged;
 
         decimal BestBidPrice { get; }
         decimal BestBidSize { get; }
         decimal BestAskPrice { get; }
         decimal BestAskSize { get; }
+#endif
     }
 
     public enum FxTradingOrderState
@@ -85,9 +93,9 @@ namespace Financial.Extensions
         decimal TrailingStopOffset { get; }
     }
 
-    public interface IFxTradingParentOrder : IFxTradingOrder
+    public interface IFxTradingConditionalOrder : IFxTradingOrder
     {
-        FxTradeParentOrderType OrderType { get; }
+        FxTradeConditionalOrderType OrderType { get; }
         IReadOnlyList<IFxTradingOrder> ChildOrders { get; }
         IFxTradingSimpleOrder CurrentOrder { get; }
     }
@@ -100,9 +108,9 @@ namespace Financial.Extensions
         public virtual IFxTradingSimpleOrder CreateStopLimitOrder(decimal size, decimal price, decimal stopTriggerPrice) { throw new NotSupportedException(); }
         public virtual IFxTradingSimpleOrder CreateTrailingStopOrder(decimal size, decimal trailingStopPriceOffset) { throw new NotSupportedException(); }
 
-        public virtual IFxTradingParentOrder CreateIFD(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second) { throw new NotSupportedException(); }
-        public virtual IFxTradingParentOrder CreateOCO(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second) { throw new NotSupportedException(); }
-        public virtual IFxTradingParentOrder CreateIFDOCO(IFxTradingSimpleOrder ifdone, IFxTradingSimpleOrder ocoFirst, IFxTradingSimpleOrder ocoSecond) { throw new NotSupportedException(); }
+        public virtual IFxTradingConditionalOrder CreateIFD(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second) { throw new NotSupportedException(); }
+        public virtual IFxTradingConditionalOrder CreateOCO(IFxTradingSimpleOrder first, IFxTradingSimpleOrder second) { throw new NotSupportedException(); }
+        public virtual IFxTradingConditionalOrder CreateIFDOCO(IFxTradingSimpleOrder ifdone, IFxTradingSimpleOrder ocoFirst, IFxTradingSimpleOrder ocoSecond) { throw new NotSupportedException(); }
     }
 
     public enum FxTradePositionState

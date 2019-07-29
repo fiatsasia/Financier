@@ -9,9 +9,10 @@ namespace Financial.Extensions
 {
     public enum FxTradeSide
     {
-        Unknown,
+        Unspecified,
         Buy,
         Sell,
+        BuySell,
     }
 
     public static class FxTradeSideExtension

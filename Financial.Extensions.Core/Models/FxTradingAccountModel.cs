@@ -7,6 +7,8 @@ namespace Financial.Extensions
 {
     public class FxTradingAccountModel : IFxTradingAccount
     {
+        public string ProviderName { get; set; }
+
         public void Login(string key, string secret)
         {
         }

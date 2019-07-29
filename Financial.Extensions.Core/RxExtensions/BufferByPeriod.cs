@@ -13,6 +13,8 @@ namespace Financial.Extensions
 {
     public static partial class RxExtensions
     {
+        // ** If market data feed from source is infrequent than period, buffer feed will be delayed.
+
         // With getter method
         public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, Func<TSource, DateTime> timeGetter, TimeSpan period)
         {
