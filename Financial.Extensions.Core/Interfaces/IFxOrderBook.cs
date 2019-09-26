@@ -3,16 +3,17 @@
 // https://www.fiats.asia/
 //
 
-using System;
-
 namespace Financial.Extensions
 {
-    public interface IFxTickerStream
+    public interface IFxOrderBook
     {
-        DateTime Time { get; }
         decimal BestBidPrice { get; }
         decimal BestBidSize { get; }
         decimal BestAskPrice { get; }
         decimal BestAskSize { get; }
+
+        decimal MidPrice { get; }
+        decimal TotalBidDepth { get; }
+        decimal TotalAskDepth { get; }
     }
 }

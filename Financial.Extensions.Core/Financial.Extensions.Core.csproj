@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Financial.Extensions</RootNamespace>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <Authors>Fiats Inc.</Authors>
     <Company>Fiats Inc.</Company>
     <Product>Financial.Extensions</Product>
@@ -25,8 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Interactive" Version="3.2.0" />
-    <PackageReference Include="System.Reactive" Version="4.1.5" />
+    <PackageReference Include="System.Interactive" Version="4.0.0" />
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
   </ItemGroup>
 
   <ItemGroup>
