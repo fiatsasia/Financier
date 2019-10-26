@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>Financial.Extensions</RootNamespace>
-    <Version>0.4.2</Version>
+    <Version>0.4.3</Version>
     <Authors>Fiats Inc.</Authors>
     <Company>Fiats Inc.</Company>
     <Product>Financial.Extensions</Product>
@@ -22,18 +22,19 @@
     <RepositoryUrl>https://github.com/fiatsasia/Financial.Extensions</RepositoryUrl>
     <PackageTags>financial finance</PackageTags>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Interactive" Version="4.0.0" />
-    <PackageReference Include="System.Reactive" Version="4.1.6" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Interactive" Version="4.0.0" />
+    <PackageReference Include="System.Reactive" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

@@ -12,5 +12,6 @@ namespace Financial.Extensions
         DateTime Time { get; }
         decimal Price { get; }
         decimal Size { get; }       // +buy -sell
+        long Serial { get; }
     }
 }
