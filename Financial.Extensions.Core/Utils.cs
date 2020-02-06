@@ -4,6 +4,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Reactive.Disposables;
 
 namespace Financial.Extensions
@@ -22,6 +23,11 @@ namespace Financial.Extensions
         {
             disposable.Add(resource);
             return resource;
+        }
+
+        public static void DisposeReverse(this CompositeDisposable disposable)
+        {
+            disposable.Reverse().ForEach(e => e.Dispose());
         }
     }
 }

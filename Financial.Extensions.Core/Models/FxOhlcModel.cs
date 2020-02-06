@@ -1,66 +1,76 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2013-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Financial.Extensions
 {
-    public class FxOhlcModel : IFxOhlcvv
+    // OHLC + Start
+    public class FxOhlcModel : IFxOhlc
     {
-        public TimeSpan Period { get; private set; }
+        protected TimeSpan Period { get; private set; }
+
         DateTime _start = DateTime.MaxValue;
+        DateTime _end = DateTime.MinValue;
         public DateTime Start => _start.Round(Period);
+
         public decimal Open { get; private set; }
         public decimal High { get; private set; } = decimal.MinValue;
         public decimal Low { get; private set; } = decimal.MaxValue;
         public decimal Close { get; private set; }
-        public double Volume { get; private set; }
-        public double VWAP { get; private set; }
-
-        public DateTime End { get; private set; } = DateTime.MinValue;
-        public virtual double TypicalPrice { get { return VWAP; } }
-
-        decimal _amount;
 
         public FxOhlcModel(TimeSpan period)
         {
             Period = period;
         }
 
-        public FxOhlcModel(IFxTradeStream trade, TimeSpan period)
-        {
-            Period = period;
-            Update(trade);
-        }
-
-        public FxOhlcModel(IEnumerable<IFxTradeStream> trades, TimeSpan period)
-        {
-            Period = period;
-            trades.ForEach(trade => Update(trade));
-        }
-
-        public virtual void Update(DateTime time, decimal price, decimal size)
+        public virtual void Update(DateTime time, decimal price)
         {
             if (time < _start)
             {
                 _start = time;
                 Open = price;
             }
-            if (time > End)
+            if (time > _end)
             {
-                End = time;
+                _end = time;
                 Close = price;
             }
 
             High = Math.Max(High, price);
             Low = Math.Min(Low, price);
-            Volume += unchecked((double)Math.Abs(size));
+        }
+    }
 
+    // OHLC + Start + Volume
+    public class FxOhlcvModel : FxOhlcModel, IFxOhlcv
+    {
+        public double Volume { get; private set; }
+
+        public FxOhlcvModel(TimeSpan period) : base(period) { }
+
+        public virtual void Update(DateTime time, decimal price, decimal size)
+        {
+            base.Update(time, price);
+            Volume += unchecked((double)Math.Abs(size)); // Some of system indicates sell as minus
+        }
+    }
+
+    // OHLC + Start + Volume + VWAP(Volume Weighted Average Price)
+    public class FxOhlcvvModel : FxOhlcvModel, IFxOhlcvv
+    {
+        decimal _amount;
+
+        public double VWAP { get; private set; }
+        public virtual double TypicalPrice { get { return VWAP; } }
+
+        public FxOhlcvvModel(TimeSpan period) : base(period) { }
+
+        public override void Update(DateTime time, decimal price, decimal size)
+        {
+            base.Update(time, price, size);
             _amount += Convert.ToDecimal(price * Math.Abs(size));
             try
             {
@@ -70,12 +80,6 @@ namespace Financial.Extensions
             {
                 VWAP = 0;
             }
-        }
-
-        public virtual void Update(IFxTradeStream trade)
-        {
-            Debug.Assert(trade != null);
-            Update(trade.Time, trade.Price, trade.Size);
         }
     }
 }
