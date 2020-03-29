@@ -1,15 +1,11 @@
 ﻿//==============================================================================
-// Copyright (c) 2017-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Financial.Extensions
 {
-    public enum FxTimeInForce
+    public enum TimeInForce
     {
         NotSpecified,
         GTC,            // Good 'Till Canceled

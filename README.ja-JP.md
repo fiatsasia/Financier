@@ -14,4 +14,5 @@ Reactive Extensions (Rx) ベースのインジケーター群
 - [Accumulation Distribution (ADI)](Financial.Extensions.Core/Indicators/AccumulationDistribution.cs)
 - [Chaikin Oscillator](Financial.Extensions.Core/Indicators/ChaikinOscillator.cs)
 - [Relative Strength Index (RSI)](Financial.Extensions.Core/Indicators/RelativeStrengthIndex.cs)
- 
+
+## シグナル

@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -7,9 +7,9 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Indicators
 {
-    public static partial class Indicators
+    public static partial class IndicatorExtensions
     {
         // Original formula is below.
         // (last, value) => value * 2.0 / (period + 1) + last * (1.0 - 2.0 / (period + 1))

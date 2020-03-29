@@ -1,11 +1,11 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 namespace Financial.Extensions
 {
-    public class FxTradingAccountModel : IFxTradingAccount
+    public class TradingAccountModel<TPrice, TSize> : ITradingAccount<TPrice, TSize>
     {
         public string ProviderName { get; set; }
 
@@ -13,9 +13,9 @@ namespace Financial.Extensions
         {
         }
 
-        public IFxTradingMarket GetMarket(string marketSymbol)
+        public ITradingMarket<TPrice, TSize> GetMarket(string marketSymbol)
         {
-            return new FxTradingMarketModel(this, marketSymbol);
+            return new TradingMarketModel<TPrice, TSize>(this, marketSymbol);
         }
     }
 }

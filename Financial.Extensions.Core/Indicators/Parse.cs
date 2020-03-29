@@ -1,14 +1,14 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 using System;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Indicators
 {
-    public static partial class Indicators
+    public static partial class IndicatorExtensions
     {
         // Expected format for indicator string is:
         // "EMA:5" - colon is separator between name and parameter
@@ -33,7 +33,7 @@ namespace Financial.Extensions
 
                 case "ADL":
                 case "AccumulationDistribution":
-                    return source.Cast<IFxOhlcv>().AccumulationDistribution().Select(e => (object)e);
+                    return source.Cast<IOhlcv<double>>().AccumulationDistribution().Select(e => (object)e);
             }
 
             return null;

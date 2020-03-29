@@ -1,11 +1,11 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 namespace Financial.Extensions
 {
-    public enum FxTechnicalIndicatorKind
+    public enum TechnicalIndicatorKind
     {
         AbsoluteVolumeOscillator,
         AccumulationDistribution,

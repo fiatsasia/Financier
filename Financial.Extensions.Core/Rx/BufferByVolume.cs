@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Rx
 {
     public static partial class RxExtensions
     {

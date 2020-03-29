@@ -1,12 +1,12 @@
 ﻿//==============================================================================
-// Copyright (c) 2017-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 namespace Financial.Extensions
 {
     // Based on ISO4217
-    public enum FxCurrencyCode
+    public enum CurrencyCode
     {
         AUD = 36,  // Australian dollar
         CNY = 156, // Yuan Renminbi
@@ -24,9 +24,9 @@ namespace Financial.Extensions
         CryptoAssetCodeBaseNumber = 10000,
     }
 
-    public enum FxCryptoAssetCode
+    public enum CryptoAssetCode
     {
-        BaseNumber = FxCurrencyCode.CryptoAssetCodeBaseNumber,
+        BaseNumber = CurrencyCode.CryptoAssetCodeBaseNumber,
 
         // Crypto assets
         BTC, XBT = BTC, // Bitcoin

@@ -1,14 +1,14 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
 using System;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Signals
 {
-    public static partial class Signals
+    public static partial class SignalExtensions
     {
         public static IObservable<int> Crossover(this IObservable<double> spsource, IObservable<double> lpsource, Func<double, double, bool> thresholdComparer)
         {

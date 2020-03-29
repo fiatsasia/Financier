@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -9,7 +9,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Rx
 {
     public static partial class RxExtensions
     {
@@ -32,7 +32,7 @@ namespace Financial.Extensions
         }
 
         // Common trade class
-        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : IFxTradeStream
+        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : ITradeStream
         {
             var duration = new Subject<Unit>();
             return source

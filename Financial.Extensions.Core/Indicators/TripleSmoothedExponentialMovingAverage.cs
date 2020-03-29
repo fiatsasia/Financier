@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -7,9 +7,9 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Indicators
 {
-    public static partial class Indicators
+    public static partial class IndicatorExtensions
     {
         /// <summary>
         /// Triple exponentially smoothed moving average (TRIX)

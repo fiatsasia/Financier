@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2013-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -7,7 +7,7 @@ using System;
 
 namespace Financial.Extensions
 {
-    public enum FxTradeSide
+    public enum TradeSide
     {
         Unspecified,
         Buy,
@@ -17,15 +17,15 @@ namespace Financial.Extensions
 
     public static class FxTradeSideExtension
     {
-        public static FxTradeSide Opposite(this FxTradeSide side)
+        public static TradeSide Opposite(this TradeSide side)
         {
             switch (side)
             {
-                case FxTradeSide.Buy:
-                    return FxTradeSide.Sell;
+                case TradeSide.Buy:
+                    return TradeSide.Sell;
 
-                case FxTradeSide.Sell:
-                    return FxTradeSide.Buy;
+                case TradeSide.Sell:
+                    return TradeSide.Buy;
 
                 default:
                     throw new InvalidOperationException();

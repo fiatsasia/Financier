@@ -1,13 +1,11 @@
 ﻿//==============================================================================
-// Copyright (c) 2017-2019 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
-using System;
-
 namespace Financial.Extensions
 {
-    public enum FxTypicalPriceKind
+    public enum TypicalPriceKind
     {
         /// <summary>
         /// Close price (default)
