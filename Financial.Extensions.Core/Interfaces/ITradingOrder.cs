@@ -10,58 +10,56 @@ namespace Financial.Extensions
 {
     public interface ITradingOrder
     {
+        TradingOrderType OrderType { get; }
         DateTime OpenTime { get; }
         DateTime CloseTime { get; }
         TradingOrderState Status { get; }
+
+        bool IsSettlmentOrder { get; }
+        bool HasChildOrder { get; }
+
+        void Open(DateTime time);
     }
 
-    public interface ITradingSimpleOrder : ITradingOrder
+    public interface ITradingOrder<TPrice, TSize> : ITradingOrder
     {
-        TradingOrderType OrderType { get; }
-        decimal OrderPrice { get; }
-        decimal OrderSize { get; }
-        decimal StopTriggerPrice { get; }
-        decimal TrailingStopOffset { get; }
+        ITradingPosition<TPrice, TSize> Position { get; }
+        TPrice OrderPrice { get; }
+        TSize OrderSize { get; }
+        TPrice ExecutedPrice { get; }
+        TSize ExecutedSize { get; }
+
+        ITradingOrder<TPrice, TSize> Parent { get; }
+        IReadOnlyList<ITradingOrder<TPrice, TSize>> Children { get; }
+
+        bool CanExecute(TPrice price);
+        void Execute(DateTime time, TPrice executePrice);
+        void ExecutePartial(DateTime time, TPrice executePrice, TSize executeSize);
     }
 
     public interface ITradingConditionalOrder : ITradingOrder
     {
-        TradeConditionalOrderType OrderType { get; }
         IReadOnlyList<ITradingOrder> ChildOrders { get; }
-        ITradingSimpleOrder CurrentOrder { get; }
+        ITradingOrder CurrentOrder { get; }
     }
 
-    public abstract class TradingOrderFactoryBase
+    public interface ITradingOrderFactory<TPrice, TSize>
     {
-        public virtual ITradingSimpleOrder CreateMarketPriceOrder(TradeSide side, decimal size) { throw new NotSupportedException(); }
-        public virtual ITradingSimpleOrder CreateLimitPriceOrder(TradeSide side, decimal price, decimal size) { throw new NotSupportedException(); }
-        public virtual ITradingSimpleOrder CreateStopOrder(decimal size, decimal stopTriggerPrice) { throw new NotSupportedException(); }
-        public virtual ITradingSimpleOrder CreateStopLimitOrder(decimal size, decimal price, decimal stopTriggerPrice) { throw new NotSupportedException(); }
-        public virtual ITradingSimpleOrder CreateTrailingStopOrder(decimal size, decimal trailingStopPriceOffset) { throw new NotSupportedException(); }
+        // Create simple orders
+        ITradingOrder<TPrice, TSize> CreateMarketPriceOrder(TSize size);
+        ITradingOrder<TPrice, TSize> CreateLimitPriceOrder(TPrice price, TSize size);
+        ITradingOrder<TPrice, TSize> CreateStopOrder(TSize size, TPrice stopTriggerPrice);
+        ITradingOrder<TPrice, TSize> CreateStopLimitOrder(TSize size, TPrice price, TPrice stopTriggerPrice);
+        ITradingOrder<TPrice, TSize> CreateTrailingStopOrder(TSize size, TPrice trailingStopPriceOffset);
 
-        public virtual ITradingConditionalOrder CreateIFD(ITradingSimpleOrder first, ITradingSimpleOrder second) { throw new NotSupportedException(); }
-        public virtual ITradingConditionalOrder CreateOCO(ITradingSimpleOrder first, ITradingSimpleOrder second) { throw new NotSupportedException(); }
-        public virtual ITradingConditionalOrder CreateIFDOCO(ITradingSimpleOrder ifdone, ITradingSimpleOrder ocoFirst, ITradingSimpleOrder ocoSecond) { throw new NotSupportedException(); }
+        // Create conditional orders
+        ITradingOrder<TPrice, TSize> CreateIFD(ITradingOrder first, ITradingOrder second);
+        ITradingOrder<TPrice, TSize> CreateOCO(ITradingOrder first, ITradingOrder second);
+        ITradingOrder<TPrice, TSize> CreateIFDOCO(ITradingOrder ifdone, ITradingOrder ocoFirst, ITradingOrder ocoSecond);
+
+        // Create settlement orders
+        ITradingOrder<TPrice, TSize> CreateSettlementMarketPriceOrder(ITradingPosition<TPrice, TSize> position);
+        ITradingOrder<TPrice, TSize> CreateSettlementLimitPriceOrder(ITradingPosition<TPrice, TSize> position, TPrice price);
+        ITradingOrder<TPrice, TSize> CreateStopAndReverseOrder(ITradingPosition<TPrice, TSize> position);
     }
-
-    //===============================================================================
-
-    public interface ITradeOrderTranaction
-    {
-    }
-
-    public class TradeOrderTransactionStatusChangedEventArgs : EventArgs
-    {
-        public ITradingSimpleOrder Order { get; private set; }
-        public TradeOrderTransactionState Status { get; private set; }
-        public TradeOrderTransactionState PrevStatus { get; private set; }
-    }
-
-    public class TradeOrderStatusChangedEventArgs : EventArgs
-    {
-        public ITradingSimpleOrder Order { get; private set; }
-        public TradingOrderState Status { get; private set; }
-        public TradingOrderState PrevStatus { get; private set; }
-    }
-
 }

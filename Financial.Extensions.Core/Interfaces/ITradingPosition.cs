@@ -11,22 +11,28 @@ namespace Financial.Extensions
     {
         DateTime OpenTime { get; }
         DateTime CloseTime { get; }
-        double ProfitRate { get; }
 
         TradePositionState Status { get; }
+        TradeSide Side { get; }
+
+        bool IsOpened { get; }
+        bool IsClosed { get; }
+
+        decimal UnrealizedProfit { get; }
+        decimal RealizedProfit { get; }
     }
 
-    public interface ITradingPosition<TAmount, TSize> : ITradingPosition
+    public interface ITradingPosition<TPrice, TSize> : ITradingPosition
     {
-        TAmount OpenPrice { get; }
-        TAmount ClosePrice { get; }
+        TPrice OpenPrice { get; }
+        TPrice ClosePrice { get; }
         TSize Size { get; }
 
-        TAmount ProfitAmount { get; }
+        void Open(DateTime time, TPrice openPrice, TSize size);
+        void Close(DateTime time, TPrice closePrice);
 
-        void Open(DateTime time, TAmount openPrice, TSize size);
-        void Close(DateTime time, TAmount closePrice);
-        TAmount CalculateProfit(TAmount currentPrice);
-        double CalculateProfitRate(TAmount currentPrice);
+        ITradingOrder<TPrice, TSize> CreateSettlementMarketPriceOrder();
+        ITradingOrder<TPrice, TSize> CreateSettlementLimitPriceOrder(TPrice price);
+        ITradingOrder<TPrice, TSize> CreateStopAndReverseOrder();
     }
 }

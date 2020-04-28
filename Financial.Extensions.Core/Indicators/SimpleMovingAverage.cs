@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions.Indicators
+namespace Financial.Extensions
 {
     public static partial class IndicatorExtensions
     {
@@ -17,11 +17,7 @@ namespace Financial.Extensions.Indicators
         /// <param name="source"></param>
         /// <param name="period"></param>
         /// <returns></returns>
-        public static IObservable<float> SimpleMovingAverage(this IObservable<float> source, int period)
-        {
-            return source.Buffer(period, 1).Select(e => e.Average());
-        }
-
+#if INDICATOR_TYPED
         public static IObservable<double> SimpleMovingAverage(this IObservable<double> source, int period)
         {
             return source.Buffer(period, 1).Select(e => e.Average());
@@ -32,30 +28,35 @@ namespace Financial.Extensions.Indicators
             return source.Buffer(period, 1).Select(e => e.Average());
         }
 
-        public static IObservable<(DateTime Time, float Value, float Result)> SimpleMovingAverage(this IObservable<(DateTime Time, float Value)> source, int period)
+        public static IObservable<float> SimpleMovingAverage(this IObservable<float> source, int period)
+        {
+            return source.Buffer(period, 1).Select(e => e.Average());
+        }
+#else
+        public static IObservable<TSource> SimpleMovingAverage<TSource>(this IObservable<TSource> source, int period)
+        {
+            return source.Buffer(period, 1).Select(e => Calculator.Average(e));
+        }
+#endif
+        public static IObservable<(DateTime Time, TValue Value, TValue Result)> SimpleMovingAverage<TValue>(this IObservable<(DateTime Time, TValue Value)> source, int period)
         {
             return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
             {
                 var current = e.Last();
-                return (current.Time, current.Value, e.Average(f => f.Value));
+                return (current.Time, current.Value, Calculator.Average(e, f => f.Value));
             });
         }
 
-        public static IObservable<(DateTime Time, double Value, double Result)> SimpleMovingAverage(this IObservable<(DateTime Time, double Value)> source, int period)
+        public static IObservable<IMarketIndicator<TSource, TValue>> SimpleMovingAverage<TSource, TValue>(
+            this IObservable<TSource> source,
+            int period,
+            Func<TSource, TValue> priceGetter
+        )
         {
             return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
             {
                 var current = e.Last();
-                return (current.Time, current.Value, e.Average(f => f.Value));
-            });
-        }
-
-        public static IObservable<(DateTime Time, decimal Value, decimal Result)> SimpleMovingAverage(this IObservable<(DateTime Time, decimal Value)> source, int period)
-        {
-            return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
-            {
-                var current = e.Last();
-                return (current.Time, current.Value, e.Average(f => f.Value));
+                return new MarketIndicator<TSource, TValue> { Source = current, Value = Calculator.Average(e, priceGetter) };
             });
         }
     }

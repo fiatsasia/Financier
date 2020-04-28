@@ -7,7 +7,7 @@ using System;
 
 namespace Financial.Extensions
 {
-    public interface IOhlc<TPrice> where TPrice : IComparable
+    public interface IOhlc<TPrice>
     {
         DateTime Start { get; }
         TPrice Open { get; }
@@ -16,12 +16,12 @@ namespace Financial.Extensions
         TPrice Close { get; }
     }
 
-    public interface IOhlcv<T> : IOhlc<T> where T : IComparable
+    public interface IOhlcv<TPrice> : IOhlc<TPrice>
     {
         double Volume { get; }
     }
 
-    public interface IOhlcvv<T> : IOhlcv<T> where T : IComparable
+    public interface IOhlcvv<TPrice> : IOhlcv<TPrice>
     {
         double VWAP { get; }
     }

@@ -6,15 +6,16 @@
 using System;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions.Rx
+namespace Financial.Extensions
 {
     public static partial class RxExtensions
     {
+        // Complement element between periods if whici is not supplied.
         public static IObservable<TSource> ComplementPeriods<TSource>(
             this IObservable<TSource> source,
             Func<TSource, DateTime> getTime,
             Func<DateTime, TSource, TSource> createComplement,
-            int timeIntervalMinute
+            TimeSpan timeInterval
         )
         {
             return Observable.Create<TSource>(observer =>
@@ -29,17 +30,17 @@ namespace Financial.Extensions.Rx
 
                     var fromTime = getTime(e[0]);
                     var toTime = getTime(e[1]);
-                    if (fromTime + TimeSpan.FromMinutes(timeIntervalMinute) == toTime)
+                    if (fromTime + timeInterval == toTime)
                     {
                         observer.OnNext(e[0]);
                         return;
                     }
 
-                    var complementIntervalCount = ((toTime - fromTime).TotalMinutes - 1) / timeIntervalMinute;
+                    var complementIntervalCount = ((toTime - fromTime).TotalMinutes - 1) / timeInterval.TotalMinutes;
                     observer.OnNext(e[0]);
                     for (int i = 1; i <= complementIntervalCount; i++)
                     {
-                        observer.OnNext(createComplement(fromTime.AddMinutes(timeIntervalMinute * i), e[0]));
+                        observer.OnNext(createComplement(fromTime.AddMinutes(timeInterval.TotalMinutes * i), e[0]));
                     }
                 });
 

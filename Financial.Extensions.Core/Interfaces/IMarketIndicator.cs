@@ -7,15 +7,13 @@ using System;
 
 namespace Financial.Extensions
 {
-    public interface ITradeStream
+    public interface IMarketIndicator
     {
-        DateTime Time { get; }
-        long Serial { get; }
     }
 
-    public interface ITradeStream<TPrice, TSize> : ITradeStream
+    public interface IMarketIndicator<TSource, TPrice>
     {
-        TPrice Price { get; }
-        TSize Size { get; }       // +buy -sell
+        TSource Source { get; set; }
+        TPrice Value { get; set; }
     }
 }

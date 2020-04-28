@@ -3,18 +3,13 @@
 // https://www.fiats.asia/
 //
 
+using System;
+
 namespace Financial.Extensions
 {
-    public enum TradePositionState
+    public class MarketIndicator<TSource, TPrice> : IMarketIndicator<TSource, TPrice>
     {
-        Active,
-        Closed,
+        public TSource Source { get; set; }
+        public TPrice Value { get; set; }
     }
-
-    public enum TradeTimeInForce
-    {
-        GoodTilCanceled,
-        FillOrKill,
-    }
-
 }

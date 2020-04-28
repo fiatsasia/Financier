@@ -3,21 +3,19 @@
 // https://www.fiats.asia/
 //
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Financial.Extensions
 {
     public interface ITradingAccount
     {
-        string ProviderName { get; }
+        decimal UnrealizedProfit { get; }
+        decimal RealizedProfit { get; }
+
+        bool HasOpenPosition<TPrice, TSize>(ITradingMarket<TPrice, TSize> market);
+        ITradingPosition<TPrice, TSize> GetLastOpenPosition<TPrice, TSize>(ITradingMarket<TPrice, TSize> market);
 
         void Login(string key, string secret);
-    }
+        void RegisterPosition(ITradingPosition pos);
 
-    public interface ITradingAccount<TPrice, TSize> : ITradingAccount
-    {
-        ITradingMarket<TPrice, TSize> GetMarket(string marketSymbol);
+        void RegisterMarket<TPrice, TSize>(string marketSymbol, ITradingMarket<TPrice, TSize> market);
     }
 }

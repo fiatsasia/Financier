@@ -4,33 +4,38 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Financial.Extensions
 {
-    public interface ITradingMarket<TPrice, TSize>
+    // - MarketConfigを追加
+    //      - 両建て不可
+    //          - 反対売買は建玉相殺
+    //      - 売り建て不可
+    //      - ポジション合算
+    public interface ITradingMarketConfig
     {
-        TradingOrderFactoryBase GetTradeOrderFactory();
+    }
 
-        Task PlaceOrder(ITradingOrder order);
+    public interface ITradingMarket
+    {
+        DateTime LastUpdatedTime { get; }
 
-        event Action<ITradingOrder> OrderChanged;
+        bool HasActiveOrder { get; }
+        bool HasOpenPosition { get; }
+    }
+
+    public interface ITradingMarket<TPrice, TSize> : ITradingMarket
+    {
+        // Precision (price and size)
+        // Number of decimal places (price and size)
+        TPrice MarketPrice { get; }
+
+        void PlaceOrder(ITradingOrder<TPrice, TSize> order);
+
+        ITradingOrderFactory<TPrice, TSize> GetTradeOrderFactory();
+
+        void UpdatePrice(DateTime time, TPrice price);
+
         event Action<ITradingPosition<TPrice, TSize>> PositionChanged;
-
-        TPrice BestBidPrice { get; }
-        TSize BestBidSize { get; }
-        TPrice BestAskPrice { get; }
-        TSize BestAskSize { get; }
-
-#if false
-        string MarketSymbol { get; }
-
-        IEnumerable<IFxTradingOrder> ListOrders();
-        IEnumerable<IFxTradingPosition> ListPositions();
-
-
-#endif
     }
 }

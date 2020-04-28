@@ -9,7 +9,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Financial.Extensions.Rx
+namespace Financial.Extensions
 {
     public static partial class RxExtensions
     {
@@ -32,7 +32,7 @@ namespace Financial.Extensions.Rx
         }
 
         // Common trade class
-        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : ITradeStream
+        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : ITradeExecutionStream
         {
             var duration = new Subject<Unit>();
             return source

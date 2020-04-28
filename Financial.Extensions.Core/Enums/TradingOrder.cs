@@ -23,15 +23,37 @@ namespace Financial.Extensions
         OCO,
         IFO,
         IFDOCO = IFO,
+        OSO,
     }
 
-    public enum TradeConditionalOrderType
+    public static class TradingOrderTypeExtension
     {
-        IFD,
-        OCO,
-        IFO,
-        IFDOCO = IFO,
-        OSO,
+        public static bool IsSimpleOrder(this TradingOrderType orderType)
+        {
+            switch (orderType)
+            {
+                case TradingOrderType.LimitPrice:
+                case TradingOrderType.MarketPrice:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsCombinedOrder(this TradingOrderType orderType)
+        {
+            switch (orderType)
+            {
+                case TradingOrderType.IFD:
+                case TradingOrderType.OCO:
+                case TradingOrderType.IFO:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
     }
 
     public enum TradingOrderState

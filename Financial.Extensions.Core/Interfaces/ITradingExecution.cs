@@ -4,23 +4,29 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Financial.Extensions
 {
-    public interface ITradingExecution<TAmount, TSize>
+    public interface ITradingExecution
     {
         DateTime Time { get; }
-        TAmount Price { get; }
+    }
+
+    public interface ITradingExecution<TPrice, TSize> : ITradingExecution
+    {
+        TPrice Price { get; }
         TSize Size { get; }
     }
 
-    public interface ITradingExecutions<TAmount, TSize>
+    public interface ITradingExecutions
     {
-        TAmount AveragePrice { get; }
+    }
+
+    public interface ITradingExecutions<TPrice, TSize> : ITradingExecutions
+    {
+        TPrice AveragePrice { get; }
         TSize TotalSize { get; }
 
-        void Executed(TAmount executedPrice, TSize executedSize);
+        void Executed(TPrice executedPrice, TSize executedSize);
     }
 }

@@ -6,7 +6,7 @@
 using System;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions.Indicators
+namespace Financial.Extensions
 {
     public static partial class IndicatorExtensions
     {

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions.Rx
+namespace Financial.Extensions
 {
     public static partial class RxExtensions
     {

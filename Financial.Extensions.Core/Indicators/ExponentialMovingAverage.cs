@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions.Indicators
+namespace Financial.Extensions
 {
     public static partial class IndicatorExtensions
     {
@@ -20,6 +20,7 @@ namespace Financial.Extensions.Indicators
         // ema = alpha * value + last - alpha * last
         // ema = alpha * (value - last) + last
         // ema = 2.0m / (period + 1) * (value - last) + last
+#if INDICATOR_TYPED
         public static IObservable<double> ExponentialMovingAverage(this IObservable<double> source, int period)
         {
             return source.Publish(s => s.Take(period).Average().Concat(s)
@@ -42,6 +43,44 @@ namespace Financial.Extensions.Indicators
             .Scan(
                 (last, value) => (value - last) * (2.0f / (period + 1)) + last
             ));
+        }
+#else
+        public static IObservable<TSource> ExponentialMovingAverage<TSource>(this IObservable<TSource> source, int period)
+        {
+            return source.Publish(s => Calculator.Average(s.Take(period)).Concat(s)
+            .Scan(
+                (last, value) => Calculator.Add(Calculator.Mul(Calculator.Sub(value, last), Calculator.Cast<TSource>(2.0f / (period + 1))), last)
+            ));
+        }
+#endif
+        public static IObservable<IMarketIndicator<TSource, TValue>> ExponentialMovingAverage<TSource, TValue>(
+            this IObservable<TSource> source,
+            int period,
+            Func<TSource, TValue> priceGetter
+        )
+        {
+            return source.Select(s => new MarketIndicator<TSource, TValue> { Source = s, Value = priceGetter(s) })
+            .Publish(
+                indicator => indicator.Take(period).Buffer(period)
+                    .Select(
+                        indicators => new MarketIndicator<TSource, TValue>
+                        {
+                            Source = indicators.Last().Source,
+                            Value = Calculator.Average(indicators.Select(ind => ind.Value))
+                        }
+                    )
+                .Concat(indicator)
+                .Scan(
+                    (last, value) =>
+                    {
+                        return new MarketIndicator<TSource, TValue>
+                        {
+                            Source = value.Source,
+                            Value = Calculator.Add(Calculator.Mul(Calculator.Sub(value.Value, last.Value), Calculator.Cast<TValue>(2.0f / (period + 1))), last.Value)
+                        };
+                    }
+                )
+            );
         }
     }
 }

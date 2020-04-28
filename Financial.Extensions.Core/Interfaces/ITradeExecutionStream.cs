@@ -7,16 +7,15 @@ using System;
 
 namespace Financial.Extensions
 {
-    public interface ITickerStream
+    public interface ITradeExecutionStream
     {
         DateTime Time { get; }
+        long Serial { get; }
     }
 
-    public interface ITickerStream<TPrice, TSize> : ITickerStream
+    public interface ITradeExecutionStream<TPrice, TSize> : ITradeExecutionStream
     {
-        TPrice BestBidPrice { get; }
-        TSize BestBidSize { get; }
-        TPrice BestAskPrice { get; }
-        TSize BestAskSize { get; }
+        TPrice Price { get; }
+        TSize Size { get; }       // +buy -sell
     }
 }
