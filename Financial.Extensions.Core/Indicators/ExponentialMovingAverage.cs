@@ -11,15 +11,6 @@ namespace Financial.Extensions
 {
     public static partial class IndicatorExtensions
     {
-        // Original formula is below.
-        // (last, value) => value * 2.0 / (period + 1) + last * (1.0 - 2.0 / (period + 1))
-        // i.e. https://en.wikipedia.org/wiki/Moving_average
-        // And optimized formula is derived by below steps
-        // alpha = 2.0m / (period + 1)
-        // ema = alpha * value + (1.0 - alpha) * last
-        // ema = alpha * value + last - alpha * last
-        // ema = alpha * (value - last) + last
-        // ema = 2.0m / (period + 1) * (value - last) + last
 #if INDICATOR_TYPED
         public static IObservable<double> ExponentialMovingAverage(this IObservable<double> source, int period)
         {
@@ -53,34 +44,59 @@ namespace Financial.Extensions
             ));
         }
 #endif
-        public static IObservable<IMarketIndicator<TSource, TValue>> ExponentialMovingAverage<TSource, TValue>(
+        public static IObservable<(TSource Source, TValue Value)> ExponentialMovingAverage<TSource, TValue>(
             this IObservable<TSource> source,
             int period,
             Func<TSource, TValue> priceGetter
         )
         {
-            return source.Select(s => new MarketIndicator<TSource, TValue> { Source = s, Value = priceGetter(s) })
+            return source.Select(s => (Source: s, Value: priceGetter(s)))
             .Publish(
                 indicator => indicator.Take(period).Buffer(period)
-                    .Select(
-                        indicators => new MarketIndicator<TSource, TValue>
-                        {
-                            Source = indicators.Last().Source,
-                            Value = Calculator.Average(indicators.Select(ind => ind.Value))
-                        }
+                .Select(
+                    indicators => (
+                        Source: indicators.Last().Source,
+                        Value: Calculator.Average(indicators.Select(ind => ind.Value))
                     )
+                )
                 .Concat(indicator)
                 .Scan(
                     (last, value) =>
-                    {
-                        return new MarketIndicator<TSource, TValue>
-                        {
-                            Source = value.Source,
-                            Value = Calculator.Add(Calculator.Mul(Calculator.Sub(value.Value, last.Value), Calculator.Cast<TValue>(2.0f / (period + 1))), last.Value)
-                        };
-                    }
+                    (
+                        Source: value.Source,
+                        Value: Calculator.Add
+                        (
+                            Calculator.Mul
+                            (
+                                Calculator.Sub
+                                (
+                                    priceGetter(value.Source),
+                                    last.Value
+                                ),
+                                Calculator.Cast<TValue>
+                                (
+                                    2.0f / (period + 1)
+                                )
+                            ),
+                            last.Value
+                        )
+                    )
                 )
             );
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="period"></param>
+        /// <param name="alpha">0.0 < alpha < 1.0</param>
+        /// <returns></returns>
+        public static IObservable<TSource> ExponentialMovingAverage<TSource>(this IObservable<TSource> source, int period, double alpha)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

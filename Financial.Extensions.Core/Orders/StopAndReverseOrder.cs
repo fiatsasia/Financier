@@ -4,49 +4,43 @@
 //
 
 using System;
-using System.Collections.Generic;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public class StopAndReverseOrder<TPrice, TSize> : TradingOrder<TPrice, TSize>
+    public class StopAndReverseOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
-        public override bool HasChildOrder => true;
+        public IOrder<TPrice, TSize> StopOrder { get; private set; }
+        public IOrder<TPrice, TSize> ReverseOrder { get; private set; }
 
-        ITradingOrder<TPrice, TSize> _settleOrder;
-        ITradingOrder<TPrice, TSize> _reverseOrder;
-
-        List<ITradingOrder<TPrice, TSize>> _children;
-        public override IReadOnlyList<ITradingOrder<TPrice, TSize>> Children => _children;
-
-        public StopAndReverseOrder(ITradingPosition<TPrice, TSize> position)
+        public StopAndReverseOrder(TPrice stopPrice, TSize stopSize)
         {
-            Position = position;
-            _settleOrder = new TradingMarketPriceOrder<TPrice, TSize>(Calculator.Invert(position.Size), position, this);
-            _reverseOrder = new TradingMarketPriceOrder<TPrice, TSize>(Calculator.Invert(position.Size), this);
-            _children = new List<ITradingOrder<TPrice, TSize>>
-            {
-                _settleOrder,
-                _reverseOrder
-            };
+            OrderPrice = stopPrice;
+            OrderSize = stopSize;
+
+            StopOrder = new StopOrder<TPrice, TSize>(stopPrice, stopSize);
+            ReverseOrder = new MarketPriceOrder<TPrice, TSize>(Calculator.Invert(stopSize));
         }
 
-        public override bool CanExecute(TPrice price)
+        public override void Open(DateTime time)
         {
+            base.Open(time);
+            StopOrder.Open(time);
+        }
+
+        public override bool TryExecute(DateTime time, TPrice executePrice)
+        {
+            if (StopOrder.Status != OrderState.Filled && StopOrder.TryExecute(time, executePrice))
+            {
+                return false;
+            }
+
+            ReverseOrder.Open(time);
+            ReverseOrder.TryExecute(time, executePrice);
+
+            // base.Close(time);
+            CloseTime = time;
+
             return true;
-        }
-
-        public override void ExecutePartial(DateTime time, TPrice executePrice, TSize executeSize)
-        {
-            if (_settleOrder != null)
-            {
-                _settleOrder.ExecutePartial(time, executePrice, executeSize);
-                _reverseOrder = _settleOrder;
-                _settleOrder = null;
-            }
-            else
-            {
-                var reverseOrder = new TradingMarketPriceOrder<TPrice, TSize>(Calculator.Invert(_settleOrder.OrderSize));
-            }
         }
     }
 }

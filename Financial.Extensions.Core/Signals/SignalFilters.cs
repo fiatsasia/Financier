@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public static partial class SignalExtensions
     {
@@ -22,9 +22,9 @@ namespace Financial.Extensions
         /// <typeparam name="TPrice"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static IObservable<ITradingSignal<TSource, TPrice>> Distinct<TSource, TPrice>(this IObservable<ITradingSignal<TSource, TPrice>> source)
+        public static IObservable<ISignal<TSource, TPrice>> SuplessDuplicates<TSource, TPrice>(this IObservable<ISignal<TSource, TPrice>> source)
         {
-            return source.StartWith(default(ITradingSignal<TSource, TPrice>)).Buffer(2, 1).Where(e => e.Count >= 2).Select(signals =>
+            return source.StartWith(default(ISignal<TSource, TPrice>)).Buffer(2, 1).Where(e => e.Count >= 2).Select(signals =>
             {
                 if (signals[0] == null)
                 {

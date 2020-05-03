@@ -25,4 +25,11 @@ namespace Financial.Extensions
     {
         double VWAP { get; }
     }
+
+    public enum OhlcSpanKind
+    {
+        TimePeriod,
+        Ticks,
+        Volume,
+    }
 }

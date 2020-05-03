@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public interface IMarketDataSource
     {
@@ -15,7 +15,17 @@ namespace Financial.Extensions
 
     public interface IRealtimeSource<TPrice, TSize> : IMarketDataSource
     {
+        IObservable<IExecution<TPrice, TSize>> GetExecutionSource(string symbol);
+        IObservable<ITicker<TPrice, TSize>> GetTickerSource(string symbol);
+        IObservable<IOrderBook<TPrice, TSize>> GetOrderBookSource(string symbol);
+
+        IObservable<IOhlcv<TPrice>> GetOhlcSource(string symbol, TimeSpan period);
+        IObservable<IOhlcv<TPrice>> GetOhlcvSource(string symbol, TimeSpan period);
         IObservable<IOhlcvv<TPrice>> GetOhlcvvSource(string symbol, TimeSpan period);
+
+        IObservable<IOhlcv<TPrice>> GetOhlcUpdateSource(string symbol, TimeSpan period);
+        IObservable<IOhlcv<TPrice>> GetOhlcvUpdateSource(string symbol, TimeSpan period);
+        IObservable<IOhlcv<TPrice>> GetOhlcvvUpdateSource(string symbol, TimeSpan period);
     }
 
     public interface IRealtimeSourceCollection : ICollection<IMarketDataSource>
@@ -28,24 +38,6 @@ namespace Financial.Extensions
     }
 
     public interface IHistoricalSourceCollection : ICollection<IMarketDataSource>
-    {
-    }
-
-    // Signaling sources
-    //
-    public interface IHistoricalSignalSource<TSource, TPrice> : IMarketDataSource
-    {
-        // Read/Write
-
-        // Crossoverとraw signalとの取り扱い
-        IObservable<ITradingSignal<TSource, TPrice>> GetSignalSource(string symbol, DateTime start, DateTime end);
-    }
-
-    public interface IHistoricalSignalSourceCollection : ICollection<IMarketDataSource>
-    {
-    }
-
-    public interface IRealtimeSignalSource : IMarketDataSource
     {
     }
 }

@@ -5,32 +5,32 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public class CrossoverSignal<TSource, TPrice> : ICrossoverSignal<TSource, TPrice>
     {
-        // ITradingSignal<TPrice>
+        // ISignal<TPrice>
         public int Id { get; set; }
         public DateTime Time { get; set; }
         public int Signal { get; set; }     // 0:none, 1:buy, -1:sell
-        public TPrice Price { get; set; }
+        public TPrice TriggerPrice { get; set; }
 
-        // ITradingSignal<TSource, TPrice>
+        // ISignal<TSource, TPrice>
         public TSource Source { get; set; }
 
         // ICrossoverSignal<TPrice>
         public TPrice BasePrice { get; set; }
 
-        public ITradingSignal<TSource, TPrice> Clone()
+        public ISignal<TSource, TPrice> Clone()
         {
             return new CrossoverSignal<TSource, TPrice>
             {
                 Id = Id,
                 Time = Time,
                 Signal = Signal,
-                Price = Price,
-                Source = Source,
+                TriggerPrice = TriggerPrice,
                 BasePrice = BasePrice,
+                Source = Source,
             };
         }
     }

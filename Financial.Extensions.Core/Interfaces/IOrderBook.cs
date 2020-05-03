@@ -3,7 +3,7 @@
 // https://www.fiats.asia/
 //
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public interface IOrderBook<TPrice, TSize>
     {

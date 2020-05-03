@@ -5,14 +5,14 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public interface ITradingPosition
+    public interface ITrade
     {
         DateTime OpenTime { get; }
         DateTime CloseTime { get; }
 
-        TradePositionState Status { get; }
+        PositionState Status { get; }
         TradeSide Side { get; }
 
         bool IsOpened { get; }
@@ -22,7 +22,7 @@ namespace Financial.Extensions
         decimal RealizedProfit { get; }
     }
 
-    public interface ITradingPosition<TPrice, TSize> : ITradingPosition
+    public interface ITrade<TPrice, TSize> : ITrade
     {
         TPrice OpenPrice { get; }
         TPrice ClosePrice { get; }
@@ -30,9 +30,20 @@ namespace Financial.Extensions
 
         void Open(DateTime time, TPrice openPrice, TSize size);
         void Close(DateTime time, TPrice closePrice);
+    }
 
-        ITradingOrder<TPrice, TSize> CreateSettlementMarketPriceOrder();
-        ITradingOrder<TPrice, TSize> CreateSettlementLimitPriceOrder(TPrice price);
-        ITradingOrder<TPrice, TSize> CreateStopAndReverseOrder();
+    // 取引管理機能
+    // - 執行情報を元に、ポジションの open / close を行う。
+    // - 証拠金取引、差金決済取引(margin position) を管理する。
+    public interface ITrades
+    {
+    }
+
+    // 差金決済取引
+    // - 注文の執行で、ポジション(margin position)を生成する。
+    // - ポジション決済
+    public interface IMarginTrade
+    {
+
     }
 }

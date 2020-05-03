@@ -5,24 +5,25 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public interface ITradingExecution
+    public interface IExecution
     {
         DateTime Time { get; }
+        object Source { get; }
     }
 
-    public interface ITradingExecution<TPrice, TSize> : ITradingExecution
+    public interface IExecution<TPrice, TSize> : IExecution
     {
         TPrice Price { get; }
         TSize Size { get; }
     }
 
-    public interface ITradingExecutions
+    public interface IExecutions
     {
     }
 
-    public interface ITradingExecutions<TPrice, TSize> : ITradingExecutions
+    public interface IExecutions<TPrice, TSize> : IExecutions
     {
         TPrice AveragePrice { get; }
         TSize TotalSize { get; }

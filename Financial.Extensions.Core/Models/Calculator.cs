@@ -27,7 +27,7 @@ namespace Financial.Extensions
         public decimal Cast(double value) => unchecked((decimal)value);
         public decimal Cast(float value) => unchecked((decimal)value);
 
-        public decimal Add(decimal value1, decimal value2) => value1 + value2;
+        public decimal Add(params decimal[] values) => values.Sum();
         public decimal Sub(decimal value1, decimal value2) => value1 - value2;
         public decimal Mul(decimal value1, decimal value2) => value1 * value2;
         public decimal Div(decimal value1, decimal value2) => value1 / value2;
@@ -38,6 +38,8 @@ namespace Financial.Extensions
         public decimal Average(IEnumerable<decimal> source) => source.Average();
         public decimal Average<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> selector) => source.Average(e => selector(e));
         public IObservable<decimal> Average(IObservable<decimal> source) => source.Average();
+
+        public decimal Sum<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> selector) => source.Sum(e => selector(e));
     }
 
     class DoubleCalculator : ICalculator<double>
@@ -57,7 +59,7 @@ namespace Financial.Extensions
         public double Cast(double value) => value;
         public double Cast(float value) => value;
 
-        public double Add(double value1, double value2) => value1 + value2;
+        public double Add(params double[] values) => values.Sum();
         public double Sub(double value1, double value2) => value1 - value2;
         public double Mul(double value1, double value2) => value1 * value2;
         public double Div(double value1, double value2) => value1 / value2;
@@ -68,6 +70,8 @@ namespace Financial.Extensions
         public double Average(IEnumerable<double> source) => source.Average();
         public double Average<TSource>(IEnumerable<TSource> source, Func<TSource, double> selector) => source.Average(e => selector(e));
         public IObservable<double> Average(IObservable<double> source) => source.Average();
+
+        public double Sum<TSource>(IEnumerable<TSource> source, Func<TSource, double> selector) => source.Sum(e => selector(e));
     }
 
     class FloatCalculator : ICalculator<float>
@@ -87,7 +91,7 @@ namespace Financial.Extensions
         public float Cast(double value) => unchecked((float)value);
         public float Cast(float value) => value;
 
-        public float Add(float value1, float value2) => value1 + value2;
+        public float Add(params float[] values) => values.Sum();
         public float Sub(float value1, float value2) => value1 - value2;
         public float Mul(float value1, float value2) => value1 * value2;
         public float Div(float value1, float value2) => value1 / value2;
@@ -98,6 +102,8 @@ namespace Financial.Extensions
         public float Average(IEnumerable<float> source) => source.Average();
         public float Average<TSource>(IEnumerable<TSource> source, Func<TSource, float> selector) => source.Average(e => selector(e));
         public IObservable<float> Average(IObservable<float> source) => source.Average();
+
+        public float Sum<TSource>(IEnumerable<TSource> source, Func<TSource, float> selector) => source.Sum(e => selector(e));
     }
 
     // class IntCalculator
@@ -127,7 +133,7 @@ namespace Financial.Extensions
         public static T MaxValue<T>() => Get<T>().MaxValue;
         public static T Zero<T>() => Get<T>().Zero;
 
-        public static T Add<T>(T value1, T value2) => Get<T>().Add(value1, value2);
+        public static T Add<T>(params T[] values) => Get<T>().Add(values);
         public static T Sub<T>(T value1, T value2) => Get<T>().Sub(value1, value2);
         public static T Mul<T>(T value1, T value2) => Get<T>().Mul(value1, value2);
         public static T Div<T>(T value1, T value2) => Get<T>().Div(value1, value2);
@@ -147,5 +153,7 @@ namespace Financial.Extensions
         public static T Average<T>(IEnumerable<T> source) => Get<T>().Average(source);
         public static T Average<TSource, T>(IEnumerable<TSource> source, Func<TSource, T> selector) => Get<T>().Average(source, selector);
         public static IObservable<T> Average<T>(IObservable<T> source) => Get<T>().Average(source);
+
+        public static T Sum<TSource, T>(IEnumerable<TSource> source, Func<TSource, T> selector) => Get<T>().Sum(source, selector);
     }
 }

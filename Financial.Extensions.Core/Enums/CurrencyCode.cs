@@ -20,22 +20,5 @@ namespace Financial.Extensions
         GBP = 826, // Pound sterling
         USD = 840, // United States dollar
         EUR = 978, // Euro
-
-        CryptoAssetCodeBaseNumber = 10000,
-    }
-
-    public enum CryptoAssetCode
-    {
-        BaseNumber = CurrencyCode.CryptoAssetCodeBaseNumber,
-
-        // Crypto assets
-        BTC, XBT = BTC, // Bitcoin
-        BCH, XBC = BCH, // Bitcoin Cash
-        ETH,            // Ether
-        ETC,
-        LTC,
-        MONA,
-        LSK,
-        XRP,            // Ripple
     }
 }

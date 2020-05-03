@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public class MarketIndicator<TSource, TPrice> : IMarketIndicator<TSource, TPrice>
     {

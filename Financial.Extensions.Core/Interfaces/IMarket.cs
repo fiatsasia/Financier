@@ -5,37 +5,36 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     // - MarketConfigを追加
     //      - 両建て不可
     //          - 反対売買は建玉相殺
     //      - 売り建て不可
     //      - ポジション合算
-    public interface ITradingMarketConfig
+    public interface IMarketConfig
     {
     }
 
-    public interface ITradingMarket
+    public interface IMarket
     {
         DateTime LastUpdatedTime { get; }
 
         bool HasActiveOrder { get; }
-        bool HasOpenPosition { get; }
     }
 
-    public interface ITradingMarket<TPrice, TSize> : ITradingMarket
+    public interface IMarket<TPrice, TSize> : IMarket
     {
         // Precision (price and size)
         // Number of decimal places (price and size)
         TPrice MarketPrice { get; }
 
-        void PlaceOrder(ITradingOrder<TPrice, TSize> order);
-
-        ITradingOrderFactory<TPrice, TSize> GetTradeOrderFactory();
+        void PlaceOrder(IOrder<TPrice, TSize> order);
+        void PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif);
+        IOrderFactory<TPrice, TSize> GetTradeOrderFactory();
 
         void UpdatePrice(DateTime time, TPrice price);
 
-        event Action<ITradingPosition<TPrice, TSize>> PositionChanged;
+        event Action<IOrder<TPrice, TSize>> OrderChanged;
     }
 }

@@ -6,7 +6,7 @@
 using System;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public static partial class SignalExtensions
     {

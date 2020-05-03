@@ -5,70 +5,52 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public class TradingOrderFactory<TPrice, TSize> : ITradingOrderFactory<TPrice, TSize>
+    public class OrderFactory<TPrice, TSize> : IOrderFactory<TPrice, TSize>
     {
         //
         // Simple orders
         //
-        public virtual ITradingOrder<TPrice, TSize> CreateMarketPriceOrder(TSize size)
+        public virtual IOrder<TPrice, TSize> CreateMarketPriceOrder(TSize size)
         {
-            return new TradingMarketPriceOrder<TPrice, TSize>(size);
+            return new MarketPriceOrder<TPrice, TSize>(size);
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateLimitPriceOrder(TPrice price, TSize size)
+        public virtual IOrder<TPrice, TSize> CreateLimitPriceOrder(TPrice price, TSize size)
         {
-            return new TradingLimitPriceOrder<TPrice, TSize>(price, size);
-        }
-
-        //
-        // Settlement orders
-        //
-        public virtual ITradingOrder<TPrice, TSize> CreateSettlementMarketPriceOrder(ITradingPosition<TPrice, TSize> position)
-        {
-            return new TradingMarketPriceOrder<TPrice, TSize>(Calculator.Invert(position.Size), position);
-        }
-
-        public virtual ITradingOrder<TPrice, TSize> CreateSettlementLimitPriceOrder(ITradingPosition<TPrice, TSize> position, TPrice price)
-        {
-            return new TradingLimitPriceOrder<TPrice, TSize>(price, Calculator.Invert(position.Size), position);
-        }
-
-        public virtual ITradingOrder<TPrice, TSize> CreateStopAndReverseOrder(ITradingPosition<TPrice, TSize> position)
-        {
-            return new StopAndReverseOrder<TPrice, TSize>(position);
+            return new LimitPriceOrder<TPrice, TSize>(price, size);
         }
 
         //
         // Conditional orders
         //
-        public virtual ITradingOrder<TPrice, TSize> CreateStopOrder(TSize size, TPrice stopTriggerPrice)
+        public virtual IOrder<TPrice, TSize> CreateStopOrder(TSize size, TPrice stopTriggerPrice)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateStopLimitOrder(TSize size, TPrice price, TPrice stopTriggerPrice)
+        public virtual IOrder<TPrice, TSize> CreateStopLimitOrder(TSize size, TPrice price, TPrice stopTriggerPrice)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateTrailingStopOrder(TSize size, TPrice trailingStopPriceOffset)
+        public virtual IOrder<TPrice, TSize> CreateTrailingStopOrder(TSize size, TPrice trailingStopPriceOffset)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateIFD(ITradingOrder first, ITradingOrder second)
+        public virtual IOrder<TPrice, TSize> CreateIFD(IOrder first, IOrder second)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateOCO(ITradingOrder first, ITradingOrder second)
+        public virtual IOrder<TPrice, TSize> CreateOCO(IOrder first, IOrder second)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ITradingOrder<TPrice, TSize> CreateIFDOCO(ITradingOrder ifdone, ITradingOrder ocoFirst, ITradingOrder ocoSecond)
+        public virtual IOrder<TPrice, TSize> CreateIFDOCO(IOrder ifdone, IOrder ocoFirst, IOrder ocoSecond)
         {
             throw new NotImplementedException();
         }

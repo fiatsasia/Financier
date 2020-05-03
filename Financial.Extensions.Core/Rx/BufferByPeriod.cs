@@ -32,7 +32,7 @@ namespace Financial.Extensions
         }
 
         // Common trade class
-        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : ITradeExecutionStream
+        public static IObservable<IList<TSource>> BufferByPeriod<TSource>(this IObservable<TSource> source, TimeSpan period) where TSource : IExecutionStream
         {
             var duration = new Subject<Unit>();
             return source

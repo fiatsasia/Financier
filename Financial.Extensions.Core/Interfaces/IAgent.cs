@@ -4,14 +4,13 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public enum TradeSide
+    // 自動取引や、手動取引など、取引を執行するもの
+    public interface IAgent
     {
-        Unspecified,
-        Buy,
-        Sell,
-        BuySell,
     }
 }

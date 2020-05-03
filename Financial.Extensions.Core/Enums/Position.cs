@@ -3,15 +3,11 @@
 // https://www.fiats.asia/
 //
 
-using System;
-
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public enum TradeSide
+    public enum PositionState
     {
-        Unspecified,
-        Buy,
-        Sell,
-        BuySell,
+        Active,
+        Closed,
     }
 }

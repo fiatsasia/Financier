@@ -5,44 +5,20 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public class TradingMarketPriceOrder<TPrice, TSize> : TradingOrder<TPrice, TSize>
+    public class MarketPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
-        public TradingMarketPriceOrder(TSize orderSize)
+        public MarketPriceOrder(TSize orderSize)
         {
-            OrderType = TradingOrderType.MarketPrice;
+            OrderType = OrderType.MarketPrice;
             OrderSize = orderSize;
         }
 
-        public TradingMarketPriceOrder(TradeSide side, TSize orderSize)
+        public MarketPriceOrder(TradeSide side, TSize orderSize)
             : base(side, orderSize)
         {
-            OrderType = TradingOrderType.MarketPrice;
-        }
-
-        public TradingMarketPriceOrder(TSize orderSize, ITradingPosition<TPrice, TSize> position)
-        {
-            OrderType = TradingOrderType.MarketPrice;
-            OrderSize = orderSize;
-            Position = position;
-        }
-
-        public TradingMarketPriceOrder(TSize orderSize, ITradingOrder<TPrice, TSize> parent)
-            : this(orderSize)
-        {
-            Parent = parent;
-        }
-
-        public TradingMarketPriceOrder(TSize orderSize, ITradingPosition<TPrice, TSize> position, ITradingOrder<TPrice, TSize> parent)
-            : this(orderSize, position)
-        {
-            Parent = parent;
-        }
-
-        public override bool CanExecute(TPrice price)
-        {
-            return true;
+            OrderType = OrderType.MarketPrice;
         }
     }
 }

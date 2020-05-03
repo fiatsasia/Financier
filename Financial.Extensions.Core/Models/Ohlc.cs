@@ -50,13 +50,49 @@ namespace Financial.Extensions
             if (Calculator.CompareTo(price, High) > 0) High = price;
             if (Calculator.CompareTo(price, Low) < 0) Low = price;
         }
+
+        public virtual double GetTypicalPrice(TypicalPriceKind kind)
+        {
+            switch (kind)
+            {
+                case TypicalPriceKind.Close:
+                    return Calculator.ToDouble(Close);
+
+                case TypicalPriceKind.TypicalPrice:
+                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { High, Low, Close }));
+
+                case TypicalPriceKind.OHLC:
+                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { Open, High, Low, Close }));
+
+                case TypicalPriceKind.HLCC:
+                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { High, Low, Close, Close }));
+
+                case TypicalPriceKind.HLOO:
+                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { Open, Open, High, Low }));
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
     }
 
     // OHLC + Start + Volume
     public class Ohlcv<TPrice> : Ohlc<TPrice>, IOhlcv<TPrice>
     {
         public double Volume { get; protected set; }
+
         public Ohlcv(TimeSpan period) : base(period) { }
+
+        public Ohlcv(TimeSpan period, DateTime start, TPrice open, TPrice high, TPrice low, TPrice close, double volume)
+            : base(period)
+        {
+            Start = start;
+            Open = open;
+            High = high;
+            Low = low;
+            Close = close;
+            Volume = volume;
+        }
 
         public virtual void Update<TSize>(DateTime time, TPrice price, TSize size)
         {
@@ -111,6 +147,18 @@ namespace Financial.Extensions
             catch (DivideByZeroException)
             {
                 VWAP = 0;
+            }
+        }
+
+        public override double GetTypicalPrice(TypicalPriceKind kind)
+        {
+            switch (kind)
+            {
+                case TypicalPriceKind.VWAP:
+                    return VWAP;
+
+                default:
+                    return base.GetTypicalPrice(kind);
             }
         }
     }

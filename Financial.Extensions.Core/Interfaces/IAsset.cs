@@ -3,18 +3,14 @@
 // https://www.fiats.asia/
 //
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace Financial.Extensions
 {
-    public enum TradePositionState
+    // 現金、邦貨、外貨、現物株式、現物債券など
+    public interface IAsset
     {
-        Active,
-        Closed,
     }
-
-    public enum TradeTimeInForce
-    {
-        GoodTilCanceled,
-        FillOrKill,
-    }
-
 }

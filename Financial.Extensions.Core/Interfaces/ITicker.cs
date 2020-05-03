@@ -5,14 +5,14 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public interface ITickerStream
+    public interface ITicker
     {
         DateTime Time { get; }
     }
 
-    public interface ITickerStream<TPrice, TSize> : ITickerStream
+    public interface ITicker<TPrice, TSize> : ITicker
     {
         TPrice BestBidPrice { get; }
         TSize BestBidSize { get; }

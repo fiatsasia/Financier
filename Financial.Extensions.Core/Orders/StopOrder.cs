@@ -7,34 +7,36 @@ using System;
 
 namespace Financial.Extensions.Trading
 {
-    public class LimitPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
+    public class StopOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
-        public LimitPriceOrder(TPrice orderPrice, TSize orderSize)
+        public TPrice StopPrice { get; }
+
+        public StopOrder(TPrice stopPrice, TSize orderSize)
         {
-            OrderType = OrderType.LimitPrice;
-            OrderPrice = orderPrice;
+            OrderType = OrderType.Stop;
+            StopPrice = stopPrice;
             OrderSize = orderSize;
         }
 
-        public LimitPriceOrder(TradeSide side, TPrice orderPrice, TSize orderSize)
+        public StopOrder(TradeSide side, TPrice stopPrice, TSize orderSize)
             : base(side, orderSize)
         {
-            OrderType = OrderType.LimitPrice;
-            OrderPrice = orderPrice;
+            OrderType = OrderType.Stop;
+            StopPrice = stopPrice;
         }
 
         public override bool TryExecute(DateTime time, TPrice executePrice)
         {
-            if (Side == TradeSide.Buy)
+            if (Side == TradeSide.Buy) // Stop market price buy
             {
-                if (Calculator.CompareTo(OrderPrice, executePrice) < 0)
+                if (Calculator.CompareTo(StopPrice, executePrice) > 0)
                 {
                     return false;
                 }
             }
-            else //if (Side == TradeSide.Sell)
+            else //if (Side == TradeSide.Sell) // Stop market price sell
             {
-                if (Calculator.CompareTo(OrderPrice, executePrice) > 0)
+                if (Calculator.CompareTo(StopPrice, executePrice) < 0)
                 {
                     return false;
                 }

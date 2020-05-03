@@ -7,43 +7,43 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
-    public class TradingAccount : ITradingAccount
+    public class Account : IAccount
     {
-        Dictionary<string, ITradingMarket> _markets = new Dictionary<string, ITradingMarket>();
+        Dictionary<string, IMarket> _markets = new Dictionary<string, IMarket>();
 
         // Position management
-        protected List<ITradingPosition> Positions { get; } = new List<ITradingPosition>();
+        protected List<ITrade> Positions { get; } = new List<ITrade>();
 
         public decimal UnrealizedProfit => Positions.Sum(e => e.UnrealizedProfit);
         public decimal RealizedProfit => Positions.Sum(e => e.RealizedProfit);
 
-        public TradingAccount()
+        public Account()
         {
         }
 
-        public void RegisterMarket<TPrice, TSize>(string marketSymbol, ITradingMarket<TPrice, TSize> market)
+        public void RegisterMarket<TPrice, TSize>(string marketSymbol, IMarket<TPrice, TSize> market)
         {
             _markets[marketSymbol] = market;
         }
 
-        public bool HasOpenPosition<TPrice, TSize>(ITradingMarket<TPrice, TSize> market)
+        public bool HasOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market)
         {
             throw new NotImplementedException();
         }
 
-        public ITradingPosition<TPrice, TSize> GetLastOpenPosition<TPrice, TSize>(ITradingMarket<TPrice, TSize> market)
+        public ITrade<TPrice, TSize> GetLastOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market)
         {
             throw new NotImplementedException();
         }
 
-        public ITradingPosition GetLastOpenPosition()
+        public ITrade GetLastOpenPosition()
         {
             return null;
         }
 
-        public void RegisterPosition(ITradingPosition pos)
+        public void RegisterPosition(ITrade pos)
         {
             Positions.Add(pos);
         }

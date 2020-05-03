@@ -25,7 +25,7 @@ namespace Financial.Extensions
         T Cast(double value);
         T Cast(float value);
 
-        T Add(T value1, T value2);
+        T Add(params T[] values);
         T Sub(T value1, T value2);
         T Mul(T value1, T value2);
         T Div(T value1, T value2);
@@ -36,5 +36,7 @@ namespace Financial.Extensions
         T Average(IEnumerable<T> source);
         T Average<TSource>(IEnumerable<TSource> source, Func<TSource, T> selector);
         IObservable<T> Average(IObservable<T> source);
+
+        T Sum<TSource>(IEnumerable<TSource> source, Func<TSource, T> selector);
     }
 }

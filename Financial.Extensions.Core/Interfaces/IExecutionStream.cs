@@ -7,13 +7,13 @@ using System;
 
 namespace Financial.Extensions
 {
-    public interface ITradeExecutionStream
+    public interface IExecutionStream
     {
         DateTime Time { get; }
         long Serial { get; }
     }
 
-    public interface ITradeExecutionStream<TPrice, TSize> : ITradeExecutionStream
+    public interface IExecutionStream<TPrice, TSize> : IExecutionStream
     {
         TPrice Price { get; }
         TSize Size { get; }       // +buy -sell

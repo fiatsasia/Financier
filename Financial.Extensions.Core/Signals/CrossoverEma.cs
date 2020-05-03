@@ -7,11 +7,11 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public static partial class SignalExtensions
     {
-        public static IObservable<ITradingSignal<TSource, TPrice>> CrossoverEma<TSource, TPrice>(
+        public static IObservable<ICrossoverSignal<TSource, TPrice>> CrossoverEma<TSource, TPrice>(
             this IObservable<TSource> source,
             int periods,
             Func<TSource, DateTime> timeGetter,
@@ -28,10 +28,37 @@ namespace Financial.Extensions
                     Time = timeGetter(e.Source),
                     Signal = Calculator.CompareTo(price, ema),
                     BasePrice = ema,
-                    Price = price,
+                    TriggerPrice = price,
                     Source = e.Source,
                 };
             });
+        }
+
+        public static IObservable<ICrossoverSignal<TSource, TPrice>> CrossoverEma<TSource, TPrice>(
+            this IObservable<TSource> source,
+            int shortPeriods,
+            int longPeriods,
+            Func<TSource, DateTime> timeGetter,
+            Func<TSource, TPrice> priceGetter)
+        {
+            if (shortPeriods >= longPeriods)
+            {
+                throw new ArgumentException($"{nameof(shortPeriods)} must be less than {nameof(longPeriods)}");
+            }
+
+            var spSource = source.ExponentialMovingAverage(shortPeriods, priceGetter);
+            var lpSource = source.ExponentialMovingAverage(longPeriods, priceGetter);
+
+            return spSource.Publish(sps => lpSource.Select(lp => sps.Select(sp =>
+                new CrossoverSignal<TSource, TPrice>
+                {
+                    Time = timeGetter(sp.Source),
+                    Signal = Calculator.CompareTo(sp.Value, lp.Value),
+                    BasePrice = lp.Value,
+                    TriggerPrice = sp.Value,
+                    Source = sp.Source,
+                }
+            )).Switch());
         }
     }
 }

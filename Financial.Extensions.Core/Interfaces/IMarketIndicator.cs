@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Financial.Extensions
+namespace Financial.Extensions.Trading
 {
     public interface IMarketIndicator
     {

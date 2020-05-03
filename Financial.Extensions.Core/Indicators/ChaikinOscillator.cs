@@ -16,7 +16,11 @@ namespace Financial.Extensions
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static IObservable<double> ChaikinOscillator(this IObservable<IOhlcv<double>> source, int shortPeriod = 3, int longPeriod = 10)
+        public static IObservable<double> ChaikinOscillator(
+            this IObservable<IOhlcv<double>> source,
+            int shortPeriod = 3,
+            int longPeriod = 10
+        )
         {
             return source.Publish(
                 s => s.AccumulationDistribution().ExponentialMovingAverage(shortPeriod)
