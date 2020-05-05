@@ -9,6 +9,8 @@ namespace Financial.Extensions.Trading
 {
     public class LimitPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
+        public override TPrice OrderPrice { get; }
+
         public LimitPriceOrder(TPrice orderPrice, TSize orderSize)
         {
             OrderType = OrderType.LimitPrice;

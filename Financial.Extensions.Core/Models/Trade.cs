@@ -13,11 +13,11 @@ namespace Financial.Extensions.Trading
         public TPrice OpenPrice { get; protected set; }
         public DateTime CloseTime { get; protected set; } = DateTime.MaxValue;
         public TPrice ClosePrice { get; protected set; }
-        public TSize Size { get; protected set; }
+        public TSize TradeSize { get; protected set; }
         public PositionState Status { get; private set; }
         public bool IsOpened => OpenTime > DateTime.MinValue && CloseTime == DateTime.MaxValue;
         public bool IsClosed => CloseTime < DateTime.MaxValue;
-        public TradeSide Side => Calculator.Sign(Size) > 0 ? TradeSide.Buy : TradeSide.Sell;
+        public TradeSide Side => Calculator.Sign(TradeSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
         IMarket<TPrice, TSize> _market;
 
@@ -26,8 +26,8 @@ namespace Financial.Extensions.Trading
             _market = market;
         }
 
-        public decimal UnrealizedProfit => IsOpened ? CalculateProfit(OpenPrice, _market.MarketPrice, Size) : decimal.Zero;
-        public decimal RealizedProfit => IsClosed ? CalculateProfit(OpenPrice, ClosePrice, Size) : decimal.Zero;
+        public decimal UnrealizedProfit => IsOpened ? CalculateProfit(OpenPrice, _market.MarketPrice, TradeSize) : decimal.Zero;
+        public decimal RealizedProfit => IsClosed ? CalculateProfit(OpenPrice, ClosePrice, TradeSize) : decimal.Zero;
 
         decimal CalculateProfit(TPrice openPrice, TPrice closePrice, TSize size)
         {
@@ -38,7 +38,7 @@ namespace Financial.Extensions.Trading
         {
             OpenTime = time;
             OpenPrice = openPrice;
-            Size = size;
+            TradeSize = size;
             Status = PositionState.Active;
         }
 

@@ -38,7 +38,7 @@ namespace Financial.Extensions
 #else
         public static IObservable<TSource> ExponentialMovingAverage<TSource>(this IObservable<TSource> source, int period)
         {
-            return source.Publish(s => Calculator.Average(s.Take(period)).Concat(s)
+            return source.Publish(s => s.Take(period).Average().Concat(s)
             .Scan(
                 (last, value) => Calculator.Add(Calculator.Mul(Calculator.Sub(value, last), Calculator.Cast<TSource>(2.0f / (period + 1))), last)
             ));
@@ -56,7 +56,7 @@ namespace Financial.Extensions
                 .Select(
                     indicators => (
                         Source: indicators.Last().Source,
-                        Value: Calculator.Average(indicators.Select(ind => ind.Value))
+                        Value: indicators.Average(ind => ind.Value)
                     )
                 )
                 .Concat(indicator)

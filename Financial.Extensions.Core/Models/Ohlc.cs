@@ -59,16 +59,16 @@ namespace Financial.Extensions
                     return Calculator.ToDouble(Close);
 
                 case TypicalPriceKind.TypicalPrice:
-                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { High, Low, Close }));
+                    return Calculator.ToDouble(new TPrice[] { High, Low, Close }.Average());
 
                 case TypicalPriceKind.OHLC:
-                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { Open, High, Low, Close }));
+                    return Calculator.ToDouble(new TPrice[] { Open, High, Low, Close }.Average());
 
                 case TypicalPriceKind.HLCC:
-                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { High, Low, Close, Close }));
+                    return Calculator.ToDouble(new TPrice[] { High, Low, Close, Close }.Average());
 
                 case TypicalPriceKind.HLOO:
-                    return Calculator.ToDouble(Calculator.Average(new TPrice[] { Open, Open, High, Low }));
+                    return Calculator.ToDouble(new TPrice[] { Open, Open, High, Low }.Average());
 
                 default:
                     throw new InvalidOperationException();

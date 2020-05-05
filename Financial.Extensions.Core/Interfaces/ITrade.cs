@@ -26,7 +26,7 @@ namespace Financial.Extensions.Trading
     {
         TPrice OpenPrice { get; }
         TPrice ClosePrice { get; }
-        TSize Size { get; }
+        TSize TradeSize { get; }
 
         void Open(DateTime time, TPrice openPrice, TSize size);
         void Close(DateTime time, TPrice closePrice);

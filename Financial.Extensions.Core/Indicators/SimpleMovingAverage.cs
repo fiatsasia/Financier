@@ -35,7 +35,7 @@ namespace Financial.Extensions
 #else
         public static IObservable<TSource> SimpleMovingAverage<TSource>(this IObservable<TSource> source, int period)
         {
-            return source.Buffer(period, 1).Select(e => Calculator.Average(e));
+            return source.Buffer(period, 1).Select(e => e.Average());
         }
 #endif
         public static IObservable<(TSource Source, TValue Value)> SimpleMovingAverage<TSource, TValue>(
@@ -47,7 +47,7 @@ namespace Financial.Extensions
             return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
             {
                 var current = e.Last();
-                return (Source: current, Value: Calculator.Average(e, priceGetter));
+                return (Source: current, Value: e.Average(priceGetter));
             });
         }
     }

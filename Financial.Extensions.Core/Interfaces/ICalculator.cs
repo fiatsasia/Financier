@@ -8,35 +8,36 @@ using System.Collections.Generic;
 
 namespace Financial.Extensions
 {
-    public interface ICalculator<T>
+    public interface ICalculator<TValue>
     {
-        T MaxValue { get; }
-        T MinValue { get; }
-        T Zero { get; }
+        TValue MaxValue { get; }
+        TValue MinValue { get; }
+        TValue Zero { get; }
 
-        int CompareTo(T left, T right);
-        int Sign(T value);
+        int CompareTo(TValue left, TValue right);
+        int Sign(TValue value);
 
-        decimal ToDecimal(T value);
-        double ToDouble(T value);
-        float ToFloat(T value);
+        decimal ToDecimal(TValue value);
+        double ToDouble(TValue value);
+        float ToFloat(TValue value);
 
-        T Cast(decimal value);
-        T Cast(double value);
-        T Cast(float value);
+        TValue Cast(decimal value);
+        TValue Cast(double value);
+        TValue Cast(float value);
 
-        T Add(params T[] values);
-        T Sub(T value1, T value2);
-        T Mul(T value1, T value2);
-        T Div(T value1, T value2);
+        TValue Add(params TValue[] values);
+        TValue Sub(TValue value1, TValue value2);
+        TValue Mul(TValue value1, TValue value2);
+        TValue Div(TValue value1, TValue value2);
 
-        T Invert(T value);
-        T Abs(T value);
+        TValue Invert(TValue value);
+        TValue Abs(TValue value);
 
-        T Average(IEnumerable<T> source);
-        T Average<TSource>(IEnumerable<TSource> source, Func<TSource, T> selector);
-        IObservable<T> Average(IObservable<T> source);
+        TValue Average(IEnumerable<TValue> source);
+        TValue Average<TSource>(IEnumerable<TSource> source, Func<TSource, TValue> selector);
+        IObservable<TValue> Average(IObservable<TValue> source);
 
-        T Sum<TSource>(IEnumerable<TSource> source, Func<TSource, T> selector);
+        TValue Sum(IEnumerable<TValue> source);
+        TValue Sum<TSource>(IEnumerable<TSource> source, Func<TSource, TValue> selector);
     }
 }

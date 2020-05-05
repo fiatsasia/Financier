@@ -16,6 +16,7 @@ namespace Financial.Extensions.Trading
         OrderState Status { get; }
 
         void Open(DateTime time);
+        bool IsClosed { get; }
     }
 
     public interface IOrder<TPrice, TSize> : IOrder

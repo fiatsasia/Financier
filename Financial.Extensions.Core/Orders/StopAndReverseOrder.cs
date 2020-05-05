@@ -14,7 +14,6 @@ namespace Financial.Extensions.Trading
 
         public StopAndReverseOrder(TPrice stopPrice, TSize stopSize)
         {
-            OrderPrice = stopPrice;
             OrderSize = stopSize;
 
             StopOrder = new StopOrder<TPrice, TSize>(stopPrice, stopSize);
@@ -29,15 +28,13 @@ namespace Financial.Extensions.Trading
 
         public override bool TryExecute(DateTime time, TPrice executePrice)
         {
-            if (StopOrder.Status != OrderState.Filled && StopOrder.TryExecute(time, executePrice))
+            if (!StopOrder.TryExecute(time, executePrice))
             {
                 return false;
             }
 
             ReverseOrder.Open(time);
             ReverseOrder.TryExecute(time, executePrice);
-
-            // base.Close(time);
             CloseTime = time;
 
             return true;

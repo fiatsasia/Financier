@@ -9,12 +9,12 @@ namespace Financial.Extensions.Trading
 {
     public class StopOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
-        public TPrice StopPrice { get; }
+        public override TPrice OrderPrice { get; }
 
         public StopOrder(TPrice stopPrice, TSize orderSize)
         {
             OrderType = OrderType.Stop;
-            StopPrice = stopPrice;
+            OrderPrice = stopPrice;
             OrderSize = orderSize;
         }
 
@@ -22,21 +22,21 @@ namespace Financial.Extensions.Trading
             : base(side, orderSize)
         {
             OrderType = OrderType.Stop;
-            StopPrice = stopPrice;
+            OrderPrice = stopPrice;
         }
 
         public override bool TryExecute(DateTime time, TPrice executePrice)
         {
             if (Side == TradeSide.Buy) // Stop market price buy
             {
-                if (Calculator.CompareTo(StopPrice, executePrice) > 0)
+                if (Calculator.CompareTo(OrderPrice, executePrice) > 0)
                 {
                     return false;
                 }
             }
             else //if (Side == TradeSide.Sell) // Stop market price sell
             {
-                if (Calculator.CompareTo(StopPrice, executePrice) < 0)
+                if (Calculator.CompareTo(OrderPrice, executePrice) < 0)
                 {
                     return false;
                 }

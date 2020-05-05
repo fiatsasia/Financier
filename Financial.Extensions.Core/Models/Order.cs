@@ -12,11 +12,13 @@ namespace Financial.Extensions.Trading
     public class Order<TPrice, TSize> : IOrder<TPrice, TSize>
     {
         public DateTime OpenTime { get; protected set; }
-        public DateTime CloseTime { get; protected set; }
+        public DateTime CloseTime { get; protected set; } = DateTime.MinValue;
         public OrderState Status { get; protected set; }
 
+        public virtual bool IsClosed => CloseTime != DateTime.MinValue;
+
         public OrderType OrderType { get; protected set; }
-        public TPrice OrderPrice { get; protected set; }
+        public virtual TPrice OrderPrice => throw new NotSupportedException();
         public TSize OrderSize { get; protected set; }
         public TradeSide Side => Calculator.Sign(OrderSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
@@ -48,7 +50,7 @@ namespace Financial.Extensions.Trading
                 }
             }
         }
-        public TSize ExecutedSize => Calculator.Sum(_execs, e => e.Size);
+        public TSize ExecutedSize => _execs.Sum(e => e.Size);
 
         public Order()
         {
@@ -80,7 +82,7 @@ namespace Financial.Extensions.Trading
         public virtual bool TryExecute(DateTime time, TPrice executePrice)
         {
             _execs.Add(new Execution<TPrice, TSize> { Time = time, Price = executePrice, Size = OrderSize });
-            var execuedSize = Calculator.Sum(_execs, e => e.Size);
+            var execuedSize = _execs.Sum(e => e.Size);
             var compare = Calculator.CompareTo(execuedSize, OrderSize);
             if (compare == 0)
             {

@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Financial.Extensions.Trading
 {
@@ -29,22 +28,20 @@ namespace Financial.Extensions.Trading
             var activeOrders = new List<IOrder<TPrice, TSize>>();
             foreach (var order in _activeOrders)
             {
-                if (order.TryExecute(LastUpdatedTime, MarketPrice))
+                if (!order.TryExecute(LastUpdatedTime, MarketPrice))
                 {
-                    if (order.Status != OrderState.PartiallyFilled)
-                    {
-                        _closedOrders.Add(order);
-                    }
-                    else
-                    {
-                        activeOrders.Add(order);
-                    }
-                    OrderChanged?.Invoke(order);
+                    continue;
+                }
+
+                if (order.IsClosed)
+                {
+                    _closedOrders.Add(order);
                 }
                 else
                 {
                     activeOrders.Add(order);
                 }
+                OrderChanged?.Invoke(order);
             }
             _activeOrders = activeOrders;
         }
@@ -53,7 +50,13 @@ namespace Financial.Extensions.Trading
         {
             order.Open(LastUpdatedTime);
 
-            if (order.TryExecute(LastUpdatedTime, MarketPrice) && order.Status != OrderState.PartiallyFilled)
+            if (!order.TryExecute(LastUpdatedTime, MarketPrice))
+            {
+                _activeOrders.Add(order);
+                return;
+            }
+
+            if (order.IsClosed)
             {
                 _closedOrders.Add(order);
             }
