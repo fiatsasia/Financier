@@ -46,10 +46,9 @@ namespace Financial.Extensions.Trading
                 throw new ArgumentException($"{nameof(shortPeriods)} must be less than {nameof(longPeriods)}");
             }
 
-            var spSource = source.ExponentialMovingAverage(shortPeriods, priceGetter);
-            var lpSource = source.ExponentialMovingAverage(longPeriods, priceGetter);
-
-            return spSource.Publish(sps => lpSource.Select(lp => sps.Select(sp =>
+            return source.Publish(s => s.ExponentialMovingAverage(shortPeriods, priceGetter).WithLatestFrom(
+                s.ExponentialMovingAverage(longPeriods, priceGetter),
+                (sp, lp) =>
                 new CrossoverSignal<TSource, TPrice>
                 {
                     Time = timeGetter(sp.Source),
@@ -58,7 +57,7 @@ namespace Financial.Extensions.Trading
                     TriggerPrice = sp.Value,
                     Source = sp.Source,
                 }
-            )).Switch());
+            ));
         }
     }
 }

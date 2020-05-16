@@ -11,18 +11,18 @@ namespace Financial.Extensions.Trading
     {
         public override TPrice OrderPrice { get; }
 
-        public LimitPriceOrder(TPrice orderPrice, TSize orderSize)
+        public LimitPriceOrder(TPrice price, TSize size)
         {
             OrderType = OrderType.LimitPrice;
-            OrderPrice = orderPrice;
-            OrderSize = orderSize;
+            OrderPrice = price;
+            OrderSize = size;
         }
 
-        public LimitPriceOrder(TradeSide side, TPrice orderPrice, TSize orderSize)
-            : base(side, orderSize)
+        public LimitPriceOrder(TradeSide side, TPrice price, TSize size)
+            : base(side, size)
         {
             OrderType = OrderType.LimitPrice;
-            OrderPrice = orderPrice;
+            OrderPrice = price;
         }
 
         public override bool TryExecute(DateTime time, TPrice executePrice)

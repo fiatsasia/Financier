@@ -28,12 +28,8 @@ namespace Financial.Extensions.Trading
         bool TryExecute(DateTime time, TPrice executePrice);
         TPrice ExecutedPrice { get; }
         TSize ExecutedSize { get; }
-    }
 
-    public interface IConditionalOrder : IOrder
-    {
-        IReadOnlyList<IOrder> ChildOrders { get; }
-        IOrder CurrentOrder { get; }
+        IReadOnlyList<IOrder<TPrice, TSize>> Children { get; }
     }
 
     public interface IOrderFactory<TPrice, TSize>
@@ -41,9 +37,12 @@ namespace Financial.Extensions.Trading
         // Create simple orders
         IOrder<TPrice, TSize> CreateMarketPriceOrder(TSize size);
         IOrder<TPrice, TSize> CreateLimitPriceOrder(TPrice price, TSize size);
-        IOrder<TPrice, TSize> CreateStopOrder(TSize size, TPrice stopTriggerPrice);
-        IOrder<TPrice, TSize> CreateStopLimitOrder(TSize size, TPrice price, TPrice stopTriggerPrice);
-        IOrder<TPrice, TSize> CreateTrailingStopOrder(TSize size, TPrice trailingStopPriceOffset);
+        IOrder<TPrice, TSize> CreateStopOrder(TPrice stopPrice, TSize size);
+        IOrder<TPrice, TSize> CreateStopLimitOrder(TPrice stopPrice, TPrice orderPrice, TSize size);
+
+        // Create structured orders
+        IOrder<TPrice, TSize> CreateTrailingStopOrder(TPrice trailingStopPriceOffset, TSize size);
+        IOrder<TPrice, TSize> CreateStopAndReverseOrder(TPrice stopPrice, TSize size);
 
         // Create conditional orders
         IOrder<TPrice, TSize> CreateIFD(IOrder first, IOrder second);

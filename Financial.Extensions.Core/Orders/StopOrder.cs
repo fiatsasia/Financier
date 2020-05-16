@@ -11,15 +11,15 @@ namespace Financial.Extensions.Trading
     {
         public override TPrice OrderPrice { get; }
 
-        public StopOrder(TPrice stopPrice, TSize orderSize)
+        public StopOrder(TPrice stopPrice, TSize size)
         {
             OrderType = OrderType.Stop;
             OrderPrice = stopPrice;
-            OrderSize = orderSize;
+            OrderSize = size;
         }
 
-        public StopOrder(TradeSide side, TPrice stopPrice, TSize orderSize)
-            : base(side, orderSize)
+        public StopOrder(TradeSide side, TPrice stopPrice, TSize size)
+            : base(side, size)
         {
             OrderType = OrderType.Stop;
             OrderPrice = stopPrice;

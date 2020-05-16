@@ -29,9 +29,9 @@ namespace Financial.Extensions.Trading
         // Number of decimal places (price and size)
         TPrice MarketPrice { get; }
 
-        void PlaceOrder(IOrder<TPrice, TSize> order);
-        void PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif);
-        IOrderFactory<TPrice, TSize> GetTradeOrderFactory();
+        bool PlaceOrder(IOrder<TPrice, TSize> order);
+        bool PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif);
+        IOrderFactory<TPrice, TSize> GetOrderFactory();
 
         void UpdatePrice(DateTime time, TPrice price);
 

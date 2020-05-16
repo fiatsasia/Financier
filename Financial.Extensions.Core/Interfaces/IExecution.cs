@@ -10,7 +10,6 @@ namespace Financial.Extensions.Trading
     public interface IExecution
     {
         DateTime Time { get; }
-        object Source { get; }
     }
 
     public interface IExecution<TPrice, TSize> : IExecution

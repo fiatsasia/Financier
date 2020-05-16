@@ -6,49 +6,41 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Financial.Extensions.Trading
 {
-    public class Account : IAccount
+    public class Account<TPrice, TSize> : IAccount<TPrice, TSize>
     {
-        Dictionary<string, IMarket> _markets = new Dictionary<string, IMarket>();
+        Dictionary<string, IMarket<TPrice, TSize>> _markets = new Dictionary<string, IMarket<TPrice, TSize>>();
 
         // Position management
-        protected List<ITrade> Positions { get; } = new List<ITrade>();
+        protected List<ITrade> Trades { get; } = new List<ITrade>();
 
-        public decimal UnrealizedProfit => Positions.Sum(e => e.UnrealizedProfit);
-        public decimal RealizedProfit => Positions.Sum(e => e.RealizedProfit);
+        public decimal UnrealizedProfit => Trades.Sum(e => e.UnrealizedProfit);
+        public decimal RealizedProfit => Trades.Sum(e => e.RealizedProfit);
 
         public Account()
         {
         }
 
-        public void RegisterMarket<TPrice, TSize>(string marketSymbol, IMarket<TPrice, TSize> market)
+        public IMarket<TPrice, TSize> GetMarket(string marketSymbol)
         {
-            _markets[marketSymbol] = market;
+            return _markets[marketSymbol];
         }
 
-        public bool HasOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ITrade<TPrice, TSize> GetLastOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market)
+        public bool HasOpenPosition(IMarket<TPrice, TSize> market)
         {
             throw new NotImplementedException();
         }
 
-        public ITrade GetLastOpenPosition()
+        public void RegisterTrade(ITrade pos)
         {
-            return null;
+            Trades.Add(pos);
         }
+    }
 
-        public void RegisterPosition(ITrade pos)
-        {
-            Positions.Add(pos);
-        }
-
-        // Not support functionalities
-        public void Login(string key, string secret) => throw new NotSupportedException();
+    public class AccountCollection : Collection<IAccount>, IAccountCollection
+    {
     }
 }

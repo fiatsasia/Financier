@@ -46,14 +46,14 @@ namespace Financial.Extensions.Trading
             _activeOrders = activeOrders;
         }
 
-        public void PlaceOrder(IOrder<TPrice, TSize> order)
+        public bool PlaceOrder(IOrder<TPrice, TSize> order)
         {
             order.Open(LastUpdatedTime);
 
             if (!order.TryExecute(LastUpdatedTime, MarketPrice))
             {
                 _activeOrders.Add(order);
-                return;
+                return true;
             }
 
             if (order.IsClosed)
@@ -65,15 +65,17 @@ namespace Financial.Extensions.Trading
                 _activeOrders.Add(order);
             }
             OrderChanged?.Invoke(order);
+
+            return true;
         }
 
-        public void PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif)
+        public bool PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif)
         {
             throw new NotSupportedException();
         }
 
         OrderFactory<TPrice, TSize> _orderFactory = new OrderFactory<TPrice, TSize>();
-        public IOrderFactory<TPrice, TSize> GetTradeOrderFactory() => _orderFactory;
+        public IOrderFactory<TPrice, TSize> GetOrderFactory() => _orderFactory;
 
         public Market()
         {

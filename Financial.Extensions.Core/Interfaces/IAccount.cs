@@ -3,19 +3,27 @@
 // https://www.fiats.asia/
 //
 
+using System.Collections.Generic;
+
 namespace Financial.Extensions.Trading
 {
     public interface IAccount
     {
+    }
+
+    public interface IAccount<TPrice, TSize> : IAccount
+    {
         decimal UnrealizedProfit { get; }
         decimal RealizedProfit { get; }
 
-        bool HasOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market);
-        ITrade<TPrice, TSize> GetLastOpenPosition<TPrice, TSize>(IMarket<TPrice, TSize> market);
+        bool HasOpenPosition(IMarket<TPrice, TSize> market);
 
-        void Login(string key, string secret);
-        void RegisterPosition(ITrade pos);
+        void RegisterTrade(ITrade trade);
 
-        void RegisterMarket<TPrice, TSize>(string marketSymbol, IMarket<TPrice, TSize> market);
+        IMarket<TPrice, TSize> GetMarket(string marketSymbol);
+    }
+
+    public interface IAccountCollection : ICollection<IAccount>
+    {
     }
 }

@@ -9,22 +9,22 @@ using System.Collections.Generic;
 
 namespace Financial.Extensions.Trading
 {
-    public class Order<TPrice, TSize> : IOrder<TPrice, TSize>
+    public abstract class Order<TPrice, TSize> : IOrder<TPrice, TSize>
     {
-        public DateTime OpenTime { get; protected set; }
-        public DateTime CloseTime { get; protected set; } = DateTime.MinValue;
-        public OrderState Status { get; protected set; }
+        public virtual DateTime OpenTime { get; protected set; }
+        public virtual DateTime CloseTime { get; protected set; } = DateTime.MinValue;
+        public virtual OrderState Status { get; protected set; }
 
         public virtual bool IsClosed => CloseTime != DateTime.MinValue;
 
         public OrderType OrderType { get; protected set; }
         public virtual TPrice OrderPrice => throw new NotSupportedException();
-        public TSize OrderSize { get; protected set; }
+        public virtual TSize OrderSize { get; protected set; }
         public TradeSide Side => Calculator.Sign(OrderSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
         List<IExecution<TPrice, TSize>> _execs = new List<IExecution<TPrice, TSize>>();
-        public IEnumerable<IExecution<TPrice, TSize>> Executions => _execs;
-        public TPrice ExecutedPrice
+        public virtual IEnumerable<IExecution<TPrice, TSize>> Executions => _execs;
+        public virtual TPrice ExecutedPrice
         {
             get
             {
@@ -50,7 +50,9 @@ namespace Financial.Extensions.Trading
                 }
             }
         }
-        public TSize ExecutedSize => _execs.Sum(e => e.Size);
+        public virtual TSize ExecutedSize => _execs.Sum(e => e.Size);
+
+        public virtual IReadOnlyList<IOrder<TPrice, TSize>> Children => throw new NotSupportedException();
 
         public Order()
         {

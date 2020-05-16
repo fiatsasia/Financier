@@ -12,6 +12,5 @@ namespace Financial.Extensions.Trading
         public DateTime Time { get; set; }
         public TPrice Price { get; set; }
         public TSize Size { get; set; }
-        public object Source => default(Execution<TPrice, TSize>);
     }
 }

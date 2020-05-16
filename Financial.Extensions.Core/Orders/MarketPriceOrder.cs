@@ -9,14 +9,14 @@ namespace Financial.Extensions.Trading
 {
     public class MarketPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
     {
-        public MarketPriceOrder(TSize orderSize)
+        public MarketPriceOrder(TSize size)
         {
             OrderType = OrderType.MarketPrice;
-            OrderSize = orderSize;
+            OrderSize = size;
         }
 
-        public MarketPriceOrder(TradeSide side, TSize orderSize)
-            : base(side, orderSize)
+        public MarketPriceOrder(TradeSide side, TSize size)
+            : base(side, size)
         {
             OrderType = OrderType.MarketPrice;
         }

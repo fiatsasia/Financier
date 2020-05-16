@@ -15,6 +15,8 @@ namespace Financial.Extensions.Trading
 
     public interface IRealtimeSource<TPrice, TSize> : IMarketDataSource
     {
+        void Connect();
+
         IObservable<IExecution<TPrice, TSize>> GetExecutionSource(string symbol);
         IObservable<ITicker<TPrice, TSize>> GetTickerSource(string symbol);
         IObservable<IOrderBook<TPrice, TSize>> GetOrderBookSource(string symbol);

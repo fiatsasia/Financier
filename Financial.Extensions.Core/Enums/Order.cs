@@ -18,6 +18,9 @@ namespace Financial.Extensions.Trading
         StopLimit,
         TrailingStop,
 
+        // Structured
+        StopAndReverse,
+
         // Combined order types
         IFD,
         OCO,
