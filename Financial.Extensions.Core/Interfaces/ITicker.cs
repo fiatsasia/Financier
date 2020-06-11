@@ -14,9 +14,8 @@ namespace Financial.Extensions.Trading
 
     public interface ITicker<TPrice, TSize> : ITicker
     {
-        TPrice BestBidPrice { get; }
-        TSize BestBidSize { get; }
-        TPrice BestAskPrice { get; }
-        TSize BestAskSize { get; }
+        TPrice BidPrice { get; }
+        TPrice AskPrice { get; }
+        TPrice LastTradedPrice { get; }
     }
 }

@@ -3,6 +3,8 @@
 // https://www.fiats.asia/
 //
 
+using System.Collections.Generic;
+
 namespace Financial.Extensions.Trading
 {
     public interface IOrderBook<TPrice, TSize>
@@ -11,9 +13,7 @@ namespace Financial.Extensions.Trading
         TSize BestBidSize { get; }
         TPrice BestAskPrice { get; }
         TSize BestAskSize { get; }
-
-        double MidPrice { get; }
-        double TotalBidDepth { get; }
-        double TotalAskDepth { get; }
+        IReadOnlyList<(TPrice Price, TSize Size)> Bids { get; }
+        IReadOnlyList<(TPrice Price, TSize Size)> Asks { get; }
     }
 }
