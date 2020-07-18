@@ -4,8 +4,8 @@
 //
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Financial.Extensions;
-using Financial.Extensions.Trading;
+using Financier;
+using Financier.Trading;
 
 namespace OrderTests
 {
