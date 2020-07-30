@@ -7,25 +7,25 @@ using System;
 
 namespace Financier.Trading
 {
-    public class StopOrder<TPrice, TSize> : Order<TPrice, TSize>
+    public class StopOrder : Order
     {
-        public override TPrice OrderPrice { get; }
+        public override decimal OrderPrice { get; }
 
-        public StopOrder(TPrice stopPrice, TSize size)
+        public StopOrder(decimal stopPrice, decimal size)
         {
             OrderType = OrderType.Stop;
             OrderPrice = stopPrice;
             OrderSize = size;
         }
 
-        public StopOrder(TradeSide side, TPrice stopPrice, TSize size)
+        public StopOrder(TradeSide side, decimal stopPrice, decimal size)
             : base(side, size)
         {
             OrderType = OrderType.Stop;
             OrderPrice = stopPrice;
         }
 
-        public override bool TryExecute(DateTime time, TPrice executePrice)
+        public override bool TryExecute(DateTime time, decimal executePrice)
         {
             if (Side == TradeSide.Buy) // Stop market price buy
             {

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Financier.Trading
 {
-    public abstract class Order<TPrice, TSize> : IOrder<TPrice, TSize>
+    public abstract class Order : IOrder
     {
         public virtual DateTime OpenTime { get; protected set; }
         public virtual DateTime CloseTime { get; protected set; } = DateTime.MinValue;
@@ -18,19 +18,19 @@ namespace Financier.Trading
         public virtual bool IsClosed => CloseTime != DateTime.MinValue;
 
         public OrderType OrderType { get; protected set; }
-        public virtual TPrice OrderPrice => throw new NotSupportedException();
-        public virtual TSize OrderSize { get; protected set; }
+        public virtual decimal OrderPrice => throw new NotSupportedException();
+        public virtual decimal OrderSize { get; protected set; }
         public TradeSide Side => Calculator.Sign(OrderSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
-        List<IExecution<TPrice, TSize>> _execs = new List<IExecution<TPrice, TSize>>();
-        public virtual IEnumerable<IExecution<TPrice, TSize>> Executions => _execs;
-        public virtual TPrice ExecutedPrice
+        List<IExecution> _execs = new List<IExecution>();
+        public virtual IEnumerable<IExecution> Executions => _execs;
+        public virtual decimal ExecutedPrice
         {
             get
             {
                 if (_execs.Count == 0)
                 {
-                    return Calculator.Zero<TPrice>();
+                    return decimal.Zero;
                 }
                 else if (_execs.Count == 1)
                 {
@@ -46,29 +46,29 @@ namespace Financier.Trading
                         totalSize += size;
                         amount += Calculator.ToDecimal(exec.Price) * size;
                     }
-                    return Calculator.Cast<TPrice>(amount / totalSize);
+                    return amount / totalSize;
                 }
             }
         }
-        public virtual TSize ExecutedSize => _execs.Sum(e => e.Size);
+        public virtual decimal ExecutedSize => _execs.Sum(e => e.Size);
 
-        public virtual IReadOnlyList<IOrder<TPrice, TSize>> Children => throw new NotSupportedException();
+        public virtual IReadOnlyList<IOrder> Children => throw new NotSupportedException();
 
         public Order()
         {
         }
 
-        public Order(TradeSide side, TSize orderSize)
+        public Order(TradeSide side, decimal orderSize)
         {
             OrderType = OrderType.MarketPrice;
             switch (side)
             {
                 case TradeSide.Buy:
-                    OrderSize = Calculator.Abs(orderSize);
+                    OrderSize = Math.Abs(orderSize);
                     break;
 
                 case TradeSide.Sell:
-                    OrderSize = Calculator.Invert(Calculator.Abs(orderSize));
+                    OrderSize = -Math.Abs(orderSize);
                     break;
 
                 default:
@@ -81,12 +81,12 @@ namespace Financier.Trading
             OpenTime = time;
         }
 
-        public virtual bool TryExecute(DateTime time, TPrice executePrice)
+        public virtual bool TryExecute(DateTime time, decimal executePrice)
         {
-            _execs.Add(new Execution<TPrice, TSize> { Time = time, Price = executePrice, Size = OrderSize });
+            _execs.Add(new Execution { Time = time, Price = executePrice, Size = OrderSize });
             var execuedSize = _execs.Sum(e => e.Size);
             var compare = Calculator.CompareTo(execuedSize, OrderSize);
-            if (compare == 0)
+            if (execuedSize == OrderSize)
             {
                 CloseTime = time;
                 Status = OrderState.Filled;

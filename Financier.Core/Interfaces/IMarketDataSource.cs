@@ -17,7 +17,7 @@ namespace Financier.Trading
     {
         void Connect();
 
-        IObservable<IExecution<TPrice, TSize>> GetExecutionSource(string symbol);
+        IObservable<IExecution> GetExecutionSource(string symbol);
         IObservable<ITicker<TPrice, TSize>> GetTickerSource(string symbol);
         IObservable<IOrderBook<TPrice, TSize>> GetOrderBookSource(string symbol);
 

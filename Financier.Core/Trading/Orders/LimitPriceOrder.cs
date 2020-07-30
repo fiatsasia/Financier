@@ -7,25 +7,25 @@ using System;
 
 namespace Financier.Trading
 {
-    public class LimitPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
+    public class LimitPriceOrder : Order
     {
-        public override TPrice OrderPrice { get; }
+        public override decimal OrderPrice { get; }
 
-        public LimitPriceOrder(TPrice price, TSize size)
+        public LimitPriceOrder(decimal price, decimal size)
         {
             OrderType = OrderType.LimitPrice;
             OrderPrice = price;
             OrderSize = size;
         }
 
-        public LimitPriceOrder(TradeSide side, TPrice price, TSize size)
+        public LimitPriceOrder(TradeSide side, decimal price, decimal size)
             : base(side, size)
         {
             OrderType = OrderType.LimitPrice;
             OrderPrice = price;
         }
 
-        public override bool TryExecute(DateTime time, TPrice executePrice)
+        public override bool TryExecute(DateTime time, decimal executePrice)
         {
             if (Side == TradeSide.Buy)
             {

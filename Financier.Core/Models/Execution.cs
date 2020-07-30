@@ -7,10 +7,10 @@ using System;
 
 namespace Financier.Trading
 {
-    public class Execution<TPrice, TSize> : IExecution<TPrice, TSize>
+    public class Execution : IExecution
     {
         public DateTime Time { get; set; }
-        public TPrice Price { get; set; }
-        public TSize Size { get; set; }
+        public decimal Price { get; set; }
+        public decimal Size { get; set; }
     }
 }

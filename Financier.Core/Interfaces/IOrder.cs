@@ -17,36 +17,33 @@ namespace Financier.Trading
 
         void Open(DateTime time);
         bool IsClosed { get; }
+
+        decimal OrderPrice { get; }
+        decimal OrderSize { get; }
+
+        IEnumerable<IExecution> Executions { get; }
+        bool TryExecute(DateTime time, decimal executePrice);
+        decimal ExecutedPrice { get; }
+        decimal ExecutedSize { get; }
+
+        IReadOnlyList<IOrder> Children { get; }
     }
 
-    public interface IOrder<TPrice, TSize> : IOrder
-    {
-        TPrice OrderPrice { get; }
-        TSize OrderSize { get; }
-
-        IEnumerable<IExecution<TPrice, TSize>> Executions { get; }
-        bool TryExecute(DateTime time, TPrice executePrice);
-        TPrice ExecutedPrice { get; }
-        TSize ExecutedSize { get; }
-
-        IReadOnlyList<IOrder<TPrice, TSize>> Children { get; }
-    }
-
-    public interface IOrderFactory<TPrice, TSize>
+    public interface IOrderFactory
     {
         // Create simple orders
-        IOrder<TPrice, TSize> CreateMarketPriceOrder(TSize size);
-        IOrder<TPrice, TSize> CreateLimitPriceOrder(TPrice price, TSize size);
-        IOrder<TPrice, TSize> CreateStopOrder(TPrice stopPrice, TSize size);
-        IOrder<TPrice, TSize> CreateStopLimitOrder(TPrice stopPrice, TPrice orderPrice, TSize size);
+        IOrder CreateMarketPriceOrder(decimal size);
+        IOrder CreateLimitPriceOrder(decimal price, decimal size);
+        IOrder CreateStopOrder(decimal stopPrice, decimal size);
+        IOrder CreateStopLimitOrder(decimal stopPrice, decimal orderPrice, decimal size);
 
         // Create structured orders
-        IOrder<TPrice, TSize> CreateTrailingStopOrder(TPrice trailingStopPriceOffset, TSize size);
-        IOrder<TPrice, TSize> CreateStopAndReverseOrder(TPrice stopPrice, TSize size);
+        IOrder CreateTrailingStopOrder(decimal trailingStopPriceOffset, decimal size);
+        IOrder CreateStopAndReverseOrder(decimal stopPrice, decimal size);
 
         // Create conditional orders
-        IOrder<TPrice, TSize> CreateIFD(IOrder first, IOrder second);
-        IOrder<TPrice, TSize> CreateOCO(IOrder first, IOrder second);
-        IOrder<TPrice, TSize> CreateIFDOCO(IOrder ifdone, IOrder ocoFirst, IOrder ocoSecond);
+        IOrder CreateIFD(IOrder first, IOrder second);
+        IOrder CreateOCO(IOrder first, IOrder second);
+        IOrder CreateIFDOCO(IOrder ifdone, IOrder ocoFirst, IOrder ocoSecond);
     }
 }

@@ -14,7 +14,7 @@ namespace Financier.Trading
 
         public virtual void Connect() => throw new NotSupportedException();
 
-        public virtual IObservable<IExecution<TPrice, TSize>> GetExecutionSource(string symbol) => throw new NotSupportedException();
+        public virtual IObservable<IExecution> GetExecutionSource(string symbol) => throw new NotSupportedException();
         public virtual IObservable<ITicker<TPrice, TSize>> GetTickerSource(string symbol) => throw new NotSupportedException();
         public virtual IObservable<IOrderBook<TPrice, TSize>> GetOrderBookSource(string symbol) => throw new NotSupportedException();
 

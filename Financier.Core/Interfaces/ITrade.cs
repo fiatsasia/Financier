@@ -20,16 +20,13 @@ namespace Financier.Trading
 
         decimal UnrealizedProfit { get; }
         decimal RealizedProfit { get; }
-    }
 
-    public interface ITrade<TPrice, TSize> : ITrade
-    {
-        TPrice OpenPrice { get; }
-        TPrice ClosePrice { get; }
-        TSize TradeSize { get; }
+        decimal OpenPrice { get; }
+        decimal ClosePrice { get; }
+        decimal TradeSize { get; }
 
-        void Open(DateTime time, TPrice openPrice, TSize size);
-        void Close(DateTime time, TPrice closePrice);
+        void Open(DateTime time, decimal openPrice, decimal size);
+        void Close(DateTime time, decimal closePrice);
     }
 
     // 取引管理機能

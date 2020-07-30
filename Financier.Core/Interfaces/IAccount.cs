@@ -9,18 +9,17 @@ namespace Financier.Trading
 {
     public interface IAccount
     {
-    }
+        void Open();
 
-    public interface IAccount<TPrice, TSize> : IAccount
-    {
+        IMarket GetMarket(string marketSymbol);
+
+        //===============================
         decimal UnrealizedProfit { get; }
         decimal RealizedProfit { get; }
-
-        bool HasOpenPosition(IMarket<TPrice, TSize> market);
+        bool HasOpenPosition(IMarket market);
 
         void RegisterTrade(ITrade trade);
 
-        IMarket<TPrice, TSize> GetMarket(string marketSymbol);
     }
 
     public interface IAccountCollection : ICollection<IAccount>

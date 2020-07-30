@@ -8,22 +8,22 @@ using System.Collections.Generic;
 
 namespace Financier.Trading
 {
-    public class StopAndReverseOrder<TPrice, TSize> : Order<TPrice, TSize>
+    public class StopAndReverseOrder : Order
     {
-        IOrder<TPrice, TSize> _stopOrder;
-        IOrder<TPrice, TSize> _reverseOrder;
+        IOrder _stopOrder;
+        IOrder _reverseOrder;
 
-        IOrder<TPrice, TSize>[] _children;
-        public override IReadOnlyList<IOrder<TPrice, TSize>> Children => _children;
+        IOrder[] _children;
+        public override IReadOnlyList<IOrder> Children => _children;
 
-        public StopAndReverseOrder(TPrice stopPrice, TSize size)
+        public StopAndReverseOrder(decimal stopPrice, decimal size)
         {
             OrderType = OrderType.StopAndReverse;
             OrderSize = size;
 
-            _stopOrder = new StopOrder<TPrice, TSize>(stopPrice, size);
-            _reverseOrder = new MarketPriceOrder<TPrice, TSize>(Calculator.Invert(size));
-            _children = new IOrder<TPrice, TSize>[] { _stopOrder, _reverseOrder };
+            _stopOrder = new StopOrder(stopPrice, size);
+            _reverseOrder = new MarketPriceOrder(Calculator.Invert(size));
+            _children = new IOrder[] { _stopOrder, _reverseOrder };
         }
 
         public override void Open(DateTime time)
@@ -32,7 +32,7 @@ namespace Financier.Trading
             _stopOrder.Open(time);
         }
 
-        public override bool TryExecute(DateTime time, TPrice executePrice)
+        public override bool TryExecute(DateTime time, decimal executePrice)
         {
             if (!_stopOrder.TryExecute(time, executePrice))
             {

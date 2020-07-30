@@ -5,27 +5,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public class Market<TPrice, TSize> : IMarket<TPrice, TSize>
+    public class Market : IMarket, IDisposable
     {
         public string MarketSymbol { get; private set; }
-        public TPrice MarketPrice { get; private set; }
+        public decimal MarketPrice { get; private set; }
         public DateTime LastUpdatedTime { get; private set; }
 
-        List<IOrder<TPrice, TSize>> _activeOrders = new List<IOrder<TPrice, TSize>>();
-        List<IOrder<TPrice, TSize>> _closedOrders = new List<IOrder<TPrice, TSize>>();
+        List<IOrder> _activeOrders = new List<IOrder>();
+        List<IOrder> _closedOrders = new List<IOrder>();
         public bool HasActiveOrder => _activeOrders.Count > 0;
 
-        public event Action<IOrder<TPrice, TSize>> OrderChanged;
+        public event Action<IOrder> OrderChanged;
 
-        public virtual void UpdatePrice(DateTime time, TPrice price)
+        IAccount _account;
+
+        public Market()
+        {
+        }
+
+        public Market(Account account, string marketSymbol)
+        {
+            _account = account;
+            MarketSymbol = marketSymbol;
+            account.RegisterMarket(marketSymbol, this);
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public virtual void UpdatePrice(DateTime time, decimal price)
         {
             LastUpdatedTime = time;
             MarketPrice = price;
 
-            var activeOrders = new List<IOrder<TPrice, TSize>>();
+            var activeOrders = new List<IOrder>();
             foreach (var order in _activeOrders)
             {
                 if (!order.TryExecute(LastUpdatedTime, MarketPrice))
@@ -46,7 +64,7 @@ namespace Financier.Trading
             _activeOrders = activeOrders;
         }
 
-        public bool PlaceOrder(IOrder<TPrice, TSize> order)
+        public bool PlaceOrder(IOrder order)
         {
             order.Open(LastUpdatedTime);
 
@@ -69,21 +87,19 @@ namespace Financier.Trading
             return true;
         }
 
-        public bool PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif)
+        public async Task PlaceOrderAsync(IOrder order)
+        {
+            PlaceOrder(order);
+            await Task.CompletedTask;
+        }
+
+
+        public bool PlaceOrder(IOrder order, TimeInForce tif)
         {
             throw new NotSupportedException();
         }
 
-        OrderFactory<TPrice, TSize> _orderFactory = new OrderFactory<TPrice, TSize>();
-        public IOrderFactory<TPrice, TSize> GetOrderFactory() => _orderFactory;
-
-        public Market()
-        {
-        }
-
-        public Market(string marketSymbol)
-        {
-            MarketSymbol = marketSymbol;
-        }
+        OrderFactory _orderFactory = new OrderFactory();
+        public IOrderFactory GetOrderFactory() => _orderFactory;
     }
 }

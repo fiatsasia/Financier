@@ -7,15 +7,15 @@ using System;
 
 namespace Financier.Trading
 {
-    public class MarketPriceOrder<TPrice, TSize> : Order<TPrice, TSize>
+    public class MarketPriceOrder : Order
     {
-        public MarketPriceOrder(TSize size)
+        public MarketPriceOrder(decimal size)
         {
             OrderType = OrderType.MarketPrice;
             OrderSize = size;
         }
 
-        public MarketPriceOrder(TradeSide side, TSize size)
+        public MarketPriceOrder(TradeSide side, decimal size)
             : base(side, size)
         {
             OrderType = OrderType.MarketPrice;

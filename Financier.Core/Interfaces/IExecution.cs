@@ -10,23 +10,15 @@ namespace Financier.Trading
     public interface IExecution
     {
         DateTime Time { get; }
-    }
-
-    public interface IExecution<TPrice, TSize> : IExecution
-    {
-        TPrice Price { get; }
-        TSize Size { get; }
+        decimal Price { get; }
+        decimal Size { get; }
     }
 
     public interface IExecutions
     {
-    }
+        decimal AveragePrice { get; }
+        decimal TotalSize { get; }
 
-    public interface IExecutions<TPrice, TSize> : IExecutions
-    {
-        TPrice AveragePrice { get; }
-        TSize TotalSize { get; }
-
-        void Executed(TPrice executedPrice, TSize executedSize);
+        void Executed(decimal executedPrice, decimal executedSize);
     }
 }

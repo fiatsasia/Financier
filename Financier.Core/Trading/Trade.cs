@@ -7,21 +7,21 @@ using System;
 
 namespace Financier.Trading
 {
-    class Trade<TPrice, TSize> : ITrade<TPrice, TSize>
+    class Trade : ITrade
     {
         public DateTime OpenTime { get; protected set; } = DateTime.MinValue;
-        public TPrice OpenPrice { get; protected set; }
+        public decimal OpenPrice { get; protected set; }
         public DateTime CloseTime { get; protected set; } = DateTime.MaxValue;
-        public TPrice ClosePrice { get; protected set; }
-        public TSize TradeSize { get; protected set; }
+        public decimal ClosePrice { get; protected set; }
+        public decimal TradeSize { get; protected set; }
         public PositionState Status { get; private set; }
         public bool IsOpened => OpenTime > DateTime.MinValue && CloseTime == DateTime.MaxValue;
         public bool IsClosed => CloseTime < DateTime.MaxValue;
         public TradeSide Side => Calculator.Sign(TradeSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
-        IMarket<TPrice, TSize> _market;
+        IMarket _market;
 
-        public Trade(IMarket<TPrice, TSize> market)
+        public Trade(IMarket market)
         {
             _market = market;
         }
@@ -29,12 +29,12 @@ namespace Financier.Trading
         public decimal UnrealizedProfit => IsOpened ? CalculateProfit(OpenPrice, _market.MarketPrice, TradeSize) : decimal.Zero;
         public decimal RealizedProfit => IsClosed ? CalculateProfit(OpenPrice, ClosePrice, TradeSize) : decimal.Zero;
 
-        decimal CalculateProfit(TPrice openPrice, TPrice closePrice, TSize size)
+        decimal CalculateProfit(decimal openPrice, decimal closePrice, decimal size)
         {
             return Calculator.ToDecimal(Calculator.Sub(closePrice, openPrice)) * Calculator.ToDecimal(size);
         }
 
-        public virtual void Open(DateTime time, TPrice openPrice, TSize size)
+        public virtual void Open(DateTime time, decimal openPrice, decimal size)
         {
             OpenTime = time;
             OpenPrice = openPrice;
@@ -42,7 +42,7 @@ namespace Financier.Trading
             Status = PositionState.Active;
         }
 
-        public virtual void Close(DateTime time, TPrice closePrice)
+        public virtual void Close(DateTime time, decimal closePrice)
         {
             CloseTime = time;
             ClosePrice = closePrice;

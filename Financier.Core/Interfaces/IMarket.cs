@@ -4,6 +4,7 @@
 //
 
 using System;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
@@ -21,20 +22,25 @@ namespace Financier.Trading
         DateTime LastUpdatedTime { get; }
 
         bool HasActiveOrder { get; }
-    }
 
-    public interface IMarket<TPrice, TSize> : IMarket
-    {
         // Precision (price and size)
         // Number of decimal places (price and size)
-        TPrice MarketPrice { get; }
+        decimal MarketPrice { get; }
 
-        bool PlaceOrder(IOrder<TPrice, TSize> order);
-        bool PlaceOrder(IOrder<TPrice, TSize> order, TimeInForce tif);
-        IOrderFactory<TPrice, TSize> GetOrderFactory();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>Order dispatched immediately</returns>
+        bool PlaceOrder(IOrder order);
 
-        void UpdatePrice(DateTime time, TPrice price);
+        Task PlaceOrderAsync(IOrder order);
 
-        event Action<IOrder<TPrice, TSize>> OrderChanged;
+        bool PlaceOrder(IOrder order, TimeInForce tif);
+        IOrderFactory GetOrderFactory();
+
+        void UpdatePrice(DateTime time, decimal price);
+
+        event Action<IOrder> OrderChanged;
     }
 }
