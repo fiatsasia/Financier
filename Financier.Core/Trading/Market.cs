@@ -11,6 +11,8 @@ namespace Financier.Trading
 {
     public class Market : IMarket, IDisposable
     {
+        public IOrderFactory OrderFactory { get; } = new OrderFactory();
+
         public string MarketSymbol { get; private set; }
         public decimal MarketPrice { get; private set; }
         public DateTime LastUpdatedTime { get; private set; }
@@ -98,8 +100,5 @@ namespace Financier.Trading
         {
             throw new NotSupportedException();
         }
-
-        OrderFactory _orderFactory = new OrderFactory();
-        public IOrderFactory GetOrderFactory() => _orderFactory;
     }
 }

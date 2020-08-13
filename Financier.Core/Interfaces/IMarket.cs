@@ -27,6 +27,8 @@ namespace Financier.Trading
         // Number of decimal places (price and size)
         decimal MarketPrice { get; }
 
+        IOrderFactory OrderFactory { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -37,7 +39,6 @@ namespace Financier.Trading
         Task PlaceOrderAsync(IOrder order);
 
         bool PlaceOrder(IOrder order, TimeInForce tif);
-        IOrderFactory GetOrderFactory();
 
         void UpdatePrice(DateTime time, decimal price);
 

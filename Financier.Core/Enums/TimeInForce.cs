@@ -11,5 +11,9 @@ namespace Financier
         GTC,            // Good 'Till Canceled
         IOC,            // Immediate or Cancel
         FOK,            // Fill or Kill
+        DAY,            // Today's trading hours
+        GTD,            // Good 'Till Date
+        OPG,            // Opening session
+        CLO,            // Closing session
     }
 }
