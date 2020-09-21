@@ -4,17 +4,16 @@
 //
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Financier.Trading
 {
-    public class Account : IAccount, IDisposable
+    public class TestAccount : IAccount, IDisposable
     {
         Dictionary<string, IMarket> _markets = new Dictionary<string, IMarket>();
 
-        public Account()
+        public TestAccount()
         {
         }
 
@@ -47,11 +46,6 @@ namespace Financier.Trading
         public bool HasOpenPosition(IMarket market)
         {
             throw new NotImplementedException();
-        }
-
-        public void RegisterTrade(ITrade pos)
-        {
-            Trades.Add(pos);
         }
     }
 

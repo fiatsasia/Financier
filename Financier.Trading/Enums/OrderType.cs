@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2017-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
@@ -14,9 +14,10 @@ namespace Financier.Trading
         MarketPrice,
 
         // Conditioned order types
-        Stop,
-        StopLimit,
+        StopLoss,
+        StopLossLimit,
         TrailingStop,
+        TrailingStopLimit,
 
         // Structured
         StopAndReverse,
@@ -27,6 +28,11 @@ namespace Financier.Trading
         IFO,
         IFDOCO = IFO,
         OSO,
+
+        TriggerPriceBelow,
+        TriggerPriceAbove,
+        TriggerEvent,
+        TriggerProfitAndLoss,
     }
 
     public static class OrderTypeExtension
@@ -57,15 +63,5 @@ namespace Financier.Trading
                     return false;
             }
         }
-    }
-
-    public enum OrderState
-    {
-        New,
-        PartiallyFilled,
-        Filled,
-        Canceled,
-        Rejected, // 注文を送信して、サイズ不正などで失敗した場合、IFDなどで後続注文が失敗した場合など
-        Expired,
     }
 }

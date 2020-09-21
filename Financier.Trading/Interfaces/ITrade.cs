@@ -13,7 +13,6 @@ namespace Financier.Trading
         DateTime CloseTime { get; }
 
         PositionState Status { get; }
-        TradeSide Side { get; }
 
         bool IsOpened { get; }
         bool IsClosed { get; }

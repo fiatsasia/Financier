@@ -17,7 +17,6 @@ namespace Financier.Trading
         public PositionState Status { get; private set; }
         public bool IsOpened => OpenTime > DateTime.MinValue && CloseTime == DateTime.MaxValue;
         public bool IsClosed => CloseTime < DateTime.MaxValue;
-        public TradeSide Side => Calculator.Sign(TradeSize) > 0 ? TradeSide.Buy : TradeSide.Sell;
 
         IMarket _market;
 
@@ -26,7 +25,7 @@ namespace Financier.Trading
             _market = market;
         }
 
-        public decimal UnrealizedProfit => IsOpened ? CalculateProfit(OpenPrice, _market.MarketPrice, TradeSize) : decimal.Zero;
+        public decimal UnrealizedProfit => IsOpened ? CalculateProfit(OpenPrice, _market.LastTradedPrice, TradeSize) : decimal.Zero;
         public decimal RealizedProfit => IsClosed ? CalculateProfit(OpenPrice, ClosePrice, TradeSize) : decimal.Zero;
 
         decimal CalculateProfit(decimal openPrice, decimal closePrice, decimal size)

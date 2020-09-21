@@ -3,11 +3,12 @@
 // https://www.fiats.asia/
 //
 
+using System;
 using System.Collections.Generic;
 
 namespace Financier.Trading
 {
-    public interface IAccount
+    public interface IAccount : IDisposable
     {
         void Open();
 
@@ -17,9 +18,6 @@ namespace Financier.Trading
         decimal UnrealizedProfit { get; }
         decimal RealizedProfit { get; }
         bool HasOpenPosition(IMarket market);
-
-        void RegisterTrade(ITrade trade);
-
     }
 
     public interface IAccountCollection : ICollection<IAccount>

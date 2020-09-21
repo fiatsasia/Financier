@@ -4,14 +4,13 @@
 //
 
 using System;
+using System.Collections.Generic;
 
-namespace Financier
+namespace Financier.Trading
 {
-    public enum TradeSide
+    public interface IPositions
     {
-        Unspecified,
-        Buy,
-        Sell,
-        BuySell,
+        decimal TotalOpenSize { get; }
+        IEnumerable<IPosition> GetOpenPositions();
     }
 }

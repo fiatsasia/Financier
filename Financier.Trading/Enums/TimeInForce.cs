@@ -1,9 +1,9 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2017-2020 Fiats Inc. All rights reserved.
 // https://www.fiats.asia/
 //
 
-namespace Financier
+namespace Financier.Trading
 {
     public enum TimeInForce
     {

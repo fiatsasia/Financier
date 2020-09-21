@@ -12,24 +12,29 @@ namespace OrderTests
     [TestClass]
     public class UnitTest1
     {
+        const decimal OrderPrice = 1000000m;
+        const decimal OrderSize = 1.0m;
+        const decimal TriggerPrice = 1050000m;
+
         [TestMethod]
         public void TestCreateOrder()
         {
-            var order1a = new MarketPriceOrder(TradeSide.Buy, 1.0m);
-            var order1b = new MarketPriceOrder(1.0m);     // buy
-            var order1c = new MarketPriceOrder(-1.0m);    // sell
+            var marketBuy = Order.MarketPrice(OrderSize);
+            var marketSell = Order.MarketPrice(-OrderSize);
 
-            var order2a = new LimitPriceOrder(TradeSide.Buy, 300000.0m, 1.0m);
-            var order2b = new LimitPriceOrder(300000.0m, 1.0m);    // buy
-            var order2c = new LimitPriceOrder(300000.0m, -1.0m);   // sell
+            var limitBuy = Order.LimitPrice(OrderPrice, OrderSize);
+            var limitSell = Order.LimitPrice(OrderPrice, -OrderSize);
+
+            var stopLossBuy = Order.StopLoss(TriggerPrice, OrderSize);
+            var stopLossSell = Order.StopLoss(TriggerPrice, -OrderSize);
+
+            var stopLossLimitBuy = Order.StopLossLimit(TriggerPrice, OrderPrice, OrderSize);
+            var stopLossLimitSell = Order.StopLossLimit(TriggerPrice, OrderPrice, -OrderSize);
         }
 
         [TestMethod]
         public void TestPlaceOrder()
         {
-            var market = new Market();
-            var order = new LimitPriceOrder(300000.0m, 1.0m); // buy
-            market.PlaceOrder(order);
         }
     }
 }
