@@ -5,89 +5,141 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Financier.Trading
 {
     public class Order : IOrder
     {
-        #region Order builder
-        public static IOrder MarketPrice(decimal size) => new Order { OrderType = OrderType.MarketPrice, OrderSize = size };
+        public virtual DateTime? OpenTime { get; set; }
+        public virtual DateTime? CloseTime { get; set; }
 
-        public static IOrder LimitPrice(decimal price, decimal size) => new Order { OrderType = OrderType.LimitPrice, OrderPrice = price, OrderSize = size };
-        public static IOrder LimitPrice(OrderPriceType orderPriceType, decimal size) => new Order { OrderType = OrderType.LimitPrice, OrderPriceType = orderPriceType, OrderSize = size };
-        public static IOrder LimitPrice(OrderPriceType orderPriceType, decimal orderPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.LimitPrice, OrderPriceType = orderPriceType, OrderPriceOffset = orderPriceOffset, OrderSize = size };
+        public virtual OrderType OrderType { get; set; }
+        public virtual decimal? OrderSize { get; set; }
+        public virtual decimal? OrderPrice { get; set; }
 
-        public static IOrder StopLoss(decimal triggerPrice, decimal size) => new Order { OrderType = OrderType.StopLoss, TriggerPrice = triggerPrice, OrderSize = size };
-        public static IOrder StopLoss(OrderPriceType triggerPriceType, decimal size)
-            => new Order { OrderType = OrderType.StopLoss, TriggerPriceType = triggerPriceType, OrderSize = size };
-        public static IOrder StopLoss(OrderPriceType triggerPriceType, decimal triggerPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.StopLoss, TriggerPriceType = triggerPriceType, TriggerPriceOffset = triggerPriceOffset, OrderSize = size };
-        public static IOrder StopLoss(OrderPriceType referencePriceType, OrderPriceType triggerPriceType, decimal triggerPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.StopLoss, ReferencePriceType = referencePriceType, TriggerPriceType = triggerPriceType, TriggerPriceOffset = triggerPriceOffset, OrderSize = size };
+        public virtual decimal? TriggerPrice { get; set; }
+        public virtual decimal? TrailingOffset { get; set; }
 
-        public static IOrder StopLossLimit(decimal triggerPrice, decimal orderPrice, decimal size)
-            => new Order { OrderType = OrderType.StopLossLimit, TriggerPrice = triggerPrice, OrderPrice = orderPrice, OrderSize = size };
-        public static IOrder StopLossLimit(OrderPriceType triggerPriceType, decimal triggerPriceOffset, OrderPriceType orderPriceType, decimal orderPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.StopLossLimit, TriggerPriceType = triggerPriceType, TriggerPriceOffset = triggerPriceOffset, OrderPriceType = orderPriceType, OrderPriceOffset = orderPriceOffset, OrderSize = size };
-        public static IOrder StopLossLimit(OrderPriceType referencePriceType, OrderPriceType triggerPriceType, decimal triggerPriceOffset, OrderPriceType orderPriceType, decimal orderPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.StopLossLimit, ReferencePriceType = referencePriceType, TriggerPriceType = triggerPriceType, TriggerPriceOffset = triggerPriceOffset, OrderPriceType = orderPriceType, OrderPriceOffset = orderPriceOffset, OrderSize = size };
+        public virtual IEnumerable<IExecution> Executions { get; } = new IExecution[0];
+        public virtual decimal? ExecutedPrice { get; }
+        public virtual decimal? ExecutedSize { get; }
 
-        public static IOrder TrailingStop(decimal trailingOffset, decimal size)
-            => new Order { OrderType = OrderType.TrailingStop, TrailingOffset = trailingOffset, OrderSize = size };
-
-        public static IOrder TrailingStopLimit(decimal trailingOffset, decimal orderPriceOffset, decimal size)
-            => new Order { OrderType = OrderType.TrailingStopLimit, TrailingOffset = trailingOffset, OrderPriceOffset = orderPriceOffset, OrderSize = size };
-
-        public static IOrder IFD(IOrder ifOrder, IOrder doneOrder) => new Order { OrderType = OrderType.IFD, Children = new List<IOrder> { ifOrder, doneOrder } };
-        public static IOrder OCO(IOrder first, IOrder second) => new Order { OrderType = OrderType.OCO, Children = new List<IOrder> { first, second } };
-        public static IOrder IFDOCO(IOrder ifOrder, IOrder first, IOrder second) => new Order { OrderType = OrderType.IFDOCO, Children = new List<IOrder> { ifOrder, first, second } };
-
-        // Foundamental operations
-        public static IOrder TriggerPriceBelow(OrderPriceType triggerPriceType, decimal triggerPrice, IOrder order)
-            => new Order { OrderType = OrderType.TriggerPriceBelow, TriggerPriceType = triggerPriceType, TriggerPrice = triggerPrice, Children = new List<IOrder> { order } };
-
-        public static IOrder TriggerPriceAbove(OrderPriceType triggerPriceType, decimal triggerPrice, IOrder order)
-            => new Order { OrderType = OrderType.TriggerPriceAbove, TriggerPriceType = triggerPriceType, TriggerPrice = triggerPrice, Children = new List<IOrder> { order } };
-
-        public static IOrder TriggerEvent(IOrder order, OrderTransactionEventType eventType, IOrder chainedOrder)
-            => new Order { OrderType = OrderType.TriggerEvent, TriggerEventType = eventType, Children = new List<IOrder> { order, chainedOrder } };
-
-
-        // WIP
-        public static IOrder StopAndReverse(IPosition openPosition) => throw new NotSupportedException();
-        public static IOrder StopAndReverse(IAsset openAsset) => throw new NotSupportedException();
-        #endregion Order builder
-
-        public OrderType OrderType { get; internal set; }
-        public virtual decimal? OrderSize { get; internal set; }
-        public virtual decimal? OrderPrice { get; internal set; }
-
-        public virtual decimal? TriggerPrice { get; internal set; }
-        public virtual decimal? TrailingOffset { get; internal set; }
-
-        public virtual IReadOnlyList<IOrder> Children { get; internal set; }
-
-        public OrderPriceType OrderPriceType { get; internal set; }
-        public decimal OrderPriceOffset { get; internal set; }
-        public OrderPriceType TriggerPriceType { get; internal set; }
-        public decimal TriggerPriceOffset { get; internal set; }
-        public OrderPriceType ReferencePriceType { get; internal set; }
-        public OrderTransactionEventType TriggerEventType { get; internal set; }
-
-        //
-        public virtual DateTime? OpenTime { get; internal set; }
-        public virtual DateTime? CloseTime { get; internal set; }
-        public virtual OrderState State { get; internal set; }
-
-        public virtual decimal? ExecutedPrice => throw new NotImplementedException();
-        public virtual decimal? ExecutedSize => throw new NotImplementedException();
-        public virtual IEnumerable<IExecution> Executions => throw new NotImplementedException();
+        public virtual IReadOnlyList<IOrder> Children => _children;
 
         public virtual bool IsClosed => State == OrderState.Completed;
 
+        public OrderPriceType OrderPriceType { get; set; }
+        public decimal OrderPriceOffset { get; set; }
+
+        public OrderPriceType TriggerPriceType { get; set; }
+        public decimal TriggerPriceOffset { get; set; }
+
+        public OrderPriceType ReferencePriceType { get; set; }
+        public OrderTransactionEventType TriggerEventType { get; set; }
+
+        OrderState _state;
+        List<IOrder> _children;
+
+        #region Constructors
         public Order()
         {
+            _children = new List<IOrder>();
+        }
+
+        public Order(IOrder child)
+        {
+            _children = new List<IOrder> { child };
+        }
+
+        public Order(IEnumerable<IOrder> children)
+        {
+            _children = new List<IOrder>(children);
+        }
+        #endregion Constructors
+
+        public virtual OrderState State
+        {
+            get
+            {
+                if (_children.Count == 0)
+                {
+                    return _state;
+                }
+
+                switch (OrderType)
+                {
+                    case OrderType.OCO:
+                        if (Children.Any(e => e.State == OrderState.OrderFailed))
+                        {
+                            _state = OrderState.OrderFailed;
+                        }
+                        else if (Children.Any(e => e.State == OrderState.Ordering))
+                        {
+                            _state = OrderState.Ordering;
+                        }
+                        else if (Children.All(e => e.State == OrderState.Ordered))
+                        {
+                            _state = OrderState.Ordered;
+                        }
+                        else if (Children.All(e => e.State == OrderState.Canceled))
+                        {
+                            _state = OrderState.Canceled;
+                        }
+                        else if (Children.All(e => e.State == OrderState.Canceling || e.State == OrderState.Canceled))
+                        {
+                            _state = OrderState.Canceling;
+                        }
+                        else if (Children.All(e =>
+                            e.State == OrderState.Canceled ||
+                            e.State == OrderState.Executed ||
+                            e.State == OrderState.Executing ||
+                            e.State == OrderState.Completed ||
+                            e.State == OrderState.Triggered
+                        ))
+                        {
+                            _state = OrderState.Completed;
+                        }
+                        break;
+                }
+
+                return _state;
+            }
+            internal set
+            {
+                _state = value;
+            }
+        }
+
+        public void ReplaceChildOrder(int childOrderIndex, IOrder order)
+        {
+            _children[childOrderIndex] = order;
+        }
+
+        public void ChangeState(OrderState newState)
+        {
+            if (State == newState)
+            {
+                return;
+            }
+
+            switch (newState)
+            {
+                case OrderState.Outstanding:
+                    OpenTime = DateTime.UtcNow;
+                    break;
+
+                default:
+                    if (newState.IsClosed())
+                    {
+                        CloseTime = DateTime.UtcNow;
+                    }
+                    break;
+            }
+
+            Debug.WriteLine($"Financier order status changed: {OrderType} {State} -> {newState}");
+            State = newState;
         }
     }
 }

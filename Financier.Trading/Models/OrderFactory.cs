@@ -4,60 +4,67 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Financier.Trading
 {
     public class OrderFactory
     {
-        // Market price
-        public virtual IOrder MarketPrice(decimal size) => Order.MarketPrice(size);
+        // Basic orders
+        public static IOrder MarketPrice(decimal size) => new Order { OrderType = OrderType.MarketPrice, OrderSize = size };
+        public static IOrder LimitPrice(decimal price, decimal size) => new Order { OrderType = OrderType.LimitPrice, OrderPrice = price, OrderSize = size };
 
-        // Limit price
-        public virtual IOrder LimitPrice(decimal price, decimal size) => Order.LimitPrice(price, size);
-        public virtual IOrder LimitPrice(OrderPriceType orderPriceType, decimal size) => Order.LimitPrice(orderPriceType, size);
-        public virtual IOrder LimitPrice(OrderPriceType orderPriceType, decimal orderPriceOffset, decimal size) => Order.LimitPrice(orderPriceType, orderPriceOffset, size);
+        // Simple conditional orders
+        public static IOrder StopLoss(decimal triggerPrice, decimal size) => new Order { OrderType = OrderType.StopLoss, TriggerPrice = triggerPrice, OrderSize = size };
+        public static IOrder StopLimit(decimal triggerPrice, decimal orderPrice, decimal size) => new Order { OrderType = OrderType.StopLimit, TriggerPrice = triggerPrice, OrderPrice = orderPrice, OrderSize = size };
+        public static IOrder TrailingStop(decimal trailingOffset, decimal size) => new Order { OrderType = OrderType.TrailingStop, TrailingOffset = trailingOffset, OrderSize = size };
+        public static IOrder TrailingStopLimit(decimal trailingOffset, decimal orderPriceOffset, decimal size) => new Order { OrderType = OrderType.TrailingStopLimit, TrailingOffset = trailingOffset, OrderPriceOffset = orderPriceOffset, OrderSize = size };
 
-        // Stop loss
-        public virtual IOrder StopLoss(decimal triggerPrice, decimal size) => Order.StopLoss(triggerPrice, size);
-        public virtual IOrder StopLoss(OrderPriceType triggerPriceType, decimal triggerPriceOffset, decimal size) => Order.StopLoss(triggerPriceType, triggerPriceOffset, size);
-
-        // Stop loss limit
-        public virtual IOrder StopLossLimit(decimal triggerPrice, decimal orderPrice, decimal size) => Order.StopLossLimit(triggerPrice, orderPrice, size);
-        public virtual IOrder StopLossLimit(OrderPriceType triggerPriceType, decimal triggerPriceOffset, OrderPriceType orderPriceType, decimal orderPriceOffset, decimal size) => Order.StopLossLimit(triggerPriceType, triggerPriceOffset, orderPriceType, orderPriceOffset, size);
-
-        // Trailing stop
-        public virtual IOrder TrailingStop(decimal trailingOffset, decimal size) => Order.TrailingStop(trailingOffset, size);
-
-        // Trailing stop limit
-        public virtual IOrder TrailingStopLimit(decimal trailingOffset, decimal orderPriceOffset, decimal size) => Order.TrailingStopLimit(trailingOffset, orderPriceOffset, size);
-
-        // Conditional orders
-        public virtual IOrder IFD(IOrder ifOrder, IOrder doneOrder) => Order.IFD(ifOrder, doneOrder);
-        public virtual IOrder OCO(IOrder first, IOrder second) => Order.OCO(first, second);
-        public virtual IOrder IFDOCO(IOrder ifOrder, IOrder first, IOrder second) => Order.IFDOCO(ifOrder, first, second);
+        // Combined conditional orders
+        public static IOrder IFD(IOrder ifOrder, IOrder doneOrder) => new Order(new IOrder[] { ifOrder, doneOrder }) { OrderType = OrderType.IFD };
+        public static IOrder OCO(IOrder first, IOrder second) => new Order(new IOrder[] { first, second }) { OrderType = OrderType.OCO };
+        public static IOrder IFDOCO(IOrder ifOrder, IOrder first, IOrder second) => new Order(new IOrder[] { ifOrder, first, second }) { OrderType = OrderType.IFDOCO };
 
         // Fundamental operations
-        public virtual IOrder TriggerPriceBelow(OrderPriceType triggerPriceType, decimal triggerPrice, IOrder order) => Order.TriggerPriceBelow(triggerPriceType, triggerPrice, order);
-        public virtual IOrder TriggerPriceAbove(OrderPriceType triggerPriceType, decimal triggerPrice, IOrder order) => Order.TriggerPriceAbove(triggerPriceType, triggerPrice, order);
-        public virtual IOrder TriggerEvent(IOrder order, OrderTransactionEventType eventType, IOrder chainedOrder) => Order.TriggerEvent(order, eventType, chainedOrder);
+        static IOrder TriggerPriceBelow(decimal triggerPrice, IOrder order) => new Order(order) { OrderType = OrderType.TriggerPriceBelow, TriggerPriceType = OrderPriceType.LastTraded, TriggerPrice = triggerPrice };
+        static IOrder TriggerPriceAbove(decimal triggerPrice, IOrder order) => new Order(order) { OrderType = OrderType.TriggerPriceAbove, TriggerPriceType = OrderPriceType.LastTraded, TriggerPrice = triggerPrice };
+        static IOrder TriggerOffsetPrice(decimal triggerPrice, decimal triggerPriceOffset, IOrder order) => new Order(order) { OrderType = OrderType.TriggerPriceOffset, TriggerPrice = triggerPrice, TriggerPriceOffset = triggerPriceOffset };
+        static IOrder TriggerEvent(IOrder order, OrderTransactionEventType eventType, IOrder chainedOrder) => new Order(new IOrder[] { order, chainedOrder }) { OrderType = OrderType.TriggerEvent, TriggerEventType = eventType };
 
-#if false
-        // Price trigger operations
+        // WIP
+        public static IOrder StopAndReverse(IPosition openPosition) => throw new NotSupportedException();
+        public static IOrder StopAndReverse(IAsset openAsset) => throw new NotSupportedException();
 
-        // Price triggered order operations
-        public virtual IOrder StopLoss(decimal triggerPrice, decimal size)
-            => (size > 0m)
-                ? TriggerPriceAbove(OrderPriceType.BestAsk, triggerPrice, MarketPrice(size))
-                : TriggerPriceBelow(OrderPriceType.BestBid, triggerPrice, MarketPrice(size));
+        // Translate conditional order to fundamental operations
+        public static IOrder Translate(IOrder order)
+        {
+            switch (order.OrderType)
+            {
+                case OrderType.IFD: // Executed trigger + order
+                    return TriggerEvent(order.Children[0], OrderTransactionEventType.Executed, order.Children[1]);
 
-        public virtual IOrder StopLossLimit(decimal triggerPrice, decimal orderPrice, decimal size)
-            => (size > 0m)
-                ? TriggerPriceAbove(OrderPriceType.BestAsk, triggerPrice, LimitPrice(orderPrice, size))
-                : TriggerPriceBelow(OrderPriceType.BestBid, triggerPrice, LimitPrice(orderPrice, size));
+                case OrderType.IFDOCO: // IFD + OCO
+                    return TriggerEvent(order.Children[0], OrderTransactionEventType.Executed, new Order(order.Children.Skip(1)) { OrderType = OrderType.OCO });
 
-        // Event triggered order operations
-        public virtual IOrder IFD(IOrder ifOrder, IOrder doneOrder) => EventTrigger(ifOrder, OrderTransactionEventType.Executed, doneOrder);
-#endif
+                case OrderType.StopLoss:
+                    return (order.OrderSize > 0m)
+                        ? TriggerPriceAbove(order.TriggerPrice.Value, MarketPrice(order.OrderSize.Value))
+                        : TriggerPriceBelow(order.TriggerPrice.Value, MarketPrice(order.OrderSize.Value));
+
+                case OrderType.StopLimit:
+                    return (order.OrderSize > 0m)
+                        ? TriggerPriceAbove(order.TriggerPrice.Value, LimitPrice(order.OrderPrice.Value, order.OrderSize.Value))
+                        : TriggerPriceBelow(order.TriggerPrice.Value, LimitPrice(order.OrderPrice.Value, order.OrderSize.Value));
+
+                case OrderType.TrailingStop:
+                    return TriggerOffsetPrice(order.TriggerPrice.Value, order.TriggerPriceOffset, MarketPrice(order.OrderSize.Value));
+
+                case OrderType.TrailingStopLimit:
+                    return TriggerOffsetPrice(order.TriggerPrice.Value, order.TriggerPriceOffset, LimitPrice(order.OrderPrice.Value, order.OrderSize.Value));
+
+                default:
+                    return order;
+            }
+        }
     }
 }

@@ -28,10 +28,10 @@ namespace Financier.Trading
         event EventHandler<PositionEventArgs> PositionChanged;
         event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
 
-
         void Open();
         bool HasActiveOrder { get; }
         IPositions Positions { get; }
+        IObservable<ITicker> GetTickerSource();
 
         IOrderTransaction PlaceOrder(IOrder order);
         IOrderTransaction PlaceOrder(IOrder order, TimeSpan timeToExpire, TimeInForce timeInForce);

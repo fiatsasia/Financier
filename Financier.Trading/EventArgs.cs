@@ -23,8 +23,7 @@ namespace Financier.Trading
         public OrderTransactionEventType EventType { get; set; }
         public IMarket Market { get; set; }
         public IOrder Order { get; set; }
-        public int ChildOrderIndex { get; set; }
         public OrderTransactionEventType ChildEventType { get; set; }
-        public IOrder ChildOrder => Order.Children[ChildOrderIndex];
+        public IOrder ChildOrder { get; set; }
     }
 }

@@ -7,11 +7,11 @@ using System;
 
 namespace Financier.Trading
 {
-    public class Ticker<TPrice, TSize> : ITicker<TPrice, TSize>
+    public class Ticker : ITicker
     {
-        public TPrice BidPrice { get; set; }
-        public TPrice AskPrice { get; set; }
-        public TPrice LastTradedPrice { get; set; }
+        public decimal BestBidPrice { get; set; }
+        public decimal BestAskPrice { get; set; }
+        public decimal LastTradedPrice { get; set; }
         public DateTime Time { get; set; }
     }
 }

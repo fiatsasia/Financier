@@ -80,5 +80,10 @@ namespace Financier.Trading
         {
             throw new NotImplementedException();
         }
+
+        public IObservable<ITicker> GetTickerSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

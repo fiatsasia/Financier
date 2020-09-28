@@ -8,6 +8,7 @@ namespace Financier.Trading
     public enum OrderType
     {
         Unspecified,
+        NullOrder,
 
         // Simple order types
         LimitPrice,
@@ -15,7 +16,7 @@ namespace Financier.Trading
 
         // Conditioned order types
         StopLoss,
-        StopLossLimit,
+        StopLimit,
         TrailingStop,
         TrailingStopLimit,
 
@@ -31,6 +32,7 @@ namespace Financier.Trading
 
         TriggerPriceBelow,
         TriggerPriceAbove,
+        TriggerPriceOffset,
         TriggerEvent,
         TriggerProfitAndLoss,
     }
@@ -50,13 +52,54 @@ namespace Financier.Trading
             }
         }
 
+        // OCO is not conditional
+        public static bool IsConditionalOrder(this OrderType orderType)
+        {
+            switch (orderType)
+            {
+                case OrderType.StopLoss:
+                case OrderType.StopLimit:
+                case OrderType.TrailingStop:
+                case OrderType.TrailingStopLimit:
+                case OrderType.StopAndReverse:
+                case OrderType.TriggerPriceBelow:
+                case OrderType.TriggerPriceAbove:
+                case OrderType.TriggerPriceOffset:
+                case OrderType.IFD:
+                case OrderType.IFDOCO:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public static bool IsCombinedOrder(this OrderType orderType)
         {
             switch (orderType)
             {
                 case OrderType.IFD:
                 case OrderType.OCO:
-                case OrderType.IFO:
+                case OrderType.IFDOCO:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsTriggerPrice(this OrderType orderType)
+        {
+            switch (orderType)
+            {
+                case OrderType.StopLoss:
+                case OrderType.StopLimit:
+                case OrderType.TrailingStop:
+                case OrderType.TrailingStopLimit:
+                case OrderType.StopAndReverse:
+                case OrderType.TriggerPriceBelow:
+                case OrderType.TriggerPriceAbove:
+                case OrderType.TriggerPriceOffset:
                     return true;
 
                 default:

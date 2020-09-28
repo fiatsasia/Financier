@@ -10,12 +10,8 @@ namespace Financier.Trading
     public interface ITicker
     {
         DateTime Time { get; }
-    }
-
-    public interface ITicker<TPrice, TSize> : ITicker
-    {
-        TPrice BidPrice { get; }
-        TPrice AskPrice { get; }
-        TPrice LastTradedPrice { get; }
+        decimal BestBidPrice { get; }
+        decimal BestAskPrice { get; }
+        decimal LastTradedPrice { get; }
     }
 }
