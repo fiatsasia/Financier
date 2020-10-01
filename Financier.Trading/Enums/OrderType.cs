@@ -11,17 +11,16 @@ namespace Financier.Trading
         NullOrder,
 
         // Simple order types
-        LimitPrice,
         MarketPrice,
+        LimitPrice,
 
         // Conditioned order types
         StopLoss,
         StopLimit,
         TrailingStop,
         TrailingStopLimit,
-
-        // Structured
-        StopAndReverse,
+        TakeProfit,
+        TakeProfitLimit,
 
         // Combined order types
         IFD,
@@ -30,11 +29,18 @@ namespace Financier.Trading
         IFDOCO = IFO,
         OSO,
 
+        // Fundamenal operations
         TriggerPriceBelow,
         TriggerPriceAbove,
         TriggerPriceOffset,
         TriggerEvent,
         TriggerProfitAndLoss,
+
+        // Reserved
+        Bracket,
+        BracketOCO,
+        BracketOSO,
+        StopAndReverse,
     }
 
     public static class OrderTypeExtension

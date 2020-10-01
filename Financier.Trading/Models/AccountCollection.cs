@@ -3,13 +3,11 @@
 // https://www.fiats.asia/
 //
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Financier.Trading
 {
-    public interface IAsset
+    public class AccountCollection : Collection<IAccount>, IAccountCollection
     {
     }
 }

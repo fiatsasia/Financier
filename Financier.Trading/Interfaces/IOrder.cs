@@ -10,15 +10,17 @@ namespace Financier.Trading
 {
     public interface IOrder
     {
-        OrderType OrderType { get; }
-        decimal? OrderPrice { get; }
-        decimal? OrderSize { get; }
-
-        decimal? TriggerPrice { get; }
-        decimal? TrailingOffset { get; }
-
         DateTime? OpenTime { get; }
         DateTime? CloseTime { get; }
+
+        OrderType OrderType { get; }
+        decimal? OrderSize { get; }
+        decimal? OrderPrice { get; }
+
+        decimal? TriggerPrice { get; }      // stop loss, stop limit
+        decimal? TrailingOffset { get; }    // trailing stop, trailing stop limit
+        decimal? ProfitPrice { get; }       // Take profit
+
         OrderState State { get; }
 
         IEnumerable<IExecution> Executions { get; }
@@ -26,12 +28,5 @@ namespace Financier.Trading
         decimal? ExecutedSize { get; }
 
         IReadOnlyList<IOrder> Children { get; }
-
-        OrderPriceType OrderPriceType { get; }
-        decimal OrderPriceOffset { get; }
-        OrderPriceType TriggerPriceType { get; }
-        decimal TriggerPriceOffset { get; }
-        OrderPriceType ReferencePriceType { get; }
-        OrderTransactionEventType TriggerEventType { get; }
     }
 }

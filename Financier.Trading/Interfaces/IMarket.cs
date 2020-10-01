@@ -23,6 +23,7 @@ namespace Financier.Trading
 
         decimal BestAskPrice { get; }
         decimal BestBidPrice { get; }
+        decimal MidPrice { get; }
         decimal LastTradedPrice { get; }
 
         event EventHandler<PositionEventArgs> PositionChanged;

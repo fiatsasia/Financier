@@ -17,4 +17,24 @@ namespace Financier.Trading
         LastSold,
         LastBought,
     }
+
+    public static class OrderPriceTypeExtension
+    {
+        public static bool IsNeedApplyPrice(this OrderPriceType priceType)
+        {
+            switch (priceType)
+            {
+                case OrderPriceType.BestAsk:
+                case OrderPriceType.BestBid:
+                case OrderPriceType.Mid:
+                case OrderPriceType.LastTraded:
+                case OrderPriceType.LastSold:
+                case OrderPriceType.LastBought:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+    }
 }
