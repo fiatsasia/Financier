@@ -9,7 +9,7 @@ namespace Financier.Trading
     {
         Unknown,
 
-        OrderSending,
+        StartOrdering,
         OrderSent,
         OrderSendFailed,
         OrderSendCanceled,

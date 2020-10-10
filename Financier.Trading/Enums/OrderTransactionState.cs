@@ -9,10 +9,10 @@ namespace Financier.Trading
     {
         Idle,
 
-        SendingOrder,
-        WaitingOrderAccepted,
+        Ordering,
+        ConfirmingOrder,
 
-        SendingCancel,
+        Canceling,
         CancelAccepted,
 
         Closed,

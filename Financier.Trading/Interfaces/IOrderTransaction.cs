@@ -4,7 +4,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 
 namespace Financier.Trading
 {
@@ -16,11 +15,9 @@ namespace Financier.Trading
         IOrderTransaction[] Children { get; }
         IOrderTransaction Parent { get; }
 
-        void SetParent(IOrderTransaction parent);
         IOrderTransaction AddChild(IOrderTransaction child);
 
-        void OnChildOrderTransactionChanged(IOrderTransaction tx, OrderTransactionEventArgs ev);
-        event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
+        void EscalteEvent(IOrderTransaction tx, OrderTransactionEventArgs ev);
 
         IOrder Order { get; }
 

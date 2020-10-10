@@ -12,6 +12,7 @@ namespace Financier.Trading
         Market,
         BestAsk,
         BestBid,
+        Best,
         Mid,
         LastTraded,
         LastSold,
@@ -26,6 +27,7 @@ namespace Financier.Trading
             {
                 case OrderPriceType.BestAsk:
                 case OrderPriceType.BestBid:
+                case OrderPriceType.Best:
                 case OrderPriceType.Mid:
                 case OrderPriceType.LastTraded:
                 case OrderPriceType.LastSold:
