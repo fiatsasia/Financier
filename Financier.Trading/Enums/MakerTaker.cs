@@ -5,11 +5,10 @@
 
 namespace Financier.Trading
 {
-    public enum OrderTransactionState
+    public enum MakerTaker
     {
-        Idle,
-        Ordering,
-        Canceling,
-        Closed,
+        NotSpecified,
+        Maker,
+        Taker,
     }
 }

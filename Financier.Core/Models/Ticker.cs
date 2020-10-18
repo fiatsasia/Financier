@@ -11,6 +11,7 @@ namespace Financier.Trading
     {
         public decimal BestBidPrice { get; set; }
         public decimal BestAskPrice { get; set; }
+        public decimal MidPrice { get; set; }
         public decimal LastTradedPrice { get; set; }
         public DateTime Time { get; set; }
     }

@@ -17,7 +17,6 @@ namespace Financier.Trading
         IOrder TrailingStop(decimal trailingOffset, decimal size);
         IOrder TrailingStopLimit(decimal trailingOffset, decimal stopPrice, decimal size);
         IOrder TakeProfit(decimal profitPrice, decimal size);
-        IOrder TakeProfitLimit(decimal profitPrice, decimal limitPrice, decimal size);
 
         // Combined conditional orders
         IOrder IFD(IOrder ifOrder, IOrder doneOrder);

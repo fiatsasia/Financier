@@ -29,31 +29,23 @@ namespace Financier.Trading
         CancelFailed,
 
         Expired,
-
-        ChildOrderEvent,
     }
 
     public static class OrderTransactionEventTypeExtension
     {
-        public static bool IsClosed(this OrderTransactionEventType eventType)
+        public static bool IsClosed(this OrderTransactionEventType eventType) => eventType switch
         {
-            switch (eventType)
-            {
-                case OrderTransactionEventType.OrderSendFailed:
-                case OrderTransactionEventType.OrderSendCanceled:
-                case OrderTransactionEventType.OrderFailed:
-                case OrderTransactionEventType.Executed:
-                case OrderTransactionEventType.Completed:
-                case OrderTransactionEventType.CancelSendFailed:
-                case OrderTransactionEventType.CancelSendCanceled:
-                case OrderTransactionEventType.Canceled:
-                case OrderTransactionEventType.CancelFailed:
-                case OrderTransactionEventType.Expired:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
+            OrderTransactionEventType.OrderSendFailed => true,
+            OrderTransactionEventType.OrderSendCanceled => true,
+            OrderTransactionEventType.OrderFailed => true,
+            OrderTransactionEventType.Executed => true,
+            OrderTransactionEventType.Completed => true,
+            OrderTransactionEventType.CancelSendFailed => true,
+            OrderTransactionEventType.CancelSendCanceled => true,
+            OrderTransactionEventType.Canceled => true,
+            OrderTransactionEventType.CancelFailed => true,
+            OrderTransactionEventType.Expired => true,
+            _ => false
+        };
     }
 }

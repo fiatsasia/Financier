@@ -9,14 +9,12 @@ namespace Financier.Trading
     {
         Outstanding,
 
-        Ordering,
         Ordered,
         OrderFailed,
 
-        Executing,  // Exclude conditional order
+        PartiallyExecuted,  // Exclude conditional order
         Executed,   // Exclude conditional order
 
-        Canceling,
         Canceled,
         CancelFailed,
 
@@ -28,21 +26,32 @@ namespace Financier.Trading
 
     public static class OrderStateExtension
     {
-        public static bool IsClosed(this OrderState state)
+        public static bool IsClosed(this OrderState state)=> state switch
         {
-            switch (state)
-            {
-                case OrderState.OrderFailed:
-                case OrderState.Executed:
-                case OrderState.Canceled:
-                case OrderState.CancelFailed:
-                case OrderState.Completed:
-                case OrderState.Expired:
-                    return true;
+            OrderState.OrderFailed => true,
+            OrderState.Executed => true,
+            OrderState.Canceled => true,
+            OrderState.CancelFailed => true,
+            OrderState.Completed => true,
+            OrderState.Expired => true,
+            _ => false
+        };
 
-                default:
-                    return false;
-            }
-        }
+        public static bool IsCancelable(this OrderState state) => state switch
+        {
+            OrderState.Ordered => true,
+            OrderState.PartiallyExecuted => true,
+            OrderState.Triggered => true,
+
+            OrderState.Outstanding => false,
+            OrderState.OrderFailed => false,
+            OrderState.Executed => false,
+            OrderState.Canceled => false,
+            OrderState.CancelFailed => false,
+            OrderState.Expired => false,
+            OrderState.Completed => false,
+
+            _ => false
+        };
     }
 }

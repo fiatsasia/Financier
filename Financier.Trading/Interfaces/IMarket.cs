@@ -32,6 +32,7 @@ namespace Financier.Trading
         void Open();
         bool HasActiveOrder { get; }
         IPositions Positions { get; }
+        TOrderFactory GetOrderFactory<TOrderFactory>() where TOrderFactory : IOrderFactory;
         IObservable<ITicker> GetTickerSource();
 
         IOrderTransaction PlaceOrder(IOrder order);

@@ -12,6 +12,7 @@ namespace Financier.Trading
         DateTime Time { get; }
         decimal BestBidPrice { get; }
         decimal BestAskPrice { get; }
+        decimal MidPrice { get; }
         decimal LastTradedPrice { get; }
     }
 }

@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>Latest</LangVersion>
+    <LangVersion>latestMajor</LangVersion>
     <RootNamespace>Financier</RootNamespace>
     <Version>0.7.0</Version>
     <Authors>Fiats Inc.</Authors>

@@ -16,14 +16,11 @@ namespace Financier.Trading
 
     public static class TradeSideExtension
     {
-        public static TradeSide Reverse(this TradeSide side)
+        public static TradeSide Reverse(this TradeSide side) => side switch
         {
-            switch (side)
-            {
-                case TradeSide.Buy: return TradeSide.Sell;
-                case TradeSide.Sell: return TradeSide.Buy;
-                default: throw new ArgumentException();
-            }
-        }
+            TradeSide.Buy => TradeSide.Sell,
+            TradeSide.Sell => TradeSide.Buy,
+            _ => throw new ArgumentException()
+        };
     }
 }

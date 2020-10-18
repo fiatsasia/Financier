@@ -21,7 +21,7 @@ namespace Financier.Trading
 
         IOrder Order { get; }
 
-        bool IsCancelable { get; }
+        bool IsCancelable { get; } // Will be used to enable/disable cancel buttons
         void Cancel();
     }
 }

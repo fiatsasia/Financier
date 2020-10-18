@@ -17,7 +17,6 @@ namespace Financier.Trading
         public virtual IOrder TrailingStop(decimal trailingOffset, decimal size) => Construct(OrderType.TrailingStop, trailingOffset: trailingOffset, orderSize: size);
         public virtual IOrder TrailingStopLimit(decimal trailingOffset, decimal stopPrice, decimal size) => Construct(OrderType.TrailingStopLimit, trailingOffset: trailingOffset, orderPrice: stopPrice, orderSize: size);
         public virtual IOrder TakeProfit(decimal profitPrice, decimal size) => Construct(OrderType.TakeProfit, profitPrice: profitPrice, orderSize: size);
-        public virtual IOrder TakeProfitLimit(decimal profitPrice, decimal limitPrice, decimal size) => Construct(OrderType.TakeProfitLimit, profitPrice: profitPrice, orderPrice: limitPrice, orderSize: size);
 
         // Combined conditional orders
         public virtual IOrder IFD(IOrder ifOrder, IOrder doneOrder) => Construct(OrderType.IFD, children: new IOrder[] { ifOrder, doneOrder });
