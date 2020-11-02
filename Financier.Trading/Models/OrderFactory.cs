@@ -8,7 +8,7 @@ namespace Financier.Trading
     public class OrderFactory : IOrderFactory
     {
         // Basic orders
-        public virtual IOrder MarketPrice(decimal size) => Construct(OrderType.LimitPrice, orderSize: size);
+        public virtual IOrder MarketPrice(decimal size) => Construct(OrderType.MarketPrice, orderSize: size);
         public virtual IOrder LimitPrice(decimal price, decimal size) => Construct(OrderType.LimitPrice, orderPrice: price, orderSize: size);
 
         // Simple conditional orders

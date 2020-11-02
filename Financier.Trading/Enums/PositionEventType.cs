@@ -8,5 +8,7 @@ namespace Financier.Trading
     public enum PositionEventType
     {
         Unknown,
+        Opened,
+        Closed,
     }
 }

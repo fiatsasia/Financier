@@ -19,17 +19,18 @@ namespace OrderTests
         [TestMethod]
         public void TestCreateOrder()
         {
-            var marketBuy = Order.MarketPrice(OrderSize);
-            var marketSell = Order.MarketPrice(-OrderSize);
+            var factory = new OrderFactory();
+            var marketBuy = factory.MarketPrice(OrderSize);
+            var marketSell = factory.MarketPrice(-OrderSize);
 
-            var limitBuy = Order.LimitPrice(OrderPrice, OrderSize);
-            var limitSell = Order.LimitPrice(OrderPrice, -OrderSize);
+            var limitBuy = factory.LimitPrice(OrderPrice, OrderSize);
+            var limitSell = factory.LimitPrice(OrderPrice, -OrderSize);
 
-            var stopLossBuy = Order.StopLoss(TriggerPrice, OrderSize);
-            var stopLossSell = Order.StopLoss(TriggerPrice, -OrderSize);
+            var stopLossBuy = factory.StopLoss(TriggerPrice, OrderSize);
+            var stopLossSell = factory.StopLoss(TriggerPrice, -OrderSize);
 
-            var stopLossLimitBuy = Order.StopLossLimit(TriggerPrice, OrderPrice, OrderSize);
-            var stopLossLimitSell = Order.StopLossLimit(TriggerPrice, OrderPrice, -OrderSize);
+            var stopLossLimitBuy = factory.StopLimit(TriggerPrice, OrderPrice, OrderSize);
+            var stopLossLimitSell = factory.StopLimit(TriggerPrice, OrderPrice, -OrderSize);
         }
 
         [TestMethod]

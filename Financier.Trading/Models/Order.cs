@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Financier.Trading
 {
@@ -24,13 +25,14 @@ namespace Financier.Trading
 
         public virtual OrderState State { get; set; }
 
-        public virtual IEnumerable<IExecution> Executions { get; } = new IExecution[0];
-        public virtual decimal? ExecutedPrice { get; }
-        public virtual decimal? ExecutedSize { get; }
+        public virtual IEnumerable<IExecution> Executions => _execs;
+        public virtual decimal? ExecutedPrice { get; set; }
+        public virtual decimal? ExecutedSize { get; set; }
 
         public virtual IReadOnlyList<IOrder> Children => _children;
         #endregion IOrder implementations
 
+        protected List<IExecution> _execs = new List<IExecution>();
         protected List<IOrder> _children;
 
         #region Constructors
@@ -49,6 +51,30 @@ namespace Financier.Trading
             _children = new List<IOrder>(children);
         }
         #endregion Constructors
+
+        public void AddExecution(DateTime time, decimal price, decimal size)
+        {
+            if (!OrderSize.HasValue)
+            {
+                throw new ArgumentException();
+            }
+            if (!ExecutedSize.HasValue)
+            {
+                ExecutedSize = 0m;
+            }
+
+            var exec = new Execution { Time = time, Price = price, Size = size };
+            ExecutedSize += size;
+            if (ExecutedSize > OrderSize)
+            {
+                exec.Size -= ExecutedSize.Value - OrderSize.Value;
+                ExecutedSize = OrderSize;
+            }
+            _execs.Add(exec);
+
+            ExecutedPrice = _execs.Sum(e => e.Price * e.Size) / _execs.Sum(e => e.Size); // Calculate average price
+            State = (ExecutedSize.Value < OrderSize.Value) ? OrderState.PartiallyExecuted : OrderState.Executed;
+        }
 
         public void ReplaceChildOrder(int childOrderIndex, IOrder order)
         {
