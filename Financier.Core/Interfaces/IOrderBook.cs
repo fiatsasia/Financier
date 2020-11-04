@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 namespace Financier.Trading
 {
-    public interface IOrderBook<TPrice, TSize>
+    public interface IOrderBook
     {
-        TPrice BestBidPrice { get; }
-        TSize BestBidSize { get; }
-        TPrice BestAskPrice { get; }
-        TSize BestAskSize { get; }
-        IReadOnlyList<(TPrice Price, TSize Size)> Bids { get; }
-        IReadOnlyList<(TPrice Price, TSize Size)> Asks { get; }
+        decimal BestBidPrice { get; }
+        decimal BestBidSize { get; }
+        decimal BestAskPrice { get; }
+        decimal BestAskSize { get; }
+        IReadOnlyList<(decimal Price, decimal Size)> Bids { get; }
+        IReadOnlyList<(decimal Price, decimal Size)> Asks { get; }
     }
 }

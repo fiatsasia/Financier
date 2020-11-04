@@ -17,7 +17,7 @@ namespace Financier
         /// <param name="source"></param>
         /// <returns></returns>
         public static IObservable<double> ChaikinOscillator(
-            this IObservable<IOhlcv<double>> source,
+            this IObservable<IOhlcv> source,
             int shortPeriod = 3,
             int longPeriod = 10
         )

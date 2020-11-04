@@ -16,13 +16,13 @@ namespace Financier
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static IObservable<double> AccumulationDistribution(this IObservable<IOhlcv<double>> source)
+        public static IObservable<double> AccumulationDistribution(this IObservable<IOhlcv> source)
         {
             return source
                 // Calculate money flow volume
                 .Select(ohlc =>
                 {
-                    return ((ohlc.Close - ohlc.Low) - (ohlc.High - ohlc.Close)) / (ohlc.High - ohlc.Low) * ohlc.Volume;
+                    return Convert.ToDouble(((ohlc.Close - ohlc.Low) - (ohlc.High - ohlc.Close)) / (ohlc.High - ohlc.Low) * Convert.ToDecimal(ohlc.Volume));
                 })
                 // Accummulate previous and current
                 .Scan(double.NaN, (prev, current) =>

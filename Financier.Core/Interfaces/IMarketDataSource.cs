@@ -13,30 +13,24 @@ namespace Financier.Trading
         string Provider { get; }
     }
 
-    public interface IRealtimeSource<TPrice, TSize> : IMarketDataSource
+    public interface IRealtimeSource : IMarketDataSource
     {
         void Connect();
 
         IObservable<IExecution> GetExecutionSource(string symbol);
         IObservable<ITicker> GetTickerSource(string symbol);
-        IObservable<IOrderBook<TPrice, TSize>> GetOrderBookSource(string symbol);
-
-        IObservable<IOhlcv<TPrice>> GetOhlcSource(string symbol, TimeSpan period);
-        IObservable<IOhlcv<TPrice>> GetOhlcvSource(string symbol, TimeSpan period);
-        IObservable<IOhlcvv<TPrice>> GetOhlcvvSource(string symbol, TimeSpan period);
-
-        IObservable<IOhlcv<TPrice>> GetOhlcUpdateSource(string symbol, TimeSpan period);
-        IObservable<IOhlcv<TPrice>> GetOhlcvUpdateSource(string symbol, TimeSpan period);
-        IObservable<IOhlcv<TPrice>> GetOhlcvvUpdateSource(string symbol, TimeSpan period);
+        IObservable<IOrderBook> GetOrderBookSource(string symbol);
+        IObservable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan period) where TOhlc : IOhlc;
+        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string symbol, TimeSpan period) where TOhlc : IOhlc;
     }
 
-    public interface IRealtimeSourceCollection : ICollection<IMarketDataSource>
+    public interface IRealtimeSourceCollection : ICollection<IRealtimeSource>
     {
     }
 
-    public interface IHistoricalSource<TPrice, TSize> : IMarketDataSource
+    public interface IHistoricalSource : IMarketDataSource
     {
-        IObservable<IOhlcvv<TPrice>> GetOhlcvvSource(string symbol, TimeSpan period, DateTime start, DateTime end);
+        IObservable<IOhlcvv> GetOhlcvvSource(string symbol, TimeSpan period, DateTime start, DateTime end);
     }
 
     public interface IHistoricalSourceCollection : ICollection<IMarketDataSource>

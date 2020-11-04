@@ -33,7 +33,7 @@ namespace Financier
 
                 case "ADL":
                 case "AccumulationDistribution":
-                    return source.Cast<IOhlcv<double>>().AccumulationDistribution().Select(e => (object)e);
+                    return source.Cast<IOhlcv>().AccumulationDistribution().Select(e => (object)e);
             }
 
             return null;

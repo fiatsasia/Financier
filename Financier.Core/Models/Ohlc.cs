@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace Financier
 {
     // OHLC + Start
-    public class Ohlc<TPrice> : IOhlc<TPrice>
+    public class Ohlc : IOhlc
     {
         protected TimeSpan Period { get; private set; }
 
@@ -22,19 +22,29 @@ namespace Financier
             protected set { _start = value; }
         }
 
-        public TPrice Open { get; protected set; }
-        public TPrice High { get; protected set; }
-        public TPrice Low { get; protected set; }
-        public TPrice Close { get; protected set; }
+        public decimal Open { get; protected set; }
+        public decimal High { get; protected set; }
+        public decimal Low { get; protected set; }
+        public decimal Close { get; protected set; }
 
         public Ohlc(TimeSpan period)
         {
             Period = period;
-            High = Calculator.MinValue<TPrice>();
-            Low = Calculator.MaxValue<TPrice>();
+            High = decimal.MinValue;
+            Low = decimal.MaxValue;
         }
 
-        public virtual void Update(DateTime time, TPrice price)
+        public virtual void Reset()
+        {
+            _start = DateTime.MaxValue;
+            _end = DateTime.MinValue;
+            Open = decimal.Zero;
+            High = decimal.MinValue;
+            Low = decimal.MaxValue;
+            Close = decimal.Zero;
+        }
+
+        public virtual void Update(DateTime time, decimal price)
         {
             if (time < _start)
             {
@@ -47,8 +57,8 @@ namespace Financier
                 Close = price;
             }
 
-            if (Calculator.CompareTo(price, High) > 0) High = price;
-            if (Calculator.CompareTo(price, Low) < 0) Low = price;
+            High = Math.Max(price, High);
+            Low = Math.Min(price, Low);
         }
 
         public virtual double GetTypicalPrice(TypicalPriceKind kind)
@@ -56,19 +66,19 @@ namespace Financier
             switch (kind)
             {
                 case TypicalPriceKind.Close:
-                    return Calculator.ToDouble(Close);
+                    return Convert.ToDouble(Close);
 
                 case TypicalPriceKind.TypicalPrice:
-                    return Calculator.ToDouble(new TPrice[] { High, Low, Close }.Average());
+                    return Convert.ToDouble(new decimal[] { High, Low, Close }.Average());
 
                 case TypicalPriceKind.OHLC:
-                    return Calculator.ToDouble(new TPrice[] { Open, High, Low, Close }.Average());
+                    return Convert.ToDouble(new decimal[] { Open, High, Low, Close }.Average());
 
                 case TypicalPriceKind.HLCC:
-                    return Calculator.ToDouble(new TPrice[] { High, Low, Close, Close }.Average());
+                    return Convert.ToDouble(new decimal[] { High, Low, Close, Close }.Average());
 
                 case TypicalPriceKind.HLOO:
-                    return Calculator.ToDouble(new TPrice[] { Open, Open, High, Low }.Average());
+                    return Convert.ToDouble(new decimal[] { Open, Open, High, Low }.Average());
 
                 default:
                     throw new InvalidOperationException();
@@ -77,13 +87,13 @@ namespace Financier
     }
 
     // OHLC + Start + Volume
-    public class Ohlcv<TPrice> : Ohlc<TPrice>, IOhlcv<TPrice>
+    public class Ohlcv : Ohlc, IOhlcv
     {
         public double Volume { get; protected set; }
 
         public Ohlcv(TimeSpan period) : base(period) { }
 
-        public Ohlcv(TimeSpan period, DateTime start, TPrice open, TPrice high, TPrice low, TPrice close, double volume)
+        public Ohlcv(TimeSpan period, DateTime start, decimal open, decimal high, decimal low, decimal close, double volume)
             : base(period)
         {
             Start = start;
@@ -94,15 +104,21 @@ namespace Financier
             Volume = volume;
         }
 
-        public virtual void Update<TSize>(DateTime time, TPrice price, TSize size)
+        public override void Reset()
+        {
+            base.Reset();
+            Volume = 0d;
+        }
+
+        public virtual void Update(DateTime time, decimal price, decimal size)
         {
             base.Update(time, price);
-            Volume += Math.Abs(Calculator.ToDouble(size)); // Some of system indicates sell as minus
+            Volume += Math.Abs(Convert.ToDouble(size)); // Some of system indicates sell as minus
         }
     }
 
     // OHLC + Start + Volume + VWAP(Volume Weighted Average Price)
-    public class Ohlcvv<TPrice> : Ohlcv<TPrice>, IOhlcvv<TPrice>
+    public class Ohlcvv : Ohlcv, IOhlcvv
     {
         decimal _amount;
 
@@ -111,7 +127,7 @@ namespace Financier
 
         public Ohlcvv(TimeSpan period) : base(period) { }
 
-        public Ohlcvv(TimeSpan period, DateTime start, TPrice open, TPrice high, TPrice low, TPrice close, double volume, double vwap)
+        public Ohlcvv(TimeSpan period, DateTime start, decimal open, decimal high, decimal low, decimal close, double volume, double vwap)
             : base(period)
         {
             Start = start;
@@ -123,7 +139,7 @@ namespace Financier
             VWAP = vwap;
         }
 
-        public Ohlcvv(TimeSpan period, IEnumerable<IOhlcvv<TPrice>> ohlcs)
+        public Ohlcvv(TimeSpan period, IEnumerable<IOhlcvv> ohlcs)
             : base(period)
         {
             var first = ohlcs.First();
@@ -136,10 +152,17 @@ namespace Financier
             VWAP = ohlcs.Sum(e => e.VWAP * e.Volume) / Volume;
         }
 
-        public override void Update<TSize>(DateTime time, TPrice price, TSize size)
+        public override void Reset()
+        {
+            base.Reset();
+            _amount = decimal.Zero;
+            VWAP = 0d;
+        }
+
+        public override void Update(DateTime time, decimal price, decimal size)
         {
             base.Update(time, price, size);
-            _amount += Calculator.ToDecimal(price) * Math.Abs(Calculator.ToDecimal(size));
+            _amount += price * Math.Abs(size);
             try
             {
                 VWAP = Convert.ToDouble(_amount / Convert.ToDecimal(Volume));

@@ -7,21 +7,21 @@ using System;
 
 namespace Financier
 {
-    public interface IOhlc<TPrice>
+    public interface IOhlc
     {
         DateTime Start { get; }
-        TPrice Open { get; }
-        TPrice High { get; }
-        TPrice Low { get; }
-        TPrice Close { get; }
+        decimal Open { get; }
+        decimal High { get; }
+        decimal Low { get; }
+        decimal Close { get; }
     }
 
-    public interface IOhlcv<TPrice> : IOhlc<TPrice>
+    public interface IOhlcv : IOhlc
     {
         double Volume { get; }
     }
 
-    public interface IOhlcvv<TPrice> : IOhlcv<TPrice>
+    public interface IOhlcvv : IOhlcv
     {
         double VWAP { get; }
     }
