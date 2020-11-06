@@ -30,7 +30,7 @@ namespace Financier.Trading
 
     public interface IHistoricalSource : IMarketDataSource
     {
-        IObservable<IOhlcvv> GetOhlcvvSource(string symbol, TimeSpan period, DateTime start, DateTime end);
+        IEnumerable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
     }
 
     public interface IHistoricalSourceCollection : ICollection<IMarketDataSource>
