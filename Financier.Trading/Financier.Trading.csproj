@@ -3,13 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latestMajor</LangVersion>
-    <Nullable>enable</Nullable>
-    <Version>0.7.2</Version>
+    <Version>0.8.0</Version>
     <Authors>Fiats Inc.</Authors>
     <Company>Fiats Inc.</Company>
     <Product>Financier</Product>
     <Description>Financier defines essential classes and symbols for financial applications.</Description>
-    <Copyright>Copyright (c) 2012-2020 Fiats Inc. All rights reserved.</Copyright>
+    <Copyright>Copyright (c) 2012-2021 Fiats Inc. All rights reserved.</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/fiatsasia/Financier</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fiatsasia/Financier</RepositoryUrl>

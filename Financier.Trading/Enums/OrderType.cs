@@ -1,6 +1,9 @@
 ﻿//==============================================================================
-// Copyright (c) 2017-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt in the solution folder for
+// full license information.
 // https://www.fiats.asia/
+// Fiats Inc. Nakano, Tokyo, Japan
 //
 
 namespace Financier.Trading
@@ -11,11 +14,11 @@ namespace Financier.Trading
         NullOrder,
 
         // Simple order types
-        MarketPrice,
-        LimitPrice,
+        Market,
+        Limit,
 
         // Conditioned order types
-        StopLoss,
+        Stop,
         StopLimit,
         TrailingStop,
         TrailingStopLimit,
@@ -45,15 +48,15 @@ namespace Financier.Trading
     {
         public static bool IsSimpleOrder(this OrderType orderType) => orderType switch
         {
-            OrderType.LimitPrice => true,
-            OrderType.MarketPrice => true,
+            OrderType.Limit => true,
+            OrderType.Market => true,
             _ => false
         };
 
         // OCO is not conditional
         public static bool IsConditionalOrder(this OrderType orderType) => orderType switch
         {
-            OrderType.StopLoss => true,
+            OrderType.Stop => true,
             OrderType.StopLimit => true,
             OrderType.TrailingStop => true,
             OrderType.TrailingStopLimit => true,
@@ -76,7 +79,7 @@ namespace Financier.Trading
 
         public static bool IsTriggerPrice(this OrderType orderType) => orderType switch
         {
-            OrderType.StopLoss => true,
+            OrderType.Stop => true,
             OrderType.StopLimit => true,
             OrderType.TrailingStop => true,
             OrderType.TrailingStopLimit => true,

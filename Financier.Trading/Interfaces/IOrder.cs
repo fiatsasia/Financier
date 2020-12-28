@@ -1,6 +1,9 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt in the solution folder for
+// full license information.
 // https://www.fiats.asia/
+// Fiats Inc. Nakano, Tokyo, Japan
 //
 
 using System;
@@ -10,23 +13,26 @@ namespace Financier.Trading
 {
     public interface IOrder
     {
-        DateTime? OpenTime { get; }
-        DateTime? CloseTime { get; }
-
+        #region Order request parameters
         OrderType OrderType { get; }
         decimal? OrderSize { get; }
         decimal? OrderPrice { get; }
-
         decimal? TriggerPrice { get; }      // stop loss, stop limit
+        decimal? StopPrice { get; }         // stop limit
         decimal? TrailingOffset { get; }    // trailing stop, trailing stop limit
         decimal? ProfitPrice { get; }       // Take profit
+        IReadOnlyList<IOrder> Children { get; }
+        #endregion Order request parameters
 
+        DateTime? OpenTime { get; }
+        DateTime? CloseTime { get; }
+        DateTime? ExpirationDate { get; }
         OrderState State { get; }
 
         IEnumerable<IExecution> Executions { get; }
         decimal? ExecutedPrice { get; }
         decimal? ExecutedSize { get; }
 
-        IReadOnlyList<IOrder> Children { get; }
+        IOrderRequest Request { get; }
     }
 }

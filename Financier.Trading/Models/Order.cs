@@ -1,28 +1,33 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt in the solution folder for
+// full license information.
 // https://www.fiats.asia/
+// Fiats Inc. Nakano, Tokyo, Japan
 //
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Data;
 
 namespace Financier.Trading
 {
     public class Order : IOrder
     {
+        #region Order request parameters
+        public OrderType OrderType => Request.OrderType;
+        public decimal? OrderSize => Request.OrderSize;
+        public decimal? OrderPrice => Request.OrderPrice;
+        public decimal? TriggerPrice => Request.TriggerPrice;
+        public decimal? StopPrice => Request.StopPrice;
+        public decimal? TrailingOffset => Request.TrailingOffset;
+        public decimal? ProfitPrice => Request.ProfitPrice;
+        #endregion Order request parameters
+
         #region IOrder implementations
         public virtual DateTime? OpenTime { get; set; }
         public virtual DateTime? CloseTime { get; set; }
-
-        public virtual OrderType OrderType { get; set; }
-        public virtual decimal? OrderSize { get; set; }
-        public virtual decimal? OrderPrice { get; set; }
-
-        public virtual decimal? TriggerPrice { get; set; }
-        public virtual decimal? TrailingOffset { get; set; }
-        public virtual decimal? ProfitPrice { get; set; }
-
+        public virtual DateTime? ExpirationDate => throw new NotSupportedException();
         public virtual OrderState State { get; set; }
 
         public virtual IEnumerable<IExecution> Executions => _execs;
@@ -34,6 +39,8 @@ namespace Financier.Trading
 
         protected List<IExecution> _execs = new List<IExecution>();
         protected List<IOrder> _children;
+
+        public IOrderRequest Request { get; }
 
         #region Constructors
         public Order()
@@ -49,6 +56,12 @@ namespace Financier.Trading
         public Order(IEnumerable<IOrder> children)
         {
             _children = new List<IOrder>(children);
+        }
+
+        public Order(IOrderRequest request)
+        {
+            Request = request;
+            _children = ((request.Children?.Length ?? 0) > 0) ? request.Children.Select(e => new Order(e)).Cast<IOrder>().ToList() : new();
         }
         #endregion Constructors
 

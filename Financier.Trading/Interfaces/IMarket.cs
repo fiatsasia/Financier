@@ -1,6 +1,9 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt in the solution folder for
+// full license information.
 // https://www.fiats.asia/
+// Fiats Inc. Nakano, Tokyo, Japan
 //
 
 using System;
@@ -32,10 +35,9 @@ namespace Financier.Trading
         void Open();
         bool HasActiveOrder { get; }
         IPositions Positions { get; }
-        TOrderFactory GetOrderFactory<TOrderFactory>() where TOrderFactory : IOrderFactory;
         IObservable<ITicker> GetTickerSource();
 
-        IOrderTransaction PlaceOrder(IOrder order);
-        IOrderTransaction PlaceOrder(IOrder order, TimeSpan timeToExpire, TimeInForce timeInForce);
+        IOrderTransaction PlaceOrder(IOrderRequest request);
+        IOrderTransaction PlaceOrder(IOrderRequest request, TimeInForce tif, DateTime validityPeriod, DateTime startTime);
     }
 }

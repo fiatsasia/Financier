@@ -1,10 +1,12 @@
 //==============================================================================
-// Copyright (c) 2012-2020 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt in the solution folder for
+// full license information.
 // https://www.fiats.asia/
+// Fiats Inc. Nakano, Tokyo, Japan
 //
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Financier;
 using Financier.Trading;
 
 namespace OrderTests
@@ -19,15 +21,15 @@ namespace OrderTests
         [TestMethod]
         public void TestCreateOrder()
         {
-            var factory = new OrderFactory();
-            var marketBuy = factory.MarketPrice(OrderSize);
-            var marketSell = factory.MarketPrice(-OrderSize);
+            var factory = new OrderRequestFactory<OrderRequest>();
+            var marketBuy = factory.Market(OrderSize);
+            var marketSell = factory.Market(-OrderSize);
 
-            var limitBuy = factory.LimitPrice(OrderPrice, OrderSize);
-            var limitSell = factory.LimitPrice(OrderPrice, -OrderSize);
+            var limitBuy = factory.Limit(OrderPrice, OrderSize);
+            var limitSell = factory.Limit(OrderPrice, -OrderSize);
 
-            var stopLossBuy = factory.StopLoss(TriggerPrice, OrderSize);
-            var stopLossSell = factory.StopLoss(TriggerPrice, -OrderSize);
+            var stopLossBuy = factory.Stop(TriggerPrice, OrderSize);
+            var stopLossSell = factory.Stop(TriggerPrice, -OrderSize);
 
             var stopLossLimitBuy = factory.StopLimit(TriggerPrice, OrderPrice, OrderSize);
             var stopLossLimitSell = factory.StopLimit(TriggerPrice, OrderPrice, -OrderSize);
