@@ -10,7 +10,7 @@ namespace Financier.Trading
 {
     public enum PriceType
     {
-        Nothing,
+        Immediate,
         Limit,
         Market,
         BestAsk,

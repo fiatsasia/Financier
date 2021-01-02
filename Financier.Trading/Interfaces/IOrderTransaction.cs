@@ -12,7 +12,7 @@ namespace Financier.Trading
 {
     public interface IOrderTransaction
     {
-        string Id { get; }
+        Ulid Id { get; }
         DateTime OpenTime { get; }
         OrderTransactionState State { get; }
         IOrderTransaction[] Children { get; }
@@ -20,7 +20,7 @@ namespace Financier.Trading
 
         IOrderTransaction AddChild(IOrderTransaction child);
 
-        void EscalteEvent(IOrderTransaction tx, OrderTransactionEventArgs ev);
+        void EscalteEvent(IOrderTransaction tx, IOrderTransactionEventArgs ev);
 
         IOrder Order { get; }
 

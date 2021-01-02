@@ -24,6 +24,7 @@ namespace Financier.Trading
         IReadOnlyList<IOrder> Children { get; }
         #endregion Order request parameters
 
+        Ulid Id { get; }
         DateTime? OpenTime { get; }
         DateTime? CloseTime { get; }
         DateTime? ExpirationDate { get; }
@@ -32,7 +33,10 @@ namespace Financier.Trading
         IEnumerable<IExecution> Executions { get; }
         decimal? ExecutedPrice { get; }
         decimal? ExecutedSize { get; }
+    }
 
-        IOrderRequest Request { get; }
+    public interface IOrder<TOrderRequest> : IOrder
+    {
+        TOrderRequest Request { get; }
     }
 }

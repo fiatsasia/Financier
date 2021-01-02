@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
@@ -18,7 +19,7 @@ namespace Financier.Trading
 
     public interface IRealtimeSource : IMarketDataSource
     {
-        void Connect();
+        Task OpenAsync();
 
         IObservable<IExecution> GetExecutionSource(string symbol);
         IObservable<ITicker> GetTickerSource(string symbol);

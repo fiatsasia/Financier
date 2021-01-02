@@ -8,7 +8,7 @@
 
 namespace Financier.Trading
 {
-    public class OrderRequestFactory<TOrderRequest> where TOrderRequest : IOrderRequest, new()
+    public class OrderRequestFactory<TOrderRequest> where TOrderRequest : IOrderRequest<TOrderRequest>, new()
     {
         // Basic orders
         public TOrderRequest Market(decimal size) => new TOrderRequest { OrderType = OrderType.Market, OrderSize = size };
@@ -22,8 +22,8 @@ namespace Financier.Trading
         public TOrderRequest TakeProfit(decimal profitPrice, decimal size) => new TOrderRequest { OrderType = OrderType.TakeProfit, ProfitPrice = profitPrice, OrderSize = size };
 
         // Combined conditional orders
-        public TOrderRequest IFD(IOrderRequest ifOrder, IOrderRequest doneOrder) => new TOrderRequest { OrderType = OrderType.IFD, Children = new IOrderRequest[] { ifOrder, doneOrder } };
-        public TOrderRequest OCO(IOrderRequest first, IOrderRequest second) => new TOrderRequest { OrderType = OrderType.OCO, Children = new IOrderRequest[] { first, second } };
-        public TOrderRequest IFDOCO(IOrderRequest ifOrder, IOrderRequest first, IOrderRequest second) => new TOrderRequest { OrderType = OrderType.IFDOCO, Children = new IOrderRequest[] { ifOrder, first, second } };
+        public TOrderRequest IFD(TOrderRequest ifOrder, TOrderRequest doneOrder) => new TOrderRequest { OrderType = OrderType.IFD, Children = new TOrderRequest[] { ifOrder, doneOrder } };
+        public TOrderRequest OCO(TOrderRequest first, TOrderRequest second) => new TOrderRequest { OrderType = OrderType.OCO, Children = new TOrderRequest[] { first, second } };
+        public TOrderRequest IFDOCO(TOrderRequest ifOrder, TOrderRequest first, TOrderRequest second) => new TOrderRequest { OrderType = OrderType.IFDOCO, Children = new TOrderRequest[] { ifOrder, first, second } };
     }
 }

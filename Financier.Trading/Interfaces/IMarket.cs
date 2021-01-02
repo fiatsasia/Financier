@@ -21,6 +21,7 @@ namespace Financier.Trading
 
     public interface IMarket
     {
+        string ExchangeCode { get; }
         string MarketCode { get; }
         decimal MinimumOrderSize { get; }
 
@@ -29,8 +30,8 @@ namespace Financier.Trading
         decimal MidPrice { get; }
         decimal LastTradedPrice { get; }
 
-        event EventHandler<PositionEventArgs> PositionChanged;
-        event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
+        event EventHandler<IPositionEventArgs> PositionChanged;
+        event EventHandler<IOrderTransactionEventArgs> OrderTransactionChanged;
 
         void Open();
         bool HasActiveOrder { get; }
@@ -38,6 +39,5 @@ namespace Financier.Trading
         IObservable<ITicker> GetTickerSource();
 
         IOrderTransaction PlaceOrder(IOrderRequest request);
-        IOrderTransaction PlaceOrder(IOrderRequest request, TimeInForce tif, DateTime validityPeriod, DateTime startTime);
     }
 }

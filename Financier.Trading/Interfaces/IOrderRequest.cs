@@ -12,6 +12,7 @@ namespace Financier.Trading
 {
     public interface IOrderRequest
     {
+        string ProductCode { get; set; }
         OrderType OrderType { get; set; }
         decimal? OrderSize { get; set; }
         decimal? OrderPrice { get; set; }
@@ -21,8 +22,11 @@ namespace Financier.Trading
         decimal? ProfitPrice { get; set; }       // Take profit
 
         TimeInForce TimeInForce { get; set; }
-        TimeSpan TimeToExpire { get; set; }
+        TimeSpan? TimeToExpire { get; set; }
+    }
 
-        IOrderRequest[] Children { get; set; }
+    public interface IOrderRequest<TChild> : IOrderRequest where TChild : IOrderRequest
+    {
+        TChild[] Children { get; set; }
     }
 }
