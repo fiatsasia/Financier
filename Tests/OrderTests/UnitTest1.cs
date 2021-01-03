@@ -21,7 +21,6 @@ namespace OrderTests
         [TestMethod]
         public void TestCreateOrder()
         {
-            var factory = new OrderRequestFactory<OrderRequest>();
             var marketBuy = factory.Market(OrderSize);
             var marketSell = factory.Market(-OrderSize);
 

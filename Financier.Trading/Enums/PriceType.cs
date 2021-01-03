@@ -10,9 +10,7 @@ namespace Financier.Trading
 {
     public enum PriceType
     {
-        Immediate,
-        Limit,
-        Market,
+        NotSpecifiedOrImmediate,
         BestAsk,
         BestBid,
         Best,
@@ -20,7 +18,6 @@ namespace Financier.Trading
         LastTraded,
         LastSold,
         LastBought,
-        Executed,
     }
 
     public static class OrderPriceTypeExtension

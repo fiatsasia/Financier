@@ -19,6 +19,8 @@ namespace Financier.Trading
         event EventHandler<IOrderTransactionEventArgs> OrderTransactionChanged;
         event EventHandler<IPositionEventArgs> PositionChanged;
 
+        ValueTask DisposeAsync();
+
         Task<IReadOnlyDictionary<string, object>> InitializeAsync(IDictionary<string, object> configuration);
         Task OpenAsync();
         Task LoginAsync(string key, string secret);
