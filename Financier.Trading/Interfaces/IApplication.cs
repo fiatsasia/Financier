@@ -14,15 +14,15 @@ namespace Financier.Trading
 {
     public interface IApplication : IDisposable
     {
+        ValueTask DisposeAsync();
+
         IReadOnlyDictionary<string, object> AppSettings { get; }
+        Task InitializeAsync();
+        Task OpenAsync();
 
         event EventHandler<IOrderTransactionEventArgs> OrderTransactionChanged;
         event EventHandler<IPositionEventArgs> PositionChanged;
 
-        ValueTask DisposeAsync();
-
-        Task<IReadOnlyDictionary<string, object>> InitializeAsync(IDictionary<string, object> configuration);
-        Task OpenAsync();
         Task LoginAsync(string key, string secret);
         Task<Ulid> PlaceOrderAsync(IOrderRequest request);
         Task CancelTransactionAsync(Ulid transactionId);

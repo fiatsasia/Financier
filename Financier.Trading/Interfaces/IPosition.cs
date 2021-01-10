@@ -22,5 +22,7 @@ namespace Financier.Trading
 
         decimal? Profit { get; }
         decimal? NetProfit { get; }
+
+        IPositions Positions { get; }
     }
 }
