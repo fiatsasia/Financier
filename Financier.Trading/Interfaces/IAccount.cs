@@ -14,6 +14,8 @@ namespace Financier.Trading
 {
     public interface IAccount : IDisposable
     {
+        string Exchange { get; }
+
         Task OpenAsync();
 
         IMarket GetMarket(string marketSymbol);

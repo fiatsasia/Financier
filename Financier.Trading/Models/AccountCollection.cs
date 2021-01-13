@@ -6,11 +6,13 @@
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
+using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace Financier.Trading
 {
     public class AccountCollection : Collection<IAccount>, IAccountCollection
     {
+        public IAccount Get(string exchange) => this.FirstOrDefault(e => e.Exchange == exchange);
     }
 }

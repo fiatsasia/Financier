@@ -8,18 +8,11 @@
 
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Financier.Trading
 {
-    public interface IApplication : IDisposable
+    public interface IOrderApi
     {
-        ValueTask DisposeAsync();
-
-        IReadOnlyDictionary<string, object> AppSettings { get; }
-        Task InitializeAsync();
-        Task OpenAsync();
-
         event EventHandler<IOrderTransactionEventArgs> OrderTransactionChanged;
         event EventHandler<IPositionEventArgs> PositionChanged;
 
