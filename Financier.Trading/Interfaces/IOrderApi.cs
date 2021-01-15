@@ -19,6 +19,7 @@ namespace Financier.Trading
         Task LoginAsync(string key, string secret);
         Task<Ulid> PlaceOrderAsync(IOrderRequest request);
         Task CancelTransactionAsync(Ulid transactionId);
+        Task CancelAllTransactionsAsync();
         Task CloseAllPositionsAsync();
     }
 }

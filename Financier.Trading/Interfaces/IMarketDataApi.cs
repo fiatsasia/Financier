@@ -7,21 +7,19 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 namespace Financier.Trading
 {
     public interface IMarketDataApi
     {
         // Realtime APIs
-        event EventHandler<IExecution> ExecutionReceived;
-        event EventHandler<ITicker> TickerReceived;
-        event EventHandler<IOrderBook> OrderBookReceived;
-        event EventHandler<IOhlcvv> OhlcReceived;
-
-        void Subscribe(string path);
-        void Unsubscribe(string path);
+        IObservable<IExecution> GetExecutionSource(string path);
+        IObservable<ITicker> GetTickerSource(string path);
+        IObservable<IOrderBook> GetOrderBookSource(string path);
+        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string path, TimeSpan periods) where TOhlc : IOhlc;
 
         // Historical APIs
-        IOhlcvv[] GetOhlc(string path, DateTime start, DateTime end);
+        IEnumerable<TOhlc> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
     }
 }

@@ -34,10 +34,10 @@ namespace Financier.Trading
 
     public interface IHistoricalSource : IMarketDataSource
     {
-        IEnumerable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
+        IEnumerable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan periods, DateTime start, DateTime end) where TOhlc : IOhlc;
     }
 
-    public interface IHistoricalSourceCollection : ICollection<IMarketDataSource>
+    public interface IHistoricalSourceCollection : ICollection<IHistoricalSource>
     {
     }
 }
