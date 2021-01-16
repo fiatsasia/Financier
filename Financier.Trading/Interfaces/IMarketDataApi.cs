@@ -20,6 +20,6 @@ namespace Financier.Trading
         IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string path, TimeSpan periods) where TOhlc : IOhlc;
 
         // Historical APIs
-        IEnumerable<TOhlc> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
+        IAsyncEnumerable<TOhlc> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
     }
 }
