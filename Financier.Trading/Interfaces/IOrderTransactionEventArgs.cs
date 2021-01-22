@@ -14,6 +14,7 @@ namespace Financier.Trading
     {
         DateTime Time { get; }
         OrderTransactionEventType EventType { get; }
+        Ulid OrderRequestId { get; }
         Ulid TransactionId { get; }
         Ulid OrderId { get; }
         OrderType OrderType { get; }

@@ -12,6 +12,7 @@ namespace Financier.Trading
 {
     public interface IOrderRequest
     {
+        Ulid Id { get; set; }
         string ProductCode { get; set; }
         OrderType OrderType { get; set; }
         decimal? OrderSize { get; set; }
