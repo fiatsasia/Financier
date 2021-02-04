@@ -8,20 +8,12 @@
 
 using System;
 
-namespace Financier.Trading
+namespace Financier
 {
     public interface IExecution
     {
         DateTime Time { get; }
         decimal Price { get; }
         decimal Size { get; }
-    }
-
-    public interface IExecutions
-    {
-        decimal AveragePrice { get; }
-        decimal TotalSize { get; }
-
-        void Executed(decimal executedPrice, decimal executedSize);
     }
 }

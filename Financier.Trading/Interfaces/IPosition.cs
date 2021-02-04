@@ -12,6 +12,10 @@ namespace Financier.Trading
 {
     public interface IPosition
     {
+        Ulid Id { get; }
+        Ulid OpenExecutionId { get; }
+        Ulid CloseExecutionId { get; }
+
         decimal Size { get; }
 
         bool IsOpened { get; }

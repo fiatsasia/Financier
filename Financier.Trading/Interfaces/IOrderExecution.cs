@@ -7,13 +7,14 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Financier
+namespace Financier.Trading
 {
-    // 現金、邦貨、外貨、現物株式、現物債券など
-    public interface IAsset
+    public interface IOrderExecution : IExecution
     {
+        Ulid Id { get; }
+        decimal Commission { get; }
+        string CommissionDescription { get; }
+        string ReferenceId { get; }
     }
 }

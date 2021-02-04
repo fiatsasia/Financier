@@ -8,15 +8,21 @@
 
 using System.Collections.Generic;
 
-namespace Financier.Trading
+namespace Financier
 {
+    public interface IOrderlet
+    {
+        decimal Price { get; }
+        decimal Size { get; }
+    }
+
     public interface IOrderBook
     {
         decimal BestBidPrice { get; }
         decimal BestBidSize { get; }
         decimal BestAskPrice { get; }
         decimal BestAskSize { get; }
-        IReadOnlyList<(decimal Price, decimal Size)> Bids { get; }
-        IReadOnlyList<(decimal Price, decimal Size)> Asks { get; }
+        IReadOnlyList<IOrderlet> Bids { get; }
+        IReadOnlyList<IOrderlet> Asks { get; }
     }
 }

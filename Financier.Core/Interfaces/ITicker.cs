@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Financier.Trading
+namespace Financier
 {
     public interface ITicker
     {

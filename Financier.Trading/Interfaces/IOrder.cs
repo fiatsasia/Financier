@@ -30,9 +30,10 @@ namespace Financier.Trading
         DateTime? ExpirationDate { get; }
         OrderState State { get; }
 
-        IEnumerable<IExecution> Executions { get; }
+        IEnumerable<IOrderExecution> Executions { get; }
         decimal? ExecutedPrice { get; }
         decimal? ExecutedSize { get; }
+        string ReferenceId { get; }
     }
 
     public interface IOrder<TOrderRequest> : IOrder

@@ -20,7 +20,7 @@ namespace Financier.Trading
         Task LogAsync(IOrderTransactionEventArgs args);
         Task LogAsync(IPositionEventArgs args);
         Task LogAsync(IOrder order);
-        Task LogAsync(IExecution execution);
+        Task LogAsync(IOrderExecution execution);
         Task LogAsync(IPosition position);
     }
 

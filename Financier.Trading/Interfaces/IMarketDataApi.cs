@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
@@ -20,6 +21,6 @@ namespace Financier.Trading
         IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string path, TimeSpan periods) where TOhlc : IOhlc;
 
         // Historical APIs
-        IAsyncEnumerable<TOhlc> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
+        Task<IEnumerable<TOhlc>> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
     }
 }

@@ -18,7 +18,7 @@ namespace Financier.Trading
 
         Task OpenAsync();
 
-        IMarket GetMarket(string marketSymbol);
+        Task<IMarket> GetMarketAsync(string marketSymbol);
 
         //===============================
         decimal UnrealizedProfit { get; }
