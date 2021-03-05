@@ -8,7 +8,7 @@
 
 using System;
 
-namespace Financier.Trading
+namespace Financier.Signals
 {
     // Entry / Exit signal の取り扱い
 

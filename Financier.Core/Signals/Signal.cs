@@ -8,9 +8,9 @@
 
 using System;
 
-namespace Financier.Trading
+namespace Financier.Signals
 {
-    public class CrossoverSignal<TSource, TPrice> : ICrossoverSignal<TSource, TPrice>
+    class CrossoverSignal<TSource, TPrice> : ICrossoverSignal<TSource, TPrice>
     {
         // ISignal<TPrice>
         public int Id { get; set; }

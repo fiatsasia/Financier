@@ -7,17 +7,13 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Financier.Trading
+namespace Financier.Signals
 {
     public static partial class SignalExtensions
     {
-        // 乖離率フィルタを追加する。
-        // 
-
         /// <summary>
         /// Replace same side signals to steady (signal = 0)
         /// </summary>
