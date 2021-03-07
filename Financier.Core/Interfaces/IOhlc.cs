@@ -21,7 +21,7 @@ namespace Financier
 
     public interface IOhlcv : IOhlc
     {
-        double Volume { get; }
+        decimal Volume { get; }
     }
 
     public interface IOhlcvv : IOhlcv

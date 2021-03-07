@@ -18,9 +18,9 @@ namespace Financier.Trading
         IObservable<IExecution> GetExecutionSource(string path);
         IObservable<ITicker> GetTickerSource(string path);
         IObservable<IOrderBook> GetOrderBookSource(string path);
-        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string path, TimeSpan periods) where TOhlc : IOhlc;
+        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string path, TimeSpan frameSpan) where TOhlc : IOhlc;
 
         // Historical APIs
-        Task<IEnumerable<TOhlc>> GetOhlc<TOhlc>(string path, TimeSpan period, DateTime start, DateTime end) where TOhlc : IOhlc;
+        Task<IEnumerable<TOhlc>> GetOhlc<TOhlc>(string path, TimeSpan frameSpan, DateTime start, TimeSpan span) where TOhlc : IOhlc;
     }
 }

@@ -15,13 +15,13 @@ namespace Financier
     // OHLC + Start
     public class Ohlc : IOhlc
     {
-        protected TimeSpan Period { get; private set; }
+        protected TimeSpan FrameSpan { get; private set; }
 
         DateTime _start = DateTime.MaxValue;
         DateTime _end = DateTime.MinValue;
         public DateTime Start
         {
-            get => _start.Round(Period);
+            get => _start.Round(FrameSpan);
             protected set { _start = value; }
         }
 
@@ -30,21 +30,11 @@ namespace Financier
         public decimal Low { get; protected set; }
         public decimal Close { get; protected set; }
 
-        public Ohlc(TimeSpan period)
+        public Ohlc(TimeSpan frameSpan)
         {
-            Period = period;
+            FrameSpan = frameSpan;
             High = decimal.MinValue;
             Low = decimal.MaxValue;
-        }
-
-        public virtual void Reset()
-        {
-            _start = DateTime.MaxValue;
-            _end = DateTime.MinValue;
-            Open = decimal.Zero;
-            High = decimal.MinValue;
-            Low = decimal.MaxValue;
-            Close = decimal.Zero;
         }
 
         public virtual void Update(DateTime time, decimal price)
@@ -62,6 +52,18 @@ namespace Financier
 
             High = Math.Max(price, High);
             Low = Math.Min(price, Low);
+        }
+
+        public Ohlc CreateMissingFrame()
+        {
+            return new Ohlc(this.FrameSpan)
+            {
+                Start = this.Start + this.FrameSpan,
+                Open = this.Close,
+                High = this.Close,
+                Low = this.Close,
+                Close = this.Close,
+            };
         }
 
         public virtual double GetTypicalPrice(TypicalPriceKind kind)
@@ -92,12 +94,12 @@ namespace Financier
     // OHLC + Start + Volume
     public class Ohlcv : Ohlc, IOhlcv
     {
-        public double Volume { get; protected set; }
+        public decimal Volume { get; protected set; }
 
-        public Ohlcv(TimeSpan period) : base(period) { }
+        public Ohlcv(TimeSpan frameSpan) : base(frameSpan) { }
 
-        public Ohlcv(TimeSpan period, DateTime start, decimal open, decimal high, decimal low, decimal close, double volume)
-            : base(period)
+        public Ohlcv(TimeSpan frameSpan, DateTime start, decimal open, decimal high, decimal low, decimal close, decimal volume)
+            : base(frameSpan)
         {
             Start = start;
             Open = open;
@@ -107,16 +109,23 @@ namespace Financier
             Volume = volume;
         }
 
-        public override void Reset()
-        {
-            base.Reset();
-            Volume = 0d;
-        }
-
         public virtual void Update(DateTime time, decimal price, decimal size)
         {
             base.Update(time, price);
-            Volume += Math.Abs(Convert.ToDouble(size)); // Some of system indicates sell as minus
+            Volume += Math.Abs(size); // Some of system indicates sell as minus
+        }
+
+        public new Ohlcv CreateMissingFrame()
+        {
+            return new Ohlcv(this.FrameSpan)
+            {
+                Start = this.Start + this.FrameSpan,
+                Open = this.Close,
+                High = this.Close,
+                Low = this.Close,
+                Close = this.Close,
+                Volume = decimal.Zero,
+            };
         }
     }
 
@@ -126,25 +135,26 @@ namespace Financier
         decimal _amount;
 
         public double VWAP { get; protected set; }
-        public virtual double TypicalPrice { get { return VWAP; } }
 
-        public Ohlcvv(TimeSpan period) : base(period) { }
+        public Ohlcvv(TimeSpan frameSpan) : base(frameSpan) { }
 
-        public Ohlcvv(TimeSpan period, DateTime start, decimal open, decimal high, decimal low, decimal close, double volume, double vwap)
-            : base(period)
+        public Ohlcvv(TimeSpan frameSpan, DateTime start, decimal open, decimal high, decimal low, decimal close, decimal volume, double vwap)
+            : base(frameSpan, start, open, high, low, close, volume)
         {
-            Start = start;
-            Open = open;
-            High = high;
-            Low = low;
-            Close = close;
-            Volume = volume;
             VWAP = vwap;
         }
 
-        public Ohlcvv(TimeSpan period, IEnumerable<IOhlcvv> ohlcs)
-            : base(period)
+        public Ohlcvv(TimeSpan frameSpan, IEnumerable<IExecution> executions)
+            : this(frameSpan)
         {
+            executions.ForEach(exec => Update(exec.Time, exec.Price, exec.Size));
+        }
+
+        public Ohlcvv(TimeSpan frameSpan, IEnumerable<IOhlcvv> ohlcs)
+            : this(frameSpan)
+        {
+            ohlcs = ohlcs.OrderBy(e => e.Start);
+
             var first = ohlcs.First();
             Start = first.Start;
             Open = first.Open;
@@ -152,14 +162,7 @@ namespace Financier
             Low = ohlcs.Min(e => e.Low);
             Close = ohlcs.Last().Close;
             Volume = ohlcs.Sum(e => e.Volume);
-            VWAP = ohlcs.Sum(e => e.VWAP * e.Volume) / Volume;
-        }
-
-        public override void Reset()
-        {
-            base.Reset();
-            _amount = decimal.Zero;
-            VWAP = 0d;
+            VWAP = Convert.ToDouble(ohlcs.Sum(e => Convert.ToDecimal(e.VWAP) * e.Volume) / Volume);
         }
 
         public override void Update(DateTime time, decimal price, decimal size)
@@ -168,24 +171,26 @@ namespace Financier
             _amount += price * Math.Abs(size);
             try
             {
-                VWAP = Convert.ToDouble(_amount / Convert.ToDecimal(Volume));
+                VWAP = Convert.ToDouble(_amount / Volume);
             }
             catch (DivideByZeroException)
             {
-                VWAP = 0;
+                VWAP = 0d;
             }
         }
 
-        public override double GetTypicalPrice(TypicalPriceKind kind)
+        public new Ohlcvv CreateMissingFrame()
         {
-            switch (kind)
+            return new Ohlcvv(this.FrameSpan)
             {
-                case TypicalPriceKind.VWAP:
-                    return VWAP;
-
-                default:
-                    return base.GetTypicalPrice(kind);
-            }
+                Start = this.Start + this.FrameSpan,
+                Open = this.Close,
+                High = this.Close,
+                Low = this.Close,
+                Close = this.Close,
+                Volume = decimal.Zero,
+                VWAP = 0d,
+            };
         }
     }
 }

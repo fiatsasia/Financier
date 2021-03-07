@@ -24,8 +24,8 @@ namespace Financier
         IObservable<IExecution> GetExecutionSource(string symbol);
         IObservable<ITicker> GetTickerSource(string symbol);
         IObservable<IOrderBook> GetOrderBookSource(string symbol);
-        IObservable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan period) where TOhlc : IOhlc;
-        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string symbol, TimeSpan period) where TOhlc : IOhlc;
+        IObservable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan frameSpan) where TOhlc : IOhlc;
+        IObservable<TOhlc> GetOhlcUpdateSource<TOhlc>(string symbol, TimeSpan frameSpan) where TOhlc : IOhlc;
     }
 
     public interface IRealtimeSourceCollection : ICollection<IRealtimeSource>
@@ -34,7 +34,8 @@ namespace Financier
 
     public interface IHistoricalSource : IMarketDataSource
     {
-        IEnumerable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan periods, DateTime start, DateTime end) where TOhlc : IOhlc;
+        IEnumerable<IExecution> GetExecutionSource(string symbol, DateTime start, TimeSpan span);
+        IEnumerable<TOhlc> GetOhlcSource<TOhlc>(string symbol, TimeSpan frameSpan, DateTime start, TimeSpan span) where TOhlc : IOhlc;
     }
 
     public interface IHistoricalSourceCollection : ICollection<IHistoricalSource>

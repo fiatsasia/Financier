@@ -25,7 +25,7 @@ namespace Financier
                 // Calculate money flow volume
                 .Select(ohlc =>
                 {
-                    return Convert.ToDouble(((ohlc.Close - ohlc.Low) - (ohlc.High - ohlc.Close)) / (ohlc.High - ohlc.Low) * Convert.ToDecimal(ohlc.Volume));
+                    return Convert.ToDouble(((ohlc.Close - ohlc.Low) - (ohlc.High - ohlc.Close)) / (ohlc.High - ohlc.Low) * ohlc.Volume);
                 })
                 // Accummulate previous and current
                 .Scan(double.NaN, (prev, current) =>
