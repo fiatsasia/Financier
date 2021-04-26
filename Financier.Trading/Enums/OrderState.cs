@@ -10,6 +10,8 @@ namespace Financier.Trading
 {
     public enum OrderState
     {
+        Unknown = -1,
+
         Outstanding,
 
         Ordered,

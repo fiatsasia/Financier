@@ -10,13 +10,14 @@ using System;
 
 namespace Financier.Trading
 {
-    public interface IOrderExecution : IExecution
+    public interface IExecutionEntity
     {
         Ulid Id { get; }
-        decimal Commission { get; }
-        string CommissionDescription { get; }
-        string ReferenceId { get; }
         int Index { get; }
-        IOrder Order { get; }
+        DateTime Time { get; }
+        decimal Size { get; }
+        decimal Price { get; }
+        decimal Commission { get; }
+        string Metadata { get; }
     }
 }

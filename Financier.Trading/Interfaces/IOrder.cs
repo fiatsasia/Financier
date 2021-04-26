@@ -27,13 +27,14 @@ namespace Financier.Trading
         Ulid Id { get; }
         DateTime? OpenTime { get; }
         DateTime? CloseTime { get; }
-        DateTime? ExpirationDate { get; }
-        OrderState State { get; }
+        DateTime ExpirationDate { get; }
+        OrderState Status { get; }
 
-        IEnumerable<IOrderExecution> Executions { get; }
+        IReadOnlyList<IOrderExecution> Executions { get; }
         decimal? ExecutedPrice { get; }
         decimal? ExecutedSize { get; }
         string ReferenceId { get; }
+        IOrder Parent { get; }
     }
 
     public interface IOrder<TOrderRequest> : IOrder

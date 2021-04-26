@@ -22,7 +22,7 @@ namespace Financier.Trading
         decimal? TrailingOffset { get; set; }    // trailing stop, trailing stop limit
         decimal? ProfitPrice { get; set; }       // Take profit
 
-        TimeInForce TimeInForce { get; set; }
+        TimeInForce? TimeInForce { get; set; }
         TimeSpan? TimeToExpire { get; set; }
     }
 

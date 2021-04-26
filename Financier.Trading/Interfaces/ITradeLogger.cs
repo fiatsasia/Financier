@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface ITradeLogger
+    public interface ITradeLogger : IDisposable
     {
         Task OpenAsync();
         Task CloseAsync();
 
         Task LogAsync(IOrderTransactionEventArgs args);
         Task LogAsync(IPositionEventArgs args);
-        Task LogAsync(IOrder order);
-        Task LogAsync(IOrderExecution execution);
+        Task LogAsync(IOrderEntity order);
+        Task LogAsync(IExecutionEntity exec);
         Task LogAsync(IPosition position);
     }
 

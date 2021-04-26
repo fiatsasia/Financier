@@ -7,16 +7,15 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using Financier.Trading;
 
-namespace Financier.Trading
+namespace Financier.Database
 {
-    public interface IOrderExecution : IExecution
+    public interface IOrderDbContext
     {
-        Ulid Id { get; }
-        decimal Commission { get; }
-        string CommissionDescription { get; }
-        string ReferenceId { get; }
-        int Index { get; }
-        IOrder Order { get; }
+        void Update(IOrderEntity entity);
+        void Add(IExecutionEntity entity);
     }
 }

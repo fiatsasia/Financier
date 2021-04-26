@@ -14,77 +14,23 @@ namespace Financier
 {
     public static partial class IndicatorExtensions
     {
-#if INDICATOR_TYPED
-        public static IObservable<double> ExponentialMovingAverage(this IObservable<double> source, int period)
-        {
-            return source.Publish(s => s.Take(period).Average().Concat(s)
-            .Scan(
-                (last, value) => (value - last) * (2.0d / (period + 1)) + last
-            ));
-        }
+        public static IObservable<double> ExponentialMovingAverage(this IObservable<double> source, int period) =>
+            source.Publish(s => s.Take(period).Average().Concat(s).Scan((last, value) => (value - last) * (2.0d / (period + 1)) + last));
 
-        public static IObservable<decimal> ExponentialMovingAverage(this IObservable<decimal> source, int period)
-        {
-            return source.Publish(s => s.Take(period).Average().Concat(s)
-            .Scan(
-                (last, value) => (value - last) * (2.0m / (period + 1)) + last
-            ));
-        }
+        public static IObservable<decimal> ExponentialMovingAverage(this IObservable<decimal> source, int period) =>
+            source.Publish(s => s.Take(period).Average().Concat(s).Scan((last, value) => (value - last) * (2.0m / (period + 1)) + last));
 
-        public static IObservable<float> ExponentialMovingAverage(this IObservable<float> source, int period)
+        public static IObservable<float> ExponentialMovingAverage(this IObservable<float> source, int period) =>
+            source.Publish(s => s.Take(period).Average().Concat(s).Scan((last, value) => (value - last) * (2.0f / (period + 1)) + last));
+
+        public static IObservable<(TSource Source, double Value)> ExponentialMovingAverage<TSource>(this IObservable<TSource> source, int period, Func<TSource, double> selector)
         {
-            return source.Publish(s => s.Take(period).Average().Concat(s)
-            .Scan(
-                (last, value) => (value - last) * (2.0f / (period + 1)) + last
-            ));
-        }
-#else
-        public static IObservable<TSource> ExponentialMovingAverage<TSource>(this IObservable<TSource> source, int period)
-        {
-            return source.Publish(s => s.Take(period).Average().Concat(s)
-            .Scan(
-                (last, value) => Calculator.Add(Calculator.Mul(Calculator.Sub(value, last), Calculator.Cast<TSource>(2.0f / (period + 1))), last)
-            ));
-        }
-#endif
-        public static IObservable<(TSource Source, TValue Value)> ExponentialMovingAverage<TSource, TValue>(
-            this IObservable<TSource> source,
-            int period,
-            Func<TSource, TValue> priceGetter
-        )
-        {
-            return source.Select(s => (Source: s, Value: priceGetter(s)))
+            return source.Select(s => (Source: s, Value: selector(s)))
             .Publish(
                 indicator => indicator.Take(period).Buffer(period)
-                .Select(
-                    indicators => (
-                        Source: indicators.Last().Source,
-                        Value: indicators.Average(ind => ind.Value)
-                    )
-                )
+                .Select(indicators => (Source: indicators.Last().Source, Value: indicators.Average(ind => ind.Value)))
                 .Concat(indicator)
-                .Scan(
-                    (last, value) =>
-                    (
-                        Source: value.Source,
-                        Value: Calculator.Add
-                        (
-                            Calculator.Mul
-                            (
-                                Calculator.Sub
-                                (
-                                    priceGetter(value.Source),
-                                    last.Value
-                                ),
-                                Calculator.Cast<TValue>
-                                (
-                                    2.0f / (period + 1)
-                                )
-                            ),
-                            last.Value
-                        )
-                    )
-                )
+                .Scan((last, value) => (Source: value.Source, Value: (selector(value.Source) - last.Value) / (2.0d / (period + 1)) + last.Value))
             );
         }
 

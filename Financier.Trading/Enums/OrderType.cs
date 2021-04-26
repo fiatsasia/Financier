@@ -10,6 +10,8 @@ namespace Financier.Trading
 {
     public enum OrderType
     {
+        Unknown = -1,
+
         Unspecified,
         NullOrder,
 

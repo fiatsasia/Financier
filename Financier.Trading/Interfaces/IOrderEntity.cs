@@ -10,19 +10,18 @@ using System;
 
 namespace Financier.Trading
 {
-    public interface IOrderTransactionEventArgs
+    public interface IOrderEntity
     {
-        DateTime Time { get; }
-        OrderTransactionEventType EventType { get; }
         Ulid Id { get; }
         OrderType OrderType { get; }
-        decimal? OrderPrice { get; }
-        decimal? OrderSize { get; }
-        int ExecutionIndex { get; }
-        decimal? ExecutedPrice { get; }
-        decimal? ExecutedSize { get; }
-        decimal? TriggerPrice { get; }
-
-        IOrderTransaction Transaction { get; }
+        OrderState Status { get; }
+        decimal? Size { get; }
+        decimal? Price1 { get; }
+        decimal? Price2 { get; }
+        DateTime? OpenTime { get; }
+        DateTime? CloseTime { get; }
+        Ulid? ParentId { get; }
+        DateTime ExpirationDate { get; }
+        string Metadata { get; }
     }
 }

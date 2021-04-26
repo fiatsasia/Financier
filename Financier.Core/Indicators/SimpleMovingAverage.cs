@@ -9,6 +9,7 @@
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Disposables;
 
 namespace Financier
 {
@@ -20,7 +21,6 @@ namespace Financier
         /// <param name="source"></param>
         /// <param name="period"></param>
         /// <returns></returns>
-#if INDICATOR_TYPED
         public static IObservable<double> SimpleMovingAverage(this IObservable<double> source, int period)
         {
             return source.Buffer(period, 1).Select(e => e.Average());
@@ -35,23 +35,43 @@ namespace Financier
         {
             return source.Buffer(period, 1).Select(e => e.Average());
         }
-#else
-        public static IObservable<TSource> SimpleMovingAverage<TSource>(this IObservable<TSource> source, int period)
-        {
-            return source.Buffer(period, 1).Select(e => e.Average());
-        }
-#endif
-        public static IObservable<(TSource Source, TValue Value)> SimpleMovingAverage<TSource, TValue>(
-            this IObservable<TSource> source,
+
+        public static IObservable<(TSource Source, double Value)> SimpleMovingAverage<TSource>(this IObservable<TSource> source,
             int period,
-            Func<TSource, TValue> priceGetter
+            Func<TSource, double> selector,
+            bool includeInitial = false
         )
         {
-            return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
+            if (includeInitial)
             {
-                var current = e.Last();
-                return (Source: current, Value: e.Average(priceGetter));
-            });
+                return Observable.Create<(TSource Source, double Value)>(observer =>
+                {
+                    var initial = default(double[]);
+                    var index = 0;
+                    var disposable = source.Subscribe(current =>
+                    {
+                        if (initial == default)
+                        {
+                            initial = Enumerable.Repeat(selector(current), period).ToArray();
+                        }
+                        else
+                        {
+                            initial[index] = selector(current);
+                        }
+                        index = (index + 1) % period; // store as ring-buffer
+                        observer.OnNext((Source: current, Value: initial.Average()));
+                    });
+                    return Disposable.Create(disposable.Dispose);
+                });
+            }
+            else
+            {
+                return source.Buffer(period, 1).Where(e => e.Count >= period).Select(e =>
+                {
+                    var current = e.Last();
+                    return (Source: current, Value: e.Average(f => selector(f)));
+                });
+            }
         }
     }
 }

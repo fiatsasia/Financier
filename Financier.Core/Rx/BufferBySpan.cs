@@ -16,13 +16,13 @@ namespace Financier
 {
     public static partial class RxExtensions
     {
-        public static IObservable<IList<TSource>> Buffer<TSource>(this IObservable<TSource> source, Func<TSource, DateTime> timeGetter, TimeSpan frameSpan)
+        public static IObservable<IList<TSource>> Buffer<TSource>(this IObservable<TSource> source, Func<TSource, DateTime> selector, TimeSpan frameSpan)
         {
             var duration = new Subject<Unit>();
             return source
             .Scan((prev, current) =>
             {
-                if (timeGetter(prev).Round(frameSpan) != timeGetter(current).Round(frameSpan))
+                if (selector(prev).Round(frameSpan) != selector(current).Round(frameSpan))
                 {
                     duration.OnNext(Unit.Default);
                 }

@@ -13,9 +13,8 @@ namespace Financier.Trading
     public interface IPositionEventArgs
     {
         PositionEventType EventType { get; }
-        Ulid PositionId { get; }
+        Ulid Id { get; }
         Ulid OrderId { get; }
-        Ulid TransactionId { get; }
 
         bool IsOpened { get; }
         decimal Size { get; }

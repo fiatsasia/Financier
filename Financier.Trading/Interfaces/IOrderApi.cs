@@ -17,8 +17,8 @@ namespace Financier.Trading
         event EventHandler<IPositionEventArgs> PositionChanged;
 
         Task LoginAsync(string key, string secret);
-        Task<Ulid> PlaceOrderAsync(IOrderRequest request);
-        Task CancelTransactionAsync(Ulid transactionId);
+        Task PlaceOrderAsync(IOrderRequest request);
+        Task CancelTransactionAsync(Ulid txId);
         Task CancelAllTransactionsAsync();
         Task CloseAllPositionsAsync();
     }

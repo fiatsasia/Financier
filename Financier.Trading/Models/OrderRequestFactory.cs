@@ -11,8 +11,33 @@ namespace Financier.Trading
     public class OrderRequestFactory<TOrderRequest> where TOrderRequest : IOrderRequest<TOrderRequest>, new()
     {
         // Basic orders
-        public virtual TOrderRequest Market(decimal size) => new TOrderRequest { OrderType = OrderType.Market, OrderSize = size };
-        public virtual TOrderRequest Limit(decimal price, decimal size) => new TOrderRequest { OrderType = OrderType.Limit, OrderPrice = price, OrderSize = size };
+        public virtual TOrderRequest Market(decimal size) => new TOrderRequest
+        {
+            OrderType = OrderType.Market,
+            OrderSize = size
+        };
+
+        public virtual TOrderRequest Market(string productCode, decimal size) => new TOrderRequest
+        {
+            ProductCode = productCode,
+            OrderType = OrderType.Market,
+            OrderSize = size
+        };
+
+        public virtual TOrderRequest Limit(decimal price, decimal size) => new TOrderRequest
+        {
+            OrderType = OrderType.Limit,
+            OrderPrice = price,
+            OrderSize = size
+        };
+
+        public virtual TOrderRequest Limit(string productCode, decimal price, decimal size) => new TOrderRequest
+        {
+            ProductCode = productCode,
+            OrderType = OrderType.Limit,
+            OrderPrice = price,
+            OrderSize = size
+        };
 
         // Simple conditional orders
         public virtual TOrderRequest Stop(decimal triggerPrice, decimal size) => new TOrderRequest { OrderType = OrderType.Stop, TriggerPrice = triggerPrice, OrderSize = size };
