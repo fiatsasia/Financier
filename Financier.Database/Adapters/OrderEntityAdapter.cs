@@ -7,11 +7,13 @@
 //
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Financier.Trading;
 
 namespace Financier.Database
 {
-    class OrderEntityAdapter : IOrderEntity
+    class OrderEntityAdapter : IOrderEntity<ExecutionEntityAdapter>
     {
         DbOrder _adaptee;
 
@@ -76,12 +78,16 @@ namespace Financier.Database
 
         public DateTime ExpirationDate => _adaptee.ExpirationDate;
 
+        List<ExecutionEntityAdapter> _execs;
+        public IReadOnlyList<ExecutionEntityAdapter> Executions => _execs;
+
         public string Metadata => _adaptee.Metadata;
 
 
-        public OrderEntityAdapter(DbOrder adaptee)
+        public OrderEntityAdapter(DbOrder adaptee, IList<DbExecution> execs)
         {
             _adaptee = adaptee;
+            _execs = new List<ExecutionEntityAdapter>(execs.Select(e => new ExecutionEntityAdapter(e)));
         }
     }
 }

@@ -9,7 +9,7 @@
 using System;
 using Financier.Trading;
 
-namespace Financier.Database.Adapters
+namespace Financier.Database
 {
     class ExecutionEntityAdapter : IExecutionEntity
     {
@@ -28,7 +28,7 @@ namespace Financier.Database.Adapters
             }
         }
 
-        public int Index => _adaptee.Serial;
+        public int Index => _adaptee.Index;
 
         public DateTime Time => _adaptee.Time;
 

@@ -59,6 +59,12 @@ namespace Financier.Database
         public DbOrder(IOrderEntity entity)
         {
             Id = new Guid(entity.Id.ToByteArray());
+            OrderType = entity.OrderType.ToString();
+            Size = entity.Size;
+            Price1 = entity.Price1;
+            Price2 = entity.Price2;
+            ParentId = entity.ParentId.HasValue ? new Guid(entity.ParentId.Value.ToByteArray()) : default;
+
             Update(entity);
         }
 
@@ -68,14 +74,9 @@ namespace Financier.Database
 
         public void Update(IOrderEntity entity)
         {
-            OrderType = entity.OrderType.ToString();
             Status = entity.Status.ToString();
-            Size = entity.Size;
-            Price1 = entity.Price1;
-            Price2 = entity.Price2;
             OpenTime = entity.OpenTime;
             CloseTime = entity.CloseTime;
-            ParentId = entity.ParentId.HasValue ? new Guid(entity.ParentId.Value.ToByteArray()) : default;
             ExpirationDate = entity.ExpirationDate;
             Metadata = entity.Metadata;
         }

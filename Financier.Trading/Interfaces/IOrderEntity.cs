@@ -7,6 +7,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 namespace Financier.Trading
 {
@@ -23,5 +24,10 @@ namespace Financier.Trading
         Ulid? ParentId { get; }
         DateTime ExpirationDate { get; }
         string Metadata { get; }
+    }
+
+    public interface IOrderEntity<TExecution> : IOrderEntity where TExecution : IExecutionEntity
+    {
+        IReadOnlyList<TExecution> Executions { get; }
     }
 }

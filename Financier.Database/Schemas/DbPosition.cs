@@ -14,52 +14,58 @@ using Financier.Trading;
 
 namespace Financier.Database
 {
-    public class DbExecution
+    public class DbPosition
     {
-        [Required]
+        [Key]
         [Column(Order = 0)]
         public Guid Id { get; set; }
 
         [Required]
         [Column(Order = 1)]
-        public int Index { get; set; }
+        public Guid OpenExecutionId { get; set; }
 
         [Required]
         [Column(Order = 2)]
-        public DateTime Time { get; set; }
+        public int OpenExecutionIndex { get; set; }
 
-        [Required]
         [Column(Order = 3)]
-        public decimal Size { get; set; }
+        public Guid? CloseExecutionId { get; set; }
 
-        [Required]
         [Column(Order = 4)]
-        public decimal Price { get; set; }
+        public int? CloseExecutionIndex { get; set; }
 
         [Required]
         [Column(Order = 5)]
-        public decimal Commission { get; set; }
+        public decimal Size { get; set; }
 
         [Required]
         [Column(Order = 6)]
         public string Metadata { get; set; }
 
-        public DbExecution() { }
+        public DbPosition() { }
 
-        public DbExecution(IExecutionEntity entity)
+        public DbPosition(IPositionEntity entity)
         {
             Id = new Guid(entity.Id.ToByteArray());
-            Index = entity.Index;
-            Time = entity.Time;
+            OpenExecutionId = new Guid(entity.OpenExecutionId.ToByteArray());
+            OpenExecutionIndex = entity.OpenExecutionIndex;
             Size = entity.Size;
-            Price = entity.Price;
-            Commission = entity.Commission;
-            Metadata = entity.Metadata;
+
+            Update(entity);
         }
 
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbExecution>().HasKey(b => new { b.Id, b.Index });
+        }
+
+        public void Update(IPositionEntity entity)
+        {
+            if (entity.CloseExecutionId.HasValue)
+            {
+                CloseExecutionId = new Guid(entity.CloseExecutionId.Value.ToByteArray());
+                CloseExecutionIndex = entity.CloseExecutionIndex;
+            }
+            Metadata = entity.Metadata;
         }
     }
 }

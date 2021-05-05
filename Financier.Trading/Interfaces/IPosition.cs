@@ -14,13 +14,15 @@ namespace Financier.Trading
     {
         Ulid Id { get; }
         Ulid OpenExecutionId { get; }
+        int OpenExecutionIndex { get; }
         Ulid CloseExecutionId { get; }
+        int CloseExecutionIndex { get; }
 
         decimal Size { get; }
 
         bool IsOpened { get; }
-        DateTime Open { get; }
-        DateTime? Close { get; }
+        DateTime OpenTime { get; }
+        DateTime? CloseTime { get; }
         decimal OpenPrice { get; }
         decimal? ClosePrice { get; }
 

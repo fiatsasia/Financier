@@ -21,7 +21,7 @@ namespace Financier.Trading
         Task LogAsync(IPositionEventArgs args);
         Task LogAsync(IOrderEntity order);
         Task LogAsync(IExecutionEntity exec);
-        Task LogAsync(IPosition position);
+        Task LogAsync(IPositionEntity pos);
     }
 
     public interface ITradeLoggerCollection : ICollection<ITradeLogger>, ITradeLogger
