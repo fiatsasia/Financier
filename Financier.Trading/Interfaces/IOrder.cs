@@ -14,6 +14,7 @@ namespace Financier.Trading
     public interface IOrder
     {
         #region Order request parameters
+        public string ProductCode { get; }
         OrderType OrderType { get; }
         decimal? OrderSize { get; }
         decimal? OrderPrice { get; }
@@ -33,11 +34,11 @@ namespace Financier.Trading
         IReadOnlyList<IOrderExecution> Executions { get; }
         decimal? ExecutedPrice { get; }
         decimal? ExecutedSize { get; }
-        string ReferenceId { get; }
         IOrder Parent { get; }
+        IReadOnlyDictionary<string, object> Metadata { get; }
     }
 
-    public interface IOrder<TOrderRequest> : IOrder
+    public interface IOrder<TOrderRequest> : IOrder where TOrderRequest : IOrderRequest
     {
         TOrderRequest Request { get; }
     }

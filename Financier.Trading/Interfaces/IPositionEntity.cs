@@ -7,6 +7,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 namespace Financier.Trading
 {
@@ -18,6 +19,8 @@ namespace Financier.Trading
         Ulid? CloseExecutionId { get; }
         int? CloseExecutionIndex { get; }
         decimal Size { get; }
-        string Metadata { get; }
+        decimal? Profit { get; }
+        decimal? Commission { get; }
+        IReadOnlyDictionary<string, object> Metadata { get; }
     }
 }

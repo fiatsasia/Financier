@@ -22,6 +22,7 @@ namespace Financier.Trading
         public async Task LogAsync(IOrderTransactionEventArgs args) => await Task.WhenAll(this.Select(e => e.LogAsync(args)));
         public async Task LogAsync(IPositionEventArgs args) => await Task.WhenAll(this.Select(e => e.LogAsync(args)));
         public async Task LogAsync(IOrderEntity order) => await Task.WhenAll(this.Select(e => e.LogAsync(order)));
+        public async Task LogAsync(IOrder order) => await Task.WhenAll(this.Select(e => e.LogAsync(order)));
         public async Task LogAsync(IExecutionEntity exec) => await Task.WhenAll(this.Select(e => e.LogAsync(exec)));
         public async Task LogAsync(IPositionEntity pos) => await Task.WhenAll(this.Select(e => e.LogAsync(pos)));
     }

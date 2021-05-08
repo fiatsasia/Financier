@@ -6,17 +6,9 @@
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
-using System;
-
 namespace Financier.Trading
 {
-    public interface IOrderExecution : IExecution
+    public interface IOrderExecution : IExecutionEntity
     {
-        Ulid Id { get; }
-        int Index { get; }
-        decimal Commission { get; }
-        string CommissionDescription { get; }
-        string ReferenceId { get; }
-        IOrder Order { get; }
     }
 }

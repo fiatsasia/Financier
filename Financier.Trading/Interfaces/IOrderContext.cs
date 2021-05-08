@@ -7,18 +7,14 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface IExecutionEntity
+    public interface IOrderContext : IDisposable
     {
-        Ulid Id { get; }
-        int Index { get; }
-        DateTime Time { get; }
-        decimal Size { get; }
-        decimal Price { get; }
-        decimal Commission { get; }
-        IReadOnlyDictionary<string, object> Metadata { get; }
+        Task UpdateAsync(IOrderEntity entity);
+        Task AddAsync(IExecutionEntity entity);
+        Task UpdateAsync(IPositionEntity entity);
     }
 }

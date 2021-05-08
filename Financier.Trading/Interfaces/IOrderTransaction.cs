@@ -19,11 +19,9 @@ namespace Financier.Trading
         IOrderTransaction Parent { get; }
 
         IOrderTransaction AddChild(IOrderTransaction child);
-
         void EscalteEvent(IOrderTransaction tx, IOrderTransactionEventArgs ev);
 
         IOrder Order { get; }
-
         bool IsCancelable { get; } // Will be used to enable/disable cancel buttons
         void Cancel();
     }

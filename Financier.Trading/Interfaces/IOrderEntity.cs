@@ -14,6 +14,7 @@ namespace Financier.Trading
     public interface IOrderEntity
     {
         Ulid Id { get; }
+        string ProductCode { get; }
         OrderType OrderType { get; }
         OrderState Status { get; }
         decimal? Size { get; }
@@ -23,7 +24,8 @@ namespace Financier.Trading
         DateTime? CloseTime { get; }
         Ulid? ParentId { get; }
         DateTime ExpirationDate { get; }
-        string Metadata { get; }
+        Ulid[] ChildOrderIds { get; }
+        IReadOnlyDictionary<string, object> Metadata { get; }
     }
 
     public interface IOrderEntity<TExecution> : IOrderEntity where TExecution : IExecutionEntity
