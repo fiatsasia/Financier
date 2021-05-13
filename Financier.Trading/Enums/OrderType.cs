@@ -36,7 +36,6 @@ namespace Financier.Trading
         // Fundamenal operations
         TriggerPriceBelow,
         TriggerPriceAbove,
-        TriggerEvent,
         TriggerTrailingOffset,
 
         // Reserved
