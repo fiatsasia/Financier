@@ -9,7 +9,7 @@
 using System.Linq;
 using System.Collections.ObjectModel;
 
-namespace Financier.Trading
+namespace Financier
 {
     public class RealtimeSourceCollection : Collection<IRealtimeSource>, IRealtimeSourceCollection
     {

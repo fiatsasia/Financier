@@ -37,8 +37,7 @@ namespace Financier.Signals
             });
         }
 
-        public static IObservable<ICrossoverSignal<TSource, double>> CrossoverEma<TSource>(
-            this IObservable<TSource> source,
+        public static IObservable<ICrossoverSignal<TSource, double>> CrossoverEma<TSource>(this IObservable<TSource> source,
             int shortPeriods,
             int longPeriods,
             Func<TSource, DateTime> timeSelector,
