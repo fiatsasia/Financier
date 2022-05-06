@@ -18,12 +18,12 @@ namespace Financier.Trading
 
         Task OpenAsync();
 
-        Task<IMarket> GetMarketAsync(string marketSymbol);
+        Task<MarketBase> GetMarketAsync(string marketSymbol);
 
         //===============================
         decimal UnrealizedProfit { get; }
         decimal RealizedProfit { get; }
-        bool HasOpenPosition(IMarket market);
+        bool HasOpenPosition(MarketBase market);
     }
 
     public interface IAccountCollection : ICollection<IAccount>

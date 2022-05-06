@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Financier.Trading\Financier.Trading.csproj" />
+    <ProjectReference Include="..\..\Financier.Trading\Financier.Trading.Core\Financier.Trading.Core.csproj" />
   </ItemGroup>
 
 </Project>

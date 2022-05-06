@@ -7,12 +7,13 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Financier.Trading
+namespace Financier
 {
-    public interface IPositionEventArgs
+    public interface IRealtimeSource
     {
-        PositionEventType EventType { get; }
-        IPosition Position { get; }
+        Task OpenAsync();
     }
 }

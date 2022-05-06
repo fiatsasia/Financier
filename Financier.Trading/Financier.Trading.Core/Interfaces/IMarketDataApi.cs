@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface IMarketDataApi
+    public interface IMarketDataSources
     {
         // Realtime APIs
         IObservable<IExecution> GetExecutionSource(string path);

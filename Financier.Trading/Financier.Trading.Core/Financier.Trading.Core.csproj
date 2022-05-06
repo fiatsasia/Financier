@@ -30,8 +30,4 @@
     <ProjectReference Include="..\..\Financier.Core\Financier.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>

@@ -13,11 +13,11 @@ namespace Financier.Trading
 {
     public interface IOrderApi
     {
-        event EventHandler<IOrderTransactionEventArgs> OrderTransactionChanged;
-        event EventHandler<IPositionEventArgs> PositionChanged;
+        event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
+        event EventHandler<OrderPositionEventArgs> PositionChanged;
 
         Task LoginAsync(string key, string secret);
-        Task PlaceOrderAsync(IOrderRequest request);
+        Task PlaceOrderAsync(OrderRequest request);
         Task CancelTransactionAsync(Ulid txId);
         Task CancelAllTransactionsAsync();
         Task CloseAllPositionsAsync();

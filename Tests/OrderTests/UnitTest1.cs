@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2022 Fiats Inc. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the solution folder for
 // full license information.
 // https://www.fiats.asia/
@@ -14,29 +14,45 @@ namespace OrderTests
     [TestClass]
     public class UnitTest1
     {
-        const decimal OrderPrice = 1000000m;
-        const decimal OrderSize = 1.0m;
-        const decimal TriggerPrice = 1050000m;
+        const decimal orderPrice = 1000000m;
+        const decimal orderSize = 1.0m;
+        const decimal triggerPrice = 1050000m;
+        const decimal triggerOffsetPrice = 50000m;
+        const decimal triggerOffsetRate = 0.05m;
+        const decimal stopPrice = 1050000m;
 
         [TestMethod]
-        public void TestCreateOrder()
+        public void TestCreateSimpleOrder()
         {
-            var marketBuy = factory.Market(OrderSize);
-            var marketSell = factory.Market(-OrderSize);
+            OrderRequest order;
 
-            var limitBuy = factory.Limit(OrderPrice, OrderSize);
-            var limitSell = factory.Limit(OrderPrice, -OrderSize);
+            // Market
+            order = OrderFactory.Market(orderSize);
+            order = OrderFactory.Market(-orderSize);
+            order = OrderFactory.Market(TradeSide.Buy, orderSize);
+            order = OrderFactory.Market(TradeSide.Sell, orderSize);
 
-            var stopLossBuy = factory.Stop(TriggerPrice, OrderSize);
-            var stopLossSell = factory.Stop(TriggerPrice, -OrderSize);
+            // Limit
+            order = OrderFactory.Limit(orderPrice, orderSize);
+            order = OrderFactory.Limit(orderPrice, -orderSize);
+            order = OrderFactory.Limit(TradeSide.Buy, orderPrice, orderSize);
+            order = OrderFactory.Limit(TradeSide.Sell, orderPrice, orderSize);
 
-            var stopLossLimitBuy = factory.StopLimit(TriggerPrice, OrderPrice, OrderSize);
-            var stopLossLimitSell = factory.StopLimit(TriggerPrice, OrderPrice, -OrderSize);
-        }
+            // Stop
+            order = OrderFactory.Stop(triggerPrice, orderSize);
+            order = OrderFactory.Stop(triggerPrice, -orderSize);
+            order = OrderFactory.Stop(TradeSide.Buy, triggerPrice, orderSize);
+            order = OrderFactory.Stop(TradeSide.Sell, triggerPrice, orderSize);
 
-        [TestMethod]
-        public void TestPlaceOrder()
-        {
+            // Stop limit
+            order = OrderFactory.StopLimit(triggerPrice, stopPrice, orderSize);
+            order = OrderFactory.StopLimit(triggerPrice, stopPrice, -orderSize);
+            order = OrderFactory.StopLimit(TradeSide.Buy, triggerPrice, stopPrice, orderSize);
+            order = OrderFactory.StopLimit(TradeSide.Sell, triggerPrice, stopPrice, orderSize);
+
+            // Trailing stop
+
+            // Trailing stop limit
         }
     }
 }

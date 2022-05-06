@@ -7,17 +7,14 @@
 //
 
 using System;
+using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface IPosition : IPositionEntity
+    public interface IOrderContext : IDisposable
     {
-        bool IsOpened { get; }
-        DateTime OpenTime { get; }
-        DateTime? CloseTime { get; }
-        decimal OpenPrice { get; }
-        decimal? ClosePrice { get; }
-
-        IPositions Positions { get; }
+        Task UpdateAsync(OrderTransactionBase tx);
+        Task AddAsync(OrderExecution entity);
+        Task UpdateAsync(OrderPosition entity);
     }
 }

@@ -17,12 +17,12 @@ namespace Financier.Trading
         Task OpenAsync();
         Task CloseAsync();
 
-        Task LogAsync(IOrderTransactionEventArgs args);
-        Task LogAsync(IPositionEventArgs args);
-        Task LogAsync(IOrderEntity order);
-        Task LogAsync(IOrder order);
-        Task LogAsync(IExecutionEntity exec);
-        Task LogAsync(IPositionEntity pos);
+        Task LogAsync(OrderTransactionEventArgs args);
+        Task LogAsync(OrderPositionEventArgs args);
+        Task LogAsync(OrderTransactionBase tx);
+        Task LogAsync(OrderRequest order);
+        Task LogAsync(OrderExecution exec);
+        Task LogAsync(OrderPosition pos);
     }
 
     public interface ITradeLoggerCollection : ICollection<ITradeLogger>, ITradeLogger

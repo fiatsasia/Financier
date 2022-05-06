@@ -7,14 +7,15 @@
 //
 
 using System;
-using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface IOrderContext : IDisposable
+    // - MarketConfigを追加
+    //      - 両建て不可
+    //          - 反対売買は建玉相殺
+    //      - 売り建て不可
+    //      - ポジション合算
+    public interface IMarketConfig
     {
-        Task UpdateAsync(IOrderEntity entity);
-        Task AddAsync(IExecutionEntity entity);
-        Task UpdateAsync(IPositionEntity entity);
     }
 }

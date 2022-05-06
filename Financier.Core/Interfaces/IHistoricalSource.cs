@@ -8,12 +8,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace Financier.Trading
+namespace Financier
 {
-    public interface IPositions
+    public interface IHistoricalSource
     {
-        decimal TotalOpenSize { get; }
-        IEnumerable<IPosition> GetOpenPositions();
     }
 }
