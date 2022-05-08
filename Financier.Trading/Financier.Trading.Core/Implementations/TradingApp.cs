@@ -23,11 +23,10 @@ namespace Financier.Trading
         public IEnumerable<OrderTransactionBase> Transactions => _transactions.Values;
 
         Dictionary<string, object> _config = new();
-        IAccount _account;
         MarketBase _market;
 
         readonly ConcurrentDictionary<Ulid, OrderTransactionBase> _transactions = new();
-        Func<IReadOnlyDictionary<string, object>, IAccount> _orderHandlerloader;
+        Func<IReadOnlyDictionary<string, object>, AccountBase> _orderHandlerloader;
         Func<IReadOnlyDictionary<string, object>, IRealtimeSource> _realtimeSourceloader;
         Func<IReadOnlyDictionary<string, object>, IHistoricalSource> _historicalSourceloader;
 
@@ -42,7 +41,6 @@ namespace Financier.Trading
 
         public virtual void Dispose()
         {
-            Accounts.Cast<IDisposable>().ForEach(e => e.Dispose());
         }
 
         public ValueTask DisposeAsync()
@@ -57,13 +55,12 @@ namespace Financier.Trading
 
         public void UpdateSetting(string key, object value) => _config[key] = value;
 
-        public void OnLoadOrderHandler(Func<IReadOnlyDictionary<string, object>, IAccount> loader) => _orderHandlerloader = loader;
+        public void OnLoadOrderHandler(Func<IReadOnlyDictionary<string, object>, AccountBase> loader) => _orderHandlerloader = loader;
         public void OnLoadMarketDataRealtimeSource(Func<IReadOnlyDictionary<string, object>, IRealtimeSource> loader) => _realtimeSourceloader = loader;
         public void OnLoadMarketDataHistoricalSource(Func<IReadOnlyDictionary<string, object>, IHistoricalSource> loader) => _historicalSourceloader = loader;
 
         #region Application Common APIs
         public IReadOnlyDictionary<string, object> AppSettings => _config;
-        public AccountCollection Accounts { get; } = new AccountCollection();
         public Dictionary<string, IRealtimeSource> RealtimeSources { get; } = new();
         public Dictionary<string, IHistoricalSource> HistoricalSources { get; } = new();
 
@@ -78,9 +75,8 @@ namespace Financier.Trading
 
         public async virtual Task OpenAsync()
         {
-            _account = Accounts.Get((string)_config["ExchangeCode"]);
-            _market = await _account.GetMarketAsync((string)_config["MarketCode"]);
-            _config["DefaultOrderSize"] = _market.MinimumOrderSize;
+            //_market = await _account.GetMarketAsync((string)_config["MarketCode"]);
+            //_config["DefaultOrderSize"] = _market.MinimumOrderSize;
 
             // ObservableEventPattern converts from EventHandler events to Observable to call user handlers with managing threads 
             Observable.FromEventPattern<OrderTransactionEventArgs>(_market, nameof(_market.OrderTransactionChanged))
@@ -102,10 +98,6 @@ namespace Financier.Trading
             {
                 await rs.OpenAsync();
             }
-            foreach (var ac in Accounts)
-            {
-                await ac.OpenAsync();
-            }
             //HistoricalSources.ForEach(async e => await e.OpenAsync());
 
             _market.Open();
@@ -121,8 +113,6 @@ namespace Financier.Trading
         {
             _config["ApiKey"] = apiKey;
             _config["ApiSecret"] = apiSecret;
-
-            _market = await _account.GetMarketAsync("FX_BTC_JPY");
         }
 
         public Task PlaceOrderAsync(OrderRequest request) =>  Task.Run(() => { _transactions[request.Id] = _market.PlaceOrder(request); });
@@ -165,11 +155,6 @@ namespace Financier.Trading
                 return (p[0], $"{p[1]}/{p[2]}");
             }
             return (p[0], p[1]);
-        }
-
-        public IMarketDataSources GetMarketDataSources()
-        {
-            throw new NotImplementedException();
         }
         #endregion Market Data APIs
     }

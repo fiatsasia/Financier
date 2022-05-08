@@ -23,7 +23,5 @@ namespace Financier.Trading
         Task InitializeAsync();
         Task OpenAsync();
         ValueTask DisposeAsync();
-
-        IMarketDataSources GetMarketDataSources();
     }
 }
