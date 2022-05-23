@@ -24,7 +24,7 @@ namespace OrderTests
         [TestMethod]
         public void TestCreateSimpleOrder()
         {
-            OrderRequest order;
+            Order order;
 
             // Market
             order = OrderFactory.Market(orderSize);

@@ -7,8 +7,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Financier.Trading
 {
@@ -17,7 +15,7 @@ namespace Financier.Trading
         public DateTime Time { get; }
         public decimal Price { get; }
         public decimal Size { get; }
-        public decimal Commission { get; set; }
+        public decimal? Commission { get; }
 
         public OrderExecution(DateTime time, decimal price, decimal size, decimal commission)
         {

@@ -20,9 +20,9 @@ namespace Financier.Trading
             _rm = new ResourceManager($"{nameof(Financier)}.{nameof(Financier.Trading)}.Resources", typeof(EnumResources).Assembly);
         }
 
-        public static string ToDisplayString(this OrderTransactionEventType otet, CultureInfo ci = null)
+        public static string ToDisplayString(this OrderEventType otet, CultureInfo ci = null)
         {
-            return _rm.GetString($"{nameof(OrderTransactionEventType)}.{otet}");
+            return _rm.GetString($"{nameof(OrderEventType)}.{otet}");
         }
 
     }

@@ -13,11 +13,11 @@ using System.Collections.ObjectModel;
 
 namespace Financier.Trading
 {
-    public class OrderRequest
+    public class Order
     {
         public Ulid Id { get; }
         public OrderType OrderType { get; }
-        public ReadOnlyCollection<OrderRequest> Children { get; }
+        public ReadOnlyCollection<Order> Children { get; }
 
         // Order parameters
         public virtual decimal? OrderPrice { get; set; }
@@ -45,14 +45,14 @@ namespace Financier.Trading
         public TimeSpan? TimeToExpire { get; set; }
         public TimeInForce? TimeInForce { get; set; }
 
-        public OrderRequest(OrderType orderType)
+        public Order(OrderType orderType)
         {
             Id = Ulid.NewUlid();
             OrderType = orderType;
-            Children = new(new OrderRequest[0]);
+            Children = new(new Order[0]);
         }
 
-        public OrderRequest(OrderType orderType, params OrderRequest[] children)
+        public Order(OrderType orderType, params Order[] children)
         {
             switch (orderType)
             {

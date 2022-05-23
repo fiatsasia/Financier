@@ -6,6 +6,8 @@ namespace Financier.Trading
 {
     public abstract class MarketDataSourcesBase : IDisposable
     {
+        public virtual decimal CurrentPrice { get; }
+
 #if false
         // Realtime APIs
         IObservable<IExecution> GetExecutionSource(string path);

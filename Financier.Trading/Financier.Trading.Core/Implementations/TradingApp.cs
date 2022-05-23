@@ -79,7 +79,7 @@ namespace Financier.Trading
             //_config["DefaultOrderSize"] = _market.MinimumOrderSize;
 
             // ObservableEventPattern converts from EventHandler events to Observable to call user handlers with managing threads 
-            Observable.FromEventPattern<OrderTransactionEventArgs>(_market, nameof(_market.OrderTransactionChanged))
+            Observable.FromEventPattern<OrderEventArgs>(_market, nameof(_market.OrderEvent))
                 .ObserveOn(System.Reactive.Concurrency.Scheduler.Default)
                 .Subscribe(e =>
                 {
@@ -106,7 +106,7 @@ namespace Financier.Trading
         #endregion Application Common APIs
 
         #region Order APIs
-        public event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
+        public event EventHandler<OrderEventArgs> OrderTransactionChanged;
         public event EventHandler<OrderPositionEventArgs> PositionChanged;
 
         public async Task LoginAsync(string apiKey, string apiSecret)
@@ -114,8 +114,6 @@ namespace Financier.Trading
             _config["ApiKey"] = apiKey;
             _config["ApiSecret"] = apiSecret;
         }
-
-        public Task PlaceOrderAsync(OrderRequest request) =>  Task.Run(() => { _transactions[request.Id] = _market.PlaceOrder(request); });
 
         public Task CancelTransactionAsync(Ulid txId) => Task.Run(_transactions[txId].Cancel);
 
@@ -127,21 +125,6 @@ namespace Financier.Trading
                 {
                     tx.Cancel();
                 });
-            });
-        }
-
-        public Task CloseAllPositionsAsync()
-        {
-            return Task.Run(() =>
-            {
-                if (_market.Positions.TotalOpenSize > 0m)
-                {
-                    foreach (var pos in _market.Positions.GetOpenPositions())
-                    {
-                        var tx = _market.PlaceOrder(OrderFactory.Market(-pos.Size));
-                        _transactions[tx.Id] = tx;
-                    }
-                }
             });
         }
         #endregion Order APIs

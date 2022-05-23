@@ -5,8 +5,17 @@ using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public abstract class MarketBase
+    public abstract class MarketBase : IDisposable
     {
+        public virtual decimal CurrentPrice { get; }
+
+        public virtual Task<MarketDataSourcesBase> GetDataSourcesAsync() => throw new NotSupportedException();
+
+        public abstract Task PlaceOrderAsync(Order order);
+        public virtual Task CloseAllPositionsAsync() => throw new NotSupportedException();
+        public virtual Task CancelAllTransactionAsync() => throw new NotSupportedException();
+        public virtual OrderStatus GetOrderStatus(Ulid orderId) => throw new NotSupportedException();
+
         /*
 
         event EventHandler<IPositionEventArgs> PositionChanged;
@@ -16,21 +25,17 @@ namespace Financier.Trading
 
         IOrderTransaction PlaceOrder(OrderRequest request);
         */
-        public event EventHandler<OrderTransactionEventArgs> OrderTransactionChanged;
+        public event EventHandler<OrderEventArgs>? OrderEvent;
         public event EventHandler<OrderPositionEventArgs> PositionChanged;
 
-        public virtual void InvokeOrderTransactionChanged(object sender, OrderTransactionEventArgs ev) => OrderTransactionChanged?.Invoke(sender, ev);
-        public virtual void InvokePositionChanged(object sender, OrderPositionEventArgs ev) => PositionChanged?.Invoke(sender, ev);
+        protected virtual void RaiseOrderEvent(OrderEventArgs ev) => OrderEvent?.Invoke(this, ev);
+        protected virtual void InvokePositionChanged(object sender, OrderPositionEventArgs ev) => PositionChanged?.Invoke(sender, ev);
 
-        public abstract string ExchangeCode { get; }
-        public abstract string MarketCode { get; }
         public abstract decimal MinimumOrderSize { get; }
         public abstract decimal BestAskPrice { get; }
         public abstract decimal BestBidPrice { get; }
         public abstract decimal MidPrice { get; }
         public abstract decimal LastTradedPrice { get; }
-        public abstract bool HasActiveOrder { get; }
-        public abstract OrderPositions Positions { get; }
         public abstract int PriceDecimals { get; }
 
         public abstract void Open();
@@ -46,9 +51,9 @@ namespace Financier.Trading
             _ => throw new NotSupportedException()
         };
 
-        public OrderRequest ConvertPrimitive(OrderRequest req)
+        public Order ConvertPrimitive(Order req)
         {
-            var result = default(OrderRequest);
+            var result = default(Order);
             switch (req.OrderType)
             {
                 case OrderType.IFD: // Executed trigger + order
@@ -65,7 +70,7 @@ namespace Financier.Trading
                         {
                             throw new ArgumentException();
                         }
-                        result = new OrderRequest((req.OrderSize > 0m) ? OrderType.TriggerPriceAbove : OrderType.TriggerPriceBelow, new OrderRequest[] { OrderFactory.Market(req.OrderSize.Value) })
+                        result = new Order((req.OrderSize > 0m) ? OrderType.TriggerPriceAbove : OrderType.TriggerPriceBelow, new Order[] { OrderFactory.Market(req.OrderSize.Value) })
                         {
                             TriggerPrice = req.TriggerPrice,
                             TriggerPriceType = req.TriggerPriceType,
@@ -76,14 +81,14 @@ namespace Financier.Trading
 
                 case OrderType.StopLimit:
                     {
-                        var child = new OrderRequest(OrderType.Limit)
+                        var child = new Order(OrderType.Limit)
                         {
                             OrderSize = req.OrderSize,
                             OrderPrice = req.OrderPrice,
                             OrderPriceType = req.OrderPriceType,
                             OrderPriceOffset = req.OrderPriceOffset,
                         };
-                        result = new OrderRequest((req.OrderSize > 0m) ? OrderType.TriggerPriceAbove : OrderType.TriggerPriceBelow, new OrderRequest[] { child })
+                        result = new Order((req.OrderSize > 0m) ? OrderType.TriggerPriceAbove : OrderType.TriggerPriceBelow, new Order[] { child })
                         {
                             TriggerPrice = req.TriggerPrice,
                             TriggerPriceType = req.TriggerPriceType,
@@ -97,7 +102,7 @@ namespace Financier.Trading
                     {
                         throw new ArgumentException();
                     }
-                    result = new OrderRequest(OrderType.TriggerTrailingOffset, OrderFactory.Market(req.OrderSize.Value))
+                    result = new Order(OrderType.TriggerTrailingOffset, OrderFactory.Market(req.OrderSize.Value))
                     {
                         TrailingOffset = req.OrderSize.Value > 0m ? req.TrailingOffset.Value : -req.TrailingOffset.Value
                     };
@@ -109,14 +114,14 @@ namespace Financier.Trading
                         {
                             throw new ArgumentException();
                         }
-                        var child = new OrderRequest(OrderType.Limit)
+                        var child = new Order(OrderType.Limit)
                         {
                             OrderSize = req.OrderSize,
                             OrderPrice = req.OrderPrice,
                             OrderPriceType = req.OrderPriceType,
                             OrderPriceOffset = req.OrderPriceOffset,
                         };
-                        result = new OrderRequest(OrderType.TriggerTrailingOffset, child)
+                        result = new Order(OrderType.TriggerTrailingOffset, child)
                         {
                             TrailingOffset = req.OrderSize.Value > 0m ? req.TrailingOffset.Value : -req.TrailingOffset.Value
                         };
@@ -129,7 +134,7 @@ namespace Financier.Trading
                         throw new ArgumentException();
                     }
 
-                    result = new OrderRequest(req.OrderSize > 0m ? OrderType.TriggerPriceBelow : OrderType.TriggerPriceAbove, OrderFactory.Market(req.OrderSize.Value))
+                    result = new Order(req.OrderSize > 0m ? OrderType.TriggerPriceBelow : OrderType.TriggerPriceAbove, OrderFactory.Market(req.OrderSize.Value))
                     {
                         ProfitPrice = req.OrderSize > 0m ? -req.ProfitPrice.Value : req.ProfitPrice.Value
                     };
@@ -143,7 +148,7 @@ namespace Financier.Trading
             return result;
         }
 
-        protected virtual void ApplyPrices(OrderRequest order)
+        protected virtual void ApplyPrices(Order order)
         {
             if (order.Children.Count > 0)
             {
@@ -163,7 +168,7 @@ namespace Financier.Trading
             }
         }
 
-        public void ApplyExecutedPrice(OrderRequest order, decimal? executedPrice)
+        public void ApplyExecutedPrice(Order order, decimal? executedPrice)
         {
             if (order.Children.Count > 0)
             {
@@ -183,49 +188,9 @@ namespace Financier.Trading
             }
         }
 
-        public abstract OrderTransactionBase CreateTransaction(MarketBase market, OrderRequest order, OrderTransactionBase parent);
-
-        public virtual OrderTransactionBase PlaceOrder(OrderRequest order, OrderTransactionBase parent)
+        public void Dispose()
         {
-            var tx = CreateTransaction(this, order, parent);
-            tx.ChangeOrderState(OrderState.Outstanding);
-            switch (order.OrderType)
-            {
-                case OrderType.NullOrder:
-                    tx.ChangeOrderState(OrderState.Ordered);
-                    tx.ProcessEvent(OrderTransactionEventType.Ordered);
-                    Task.Run(() =>
-                    {
-                        tx.ChangeOrderState(OrderState.Completed);
-                        tx.ProcessEvent(OrderTransactionEventType.Completed);
-                    });
-                    break;
-
-                case OrderType.IFD:
-                    tx.DispatchEvent(OrderTransactionEventType.StartOrdering);
-                    PlaceOrder(order.Children[0], tx);
-                    break;
-
-                case OrderType.TriggerPriceAbove:
-                case OrderType.TriggerPriceBelow:
-                case OrderType.TriggerTrailingOffset:
-                    tx.ChangeOrderState(OrderState.Ordered);
-                    tx.ProcessEvent(OrderTransactionEventType.Ordered);
-                    break;
-
-                case OrderType.OCO:
-                    tx.DispatchEvent(OrderTransactionEventType.StartOrdering);
-                    Parallel.ForEach(order.Children, childOrderRequest => PlaceOrder(childOrderRequest, tx));
-                    break;
-
-                default:
-                    throw new NotSupportedException();
-            }
-            //Log.Trace($"FxMarket order placed type:{order.OrderType}");
-
-            return tx;
+            throw new NotImplementedException();
         }
-
-        public virtual OrderTransactionBase PlaceOrder(OrderRequest order) => PlaceOrder(order, default);
     }
 }

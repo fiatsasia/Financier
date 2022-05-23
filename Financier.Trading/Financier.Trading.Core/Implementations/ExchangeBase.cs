@@ -12,16 +12,10 @@ using System.Threading.Tasks;
 
 namespace Financier.Trading
 {
-    public interface ITradingApp : IDisposable
+    public abstract class ExchangeBase : IDisposable
     {
-        IReadOnlyDictionary<string, object> AppSettings { get; }
-
-        event Func<ITradingApp, Task> Opened;
-        event EventHandler<OrderEventArgs> OrderTransactionChanged;
-        event EventHandler<OrderPositionEventArgs> PositionChanged;
-
-        Task InitializeAsync();
-        Task OpenAsync();
-        ValueTask DisposeAsync();
+        public virtual void Dispose() { }
+        public virtual Task<MarketBase> GetMarketAsync(string marketCode) => throw new NotSupportedException();
+        public virtual Task<AccountBase> GetAccountAsync() => throw new NotSupportedException();
     }
 }

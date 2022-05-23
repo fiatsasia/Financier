@@ -17,10 +17,10 @@ namespace Financier.Trading
         Task OpenAsync();
         Task CloseAsync();
 
-        Task LogAsync(OrderTransactionEventArgs args);
+        Task LogAsync(OrderEventArgs args);
         Task LogAsync(OrderPositionEventArgs args);
         Task LogAsync(OrderTransactionBase tx);
-        Task LogAsync(OrderRequest order);
+        Task LogAsync(Order order);
         Task LogAsync(OrderExecution exec);
         Task LogAsync(OrderPosition pos);
     }

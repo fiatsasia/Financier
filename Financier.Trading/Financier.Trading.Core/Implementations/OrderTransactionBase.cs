@@ -13,41 +13,30 @@ using System.Collections.ObjectModel;
 
 namespace Financier.Trading
 {
-    public abstract class OrderTransactionBase
+    public abstract class OrderTransactionBase : OrderStatus
     {
         public Ulid Id => Order.Id;
 
-        public OrderRequest Order { get; }
-
         public OrderTransactionState State { get; private set; }
-        public OrderState OrderState => _orderStatus.OrderState;
-        public virtual bool IsCancelable => State switch
-        {
-            OrderTransactionState.Idle => _orderStatus.IsCancelable,
-            OrderTransactionState.Ordering => true,
-            OrderTransactionState.Canceling => true,
-            OrderTransactionState.Closed => false,
-            _ => false
-        };
 
         public OrderTransactionBase Parent { get; private set; }
         List<OrderTransactionBase> _children = new();
         public ReadOnlyCollection<OrderTransactionBase> Children { get; }
-        public virtual DateTime OpenTime => _orderStatus.OpenTime;
-        public virtual DateTime CloseTime => _orderStatus.CloseTime;
-        public virtual DateTime Expiration => _orderStatus.Expiration;
-        public decimal? ExecutedPrice { get; private set; }
-        public decimal? ExecutedSize => Order.OrderSize.HasValue ? _execs.Sum(e => e.Price) : null;
         public string Metadata { get; }
 
         protected MarketBase Market { get; }
         OrderStatus _orderStatus;
-        List<OrderExecution> _execs = new();
 
-        protected OrderTransactionBase(MarketBase market, OrderRequest order, OrderTransactionBase parent)
+        protected OrderTransactionBase(MarketBase market, Order order)
+            : base(order)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected OrderTransactionBase(MarketBase market, Order order, OrderTransactionBase parent)
+            : base(order)
         {
             Market = market;
-            Order = order;
             Children = new(_children);
             Parent = parent;
             if (Parent != null)
@@ -55,12 +44,12 @@ namespace Financier.Trading
                 Parent._children.Add(this);
             }
 
-            _orderStatus = new OrderStatus();
+            _orderStatus = new OrderStatus(order);
         }
 
-        public void ChangeOrderState(OrderState state)
+        protected virtual void RaiseOrderEvent(OrderEventArgs e)
         {
-            _orderStatus.ChangeState(state);
+            throw new NotImplementedException();
         }
 
         protected void ChangeState(OrderTransactionState newState)
@@ -69,35 +58,26 @@ namespace Financier.Trading
             State = newState;
         }
 
-        public virtual void OnOrderExecuted(DateTime time, decimal price, decimal size)
-        {
-            _execs.Add(new(time, price, size));
-            if (ExecutedSize == Order.OrderSize.Value)
-            {
-                ChangeState(OrderTransactionState.Closed);
-            }
-        }
-
         public virtual void Cancel()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void EscalteEvent(OrderTransactionBase tx, OrderTransactionEventArgs e)
+        public virtual void EscalteEvent(OrderTransactionBase tx, OrderEventArgs e)
         {
         }
 
-        public virtual void ProcessEvent(OrderTransactionEventType eventType)
+        public virtual void ProcessEvent(OrderEventType eventType)
         {
             DispatchEvent(eventType);
             if (Parent == null)
             {
                 return;
             }
-            Parent.EscalteEvent(this, new OrderTransactionEventArgs(DateTime.UtcNow, eventType, this));
+            Parent.EscalteEvent(this, new OrderEventArgs(eventType, DateTime.UtcNow, Order, this));
         }
 
-        public virtual void DispatchEvent(OrderTransactionEventType eventType)
+        public virtual void DispatchEvent(OrderEventType eventType)
         {
             throw new NotImplementedException();
             //_market.InvokeOrderTransactionChanged(this, new OrderTransactionEventArgs(DateTime.UtcNow, eventType, this));

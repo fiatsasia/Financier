@@ -12,18 +12,24 @@ namespace Financier.Trading
 {
     public class OrderPositionEventArgs : EventArgs
     {
-        public PositionEventType EventType { get; set; }
+        public PositionEventType EventType { get; }
+        public DateTime Time { get; }
 
-        public OrderPosition Position { get; set; }
+        public OrderPosition Position { get; }
+        public OrderExecution Execution { get; }
+        public Order Order { get; }
+        public OrderStatus OrderStatus { get; }
 
         public OrderPositionEventArgs()
         {
         }
 
-        public OrderPositionEventArgs(PositionEventType eventType, OrderPosition position)
+        public OrderPositionEventArgs(PositionEventType eventType, DateTime time, OrderPosition position, OrderStatus orderStatus)
         {
             EventType = eventType;
+            Time = time;
             Position = position;
+            OrderStatus = orderStatus;
         }
     }
 }
