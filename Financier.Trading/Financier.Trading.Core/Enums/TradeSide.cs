@@ -1,29 +1,26 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2022 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2023 Fiats Inc. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the solution folder for
 // full license information.
 // https://www.fiats.asia/
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
-using System;
+namespace Financier.Trading;
 
-namespace Financier.Trading
+public enum TradeSide
 {
-    public enum TradeSide
-    {
-        NotSpecified,
-        Buy,
-        Sell,
-    }
+    NotSpecified,
+    Buy,
+    Sell,
+}
 
-    public static class TradeSideExtension
+public static class TradeSideExtension
+{
+    public static TradeSide Reverse(this TradeSide side) => side switch
     {
-        public static TradeSide Reverse(this TradeSide side) => side switch
-        {
-            TradeSide.Buy => TradeSide.Sell,
-            TradeSide.Sell => TradeSide.Buy,
-            _ => throw new ArgumentException()
-        };
-    }
+        TradeSide.Buy => TradeSide.Sell,
+        TradeSide.Sell => TradeSide.Buy,
+        _ => throw new ArgumentException()
+    };
 }

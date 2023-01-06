@@ -6,11 +6,12 @@
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
-namespace Financier.Trading;
+global using System;
+global using System.Linq;
+global using System.Collections.Generic;
+global using System.Threading.Tasks;
 
-public enum MakerTaker
-{
-    NotSpecified,
-    Maker,
-    Taker,
-}
+global using System.Reactive;
+global using System.Reactive.Linq;
+global using System.Reactive.Subjects;
+global using System.Reactive.Disposables;

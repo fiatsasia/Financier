@@ -1,36 +1,31 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2022 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2023 Fiats Inc. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the solution folder for
 // full license information.
 // https://www.fiats.asia/
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
-using System;
-using System.Linq;
-using System.Reactive.Disposables;
+namespace Financier;
 
-namespace Financier
+public static class DateTimeExtensions
 {
-    public static class DateTimeExtensions
+    public static DateTime Round(this DateTime dt, TimeSpan unit)
     {
-        public static DateTime Round(this DateTime dt, TimeSpan unit)
-        {
-            return new DateTime(dt.Ticks / unit.Ticks * unit.Ticks, dt.Kind);
-        }
+        return new DateTime(dt.Ticks / unit.Ticks * unit.Ticks, dt.Kind);
+    }
+}
+
+public static class RxUtil
+{
+    public static TResult AddTo<TResult>(this TResult resource, CompositeDisposable disposable) where TResult : IDisposable
+    {
+        disposable.Add(resource);
+        return resource;
     }
 
-    public static class RxUtil
+    public static void DisposeReverse(this CompositeDisposable disposable)
     {
-        public static TResult AddTo<TResult>(this TResult resource, CompositeDisposable disposable) where TResult : IDisposable
-        {
-            disposable.Add(resource);
-            return resource;
-        }
-
-        public static void DisposeReverse(this CompositeDisposable disposable)
-        {
-            disposable.Reverse().ForEach(e => e.Dispose());
-        }
+        disposable.Reverse().ForEach(e => e.Dispose());
     }
 }

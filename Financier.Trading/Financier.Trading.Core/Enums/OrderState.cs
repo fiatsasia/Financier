@@ -1,32 +1,31 @@
 ﻿//==============================================================================
-// Copyright (c) 2012-2022 Fiats Inc. All rights reserved.
+// Copyright (c) 2012-2023 Fiats Inc. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the solution folder for
 // full license information.
 // https://www.fiats.asia/
 // Fiats Inc. Nakano, Tokyo, Japan
 //
 
-namespace Financier.Trading
+namespace Financier.Trading;
+
+public enum OrderState
 {
-    public enum OrderState
-    {
-        Unknown = -1,
+    Unknown = -1,
 
-        Outstanding,
+    Outstanding,
 
-        Ordered,
-        OrderFailed,
-        OrderOpened,
+    Ordered,
+    OrderFailed,
+    OrderOpened,
 
-        PartiallyExecuted,  // Exclude conditional order
-        Executed,   // Exclude conditional order
+    PartiallyExecuted,  // Exclude conditional order
+    Executed,   // Exclude conditional order
 
-        Canceled,
-        CancelFailed,
+    Canceled,
+    CancelFailed,
 
-        Expired,
+    Expired,
 
-        Completed,  // Conditional order only
-        Triggered,  // Conditional order only
-    }
+    Completed,  // Conditional order only
+    Triggered,  // Conditional order only
 }
